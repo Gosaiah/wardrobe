@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter — Mobile App Concept</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-ui);-webkit-font-smoothing:antialiased;padding:48px 24px 80px;transition:background .2s,color .2s}
+  .wrap{max-width:1180px;margin:0 auto}
+  .topbar{display:flex;align-items:center;justify-content:space-between;max-width:900px;margin:0 auto 4px}
+  .kick{font-size:11px;letter-spacing:.5em;text-transform:uppercase;color:var(--muted)}
+  .tgl{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-pill);padding:7px 14px;cursor:pointer;color:var(--text);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+  .head{text-align:center;margin:26px 0 0}
+  .head .brand{font-family:var(--font-display);font-weight:200;font-size:26px;letter-spacing:.4em;text-transform:uppercase;padding-left:.4em;display:inline-flex;align-items:center;gap:12px}
+  .sub{color:var(--muted);font-size:12.5px;font-weight:300;letter-spacing:.05em;margin-top:14px;max-width:660px;margin-left:auto;margin-right:auto;line-height:1.7}
+  .champ{color:var(--accent2)}
+
+  .stage{display:flex;justify-content:center;margin-top:40px}
+  .phone-col{position:sticky;top:24px}
+  .hint{text-align:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:16px}
+
+  /* device shell stays dark regardless of theme (it's the phone) */
+  .phone{width:322px;height:690px;border-radius:44px;background:#0b0b0c;border:1px solid #2b2b2b;position:relative;overflow:hidden;box-shadow:0 50px 100px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05)}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:26px;background:#0b0b0c;border-radius:0 0 16px 16px;z-index:40}
+  .status{position:absolute;top:9px;left:0;right:0;display:flex;justify-content:space-between;padding:0 30px;font-size:10px;color:var(--muted);font-weight:600;z-index:41;letter-spacing:.02em}
+  .screens{position:absolute;inset:0;bottom:64px;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
+  .screens::-webkit-scrollbar{width:0}
+  .screen{display:none;padding:46px 16px 22px;min-height:100%}
+  .screen.on{display:block}
+
+  .appbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .appbar .l{display:flex;align-items:center;gap:8px}
+  .appbar .wm{font-family:var(--font-display);font-weight:300;font-size:14px;letter-spacing:.3em;text-transform:uppercase;padding-left:.3em}
+  .appbar .ic{width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:6;stroke-linecap:round}
+  .back{width:26px;height:26px;stroke:var(--text);fill:none;stroke-width:7;stroke-linecap:round;cursor:pointer}
+
+  .greet{font-family:var(--font-display);font-weight:200;font-size:22px;letter-spacing:.01em;margin-bottom:2px}
+  .greet b{font-weight:500}
+  .h1s{font-family:var(--font-display);font-weight:200;font-size:19px}
+  .h1s b{font-weight:500}
+  .date{font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+  .lbl{font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin:18px 2px 10px;display:flex;justify-content:space-between;align-items:center}
+  .lbl a{color:var(--accent);text-decoration:none;letter-spacing:.14em;cursor:pointer}
+
+  .card{background:var(--card-grad);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--card-shadow)}
+  .ophoto{position:relative;background:linear-gradient(150deg,var(--surface2),var(--surface));overflow:hidden}
+  .ophoto img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  .ophoto .fade{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72),transparent 55%)}
+  .tag{position:absolute;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:4px 8px;border-radius:var(--r-pill);background:rgba(0,0,0,.5);color:var(--accent);border:1px solid var(--accent2)}
+
+  .hero-char{position:relative;height:300px}
+  .hero-char .meta{position:absolute;left:14px;right:14px;bottom:14px;z-index:2}
+  .hero-char .pn{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
+  .hero-char .nm{font-family:var(--font-display);font-weight:300;font-size:24px;color:#fff;margin-top:3px}
+  .hero-char .tl{font-size:10px;color:#d8d2c4;margin-top:3px}
+  .chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+  .chip{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent2);border-radius:var(--r-pill);padding:4px 9px;background:rgba(0,0,0,.28)}
+  .row-actions{display:flex;gap:8px;margin-top:12px}
+  .btn{flex:1;text-align:center;padding:12px;border-radius:var(--r-md);font-family:var(--font-ui);font-weight:600;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;border:none}
+  .btn.primary{background:var(--accent);color:var(--on-accent)}
+  .btn.ghost{background:none;border:1px solid var(--border);color:var(--muted);flex:0 0 46px;display:flex;align-items:center;justify-content:center}
+
+  .hscroll{display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:0 16px 4px}
+  .hscroll::-webkit-scrollbar{height:0}
+  .mini{flex:0 0 120px}
+  .mini .ophoto{height:150px;border-radius:var(--r-md)}
+  .mini .cap{font-size:10px;color:var(--text);margin-top:6px}
+  .mini .vb{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+  .vibes{display:flex;gap:7px;flex-wrap:wrap}
+  .vchip{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);border-radius:var(--r-pill);padding:6px 12px;cursor:pointer}
+  .vchip.on{color:var(--on-accent);background:var(--accent);border-color:var(--accent)}
+
+  /* segmented control */
+  .seg{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:3px;margin-bottom:14px}
+  .seg button{flex:1;background:none;border:none;color:var(--muted);font-family:var(--font-ui);font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:8px;border-radius:var(--r-sm);cursor:pointer}
+  .seg button.on{background:var(--accent);color:var(--on-accent);font-weight:600}
+
+  .search{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:11px 14px;color:var(--muted);font-size:12px;font-family:inherit;margin-bottom:12px}
+  .brandrow{display:flex;gap:6px;overflow-x:auto;margin:0 -16px 14px;padding:0 16px}
+  .brandrow::-webkit-scrollbar{height:0}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .piece{background:var(--card-grad);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 12px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between}
+  .piece .br{font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .piece .nm{font-size:11.5px;color:var(--text);line-height:1.3;margin-top:4px}
+  .piece .foot{display:flex;align-items:center;gap:6px;margin-top:10px}
+  .dot{width:9px;height:9px;border-radius:50%;border:1px solid rgba(128,128,128,.4)}
+  .piece .cl{font-size:8.5px;color:var(--muted)}
+  .sbar{flex:1;height:3px;background:var(--surface2);border-radius:3px;overflow:hidden}
+  .sbar i{display:block;height:100%;background:var(--accent)}
+
+  .anchor{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px}
+  .anchor .sw{width:44px;height:56px;border-radius:var(--r-sm);background:linear-gradient(150deg,var(--surface2),var(--surface));flex:none;display:flex;align-items:center;justify-content:center}
+  .prop{margin-top:10px}
+  .prop .ophoto{height:170px;border-radius:var(--r-md) var(--r-md) 0 0}
+  .prop .body{border:1px solid var(--border);border-top:none;border-radius:0 0 var(--r-md) var(--r-md);padding:12px;background:var(--card-grad)}
+  .score{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .propname{font-size:12.5px;color:var(--text);margin-top:2px}
+  .plist{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .pchip{font-size:8.5px;color:var(--muted);border:1px solid var(--border);border-radius:var(--r-pill);padding:4px 8px}
+
+  .lgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .look{cursor:pointer}
+  .look .ophoto{height:150px;border-radius:var(--r-md)}
+  .look .cap{font-size:11px;color:var(--text);margin-top:6px;font-weight:500}
+  .look .vb{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+  .statrow{display:flex;gap:8px;margin:4px 0 6px}
+  .stat{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 10px;text-align:center}
+  .stat .v{font-family:var(--font-display);font-weight:500;font-size:22px;color:var(--white)}
+  .stat .k{font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+  .dna{display:flex;justify-content:center;padding:6px 0 2px}
+  .bar{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+  .bar .bn{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text);width:64px}
+  .bar .bt{flex:1;height:4px;background:var(--surface2);border-radius:4px;overflow:hidden}
+  .bar .bt i{display:block;height:100%;background:var(--accent)}
+  .bar .bc{font-size:9px;color:var(--muted);width:26px;text-align:right}
+  .charscroll{display:flex;gap:10px;overflow-x:auto;margin:0 -16px;padding:0 16px}
+  .charscroll::-webkit-scrollbar{height:0}
+  .charc{flex:0 0 108px;cursor:pointer}
+  .charc .ophoto{height:140px;border-radius:var(--r-md)}
+  .charc .cn{font-size:10px;color:var(--text);margin-top:5px;font-weight:500}
+  .charc .ct{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+
+  /* personas full screen */
+  .percard{position:relative;height:200px;border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;cursor:pointer;border:1px solid var(--border)}
+  .percard .meta{position:absolute;left:14px;bottom:12px;z-index:2}
+  .percard .pn{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)}
+  .percard .nm{font-family:var(--font-display);font-weight:300;font-size:22px;color:#fff;margin-top:2px}
+  .percard .tl{font-size:9px;letter-spacing:.06em;color:#d8d2c4;margin-top:2px}
+
+  /* history */
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:6px}
+  .cal .dow{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;padding-bottom:2px}
+  .cal .day{aspect-ratio:1;border-radius:8px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);position:relative}
+  .cal .day.worn{border-color:var(--accent2)}
+  .cal .day.worn::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+  .cal .day.today{background:var(--accent);color:var(--on-accent);font-weight:700}
+  .logrow{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
+  .logrow .th{width:34px;height:44px;border-radius:var(--r-sm);overflow:hidden;flex:none;background:linear-gradient(150deg,var(--surface2),var(--surface))}
+  .logrow .th img{width:100%;height:100%;object-fit:cover}
+  .logrow .d{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .logrow .n{font-size:11.5px;color:var(--text);margin-top:1px}
+
+  .nav{position:absolute;left:0;right:0;bottom:0;height:64px;background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-around;padding-bottom:6px;z-index:30}
+  .nb{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex:1}
+  .nb svg{width:21px;height:21px;fill:none;stroke:var(--muted);stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round}
+  .nb span{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .nb.on svg{stroke:var(--accent)}
+  .nb.on span{color:var(--accent)}
+  .nb.build svg{width:26px;height:26px}
+
+  .sheet{position:absolute;inset:0;z-index:60;display:none}
+  .sheet.on{display:block}
+  .sheet .scrim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+  .sheet .panel{position:absolute;left:0;right:0;bottom:0;max-height:88%;overflow-y:auto;background:var(--bg);border-radius:var(--r-xl) var(--r-xl) 0 0;border-top:1px solid var(--border)}
+  .sheet .panel::-webkit-scrollbar{width:0}
+  .grab{width:38px;height:4px;border-radius:4px;background:var(--border);margin:10px auto 0}
+  .sheetphoto{height:250px;position:relative;margin-top:8px}
+  .sheetbody{padding:16px}
+  .close-x{position:absolute;top:14px;right:14px;z-index:3;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);border:1px solid var(--border);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px}
+  .sd-nm{font-family:var(--font-display);font-weight:300;font-size:22px;color:var(--white)}
+  .sd-vb{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-top:4px}
+  .worn{font-size:10px;color:var(--muted);margin-top:10px}
+  .pieceline{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)}
+  .pieceline .sw{width:32px;height:40px;border-radius:var(--r-sm);background:linear-gradient(150deg,var(--surface2),var(--surface));flex:none}
+  .pieceline .br{font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .pieceline .nm{font-size:11.5px;color:var(--text);margin-top:1px}
+  .lore{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}
+
+  .notes{max-width:900px;margin:60px auto 0}
+  .notes h2{font-family:var(--font-display);font-weight:200;font-size:18px;letter-spacing:.3em;text-transform:uppercase;text-align:center;margin-bottom:8px}
+  .notes .nsub{text-align:center;color:var(--muted);font-size:12px;margin-bottom:30px}
+  .maprow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+  .maprow .m{font-size:10px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--border);border-radius:var(--r-pill);padding:6px 12px}
+  .maprow .m b{color:var(--accent2)}
+  .ngrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .note{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px}
+  .note .nk{font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px}
+  .note .nt{font-family:var(--font-display);font-size:14px;color:var(--white);margin-bottom:8px}
+  .note p{font-size:12px;color:var(--muted);line-height:1.65}
+  .note p b{color:var(--text);font-weight:500}
+  footer{max-width:900px;margin:40px auto 0;text-align:center;color:var(--muted);font-size:11px;font-weight:300;letter-spacing:.05em;line-height:1.8}
+</style>
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="kick">Concept · Mobile App</div>
+    <div class="tgl" id="tgl"><span id="tgl-i">☀</span><span id="tgl-l">Light</span></div>
+  </div>
+
+  <div class="head">
+    <div class="brand">
+      <svg class="nav-mark" width="24" height="24" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="4" opacity=".3" transform="translate(9 6)"/>
+        <path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="4" opacity=".6" transform="translate(3 2)"/>
+        <path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="4" transform="translate(-4 -3)"/>
+      </svg>Alter
+    </div>
+    <p class="sub">A phone version of the app you built — same shared theme, and every desktop page mapped to a mobile screen: <span class="champ">Wardrobe, Builder, Outfits, Proposals, Profile, Personas, History</span>. Tap the bottom bar; toggle light/dark top-right.</p>
+  </div>
+
+  <div class="stage">
+    <div class="phone-col">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="status"><span>9:41</span><span>▼ ◲ ▮</span></div>
+
+        <div class="screens">
+
+          <!-- TODAY -->
+          <div class="screen on" data-s="today">
+            <div class="appbar">
+              <div class="l">
+                <svg class="nav-mark" width="22" height="22" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-linecap="round" stroke-linejoin="round"><path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="4.5" opacity=".3" transform="translate(9 6)"/><path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="4.5" opacity=".6" transform="translate(3 2)"/><path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="4.5" transform="translate(-4 -3)"/></svg><span class="wm">Alter</span>
+              </div>
+              <svg class="ic" viewBox="0 0 100 100"><circle cx="50" cy="30" r="14"/><path d="M24 78 C24 60 76 60 76 78"/></svg>
+            </div>
+            <div class="greet">Good evening, <b>Isaiah</b></div>
+            <div class="date">Saturday · July 18</div>
+            <div class="lbl">Today's character</div>
+            <div class="card hero-char">
+              <div class="ophoto" style="position:absolute;inset:0"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"><div class="fade"></div></div>
+              <div class="meta"><div class="pn">Character 01 · aka Zayder</div><div class="nm">Overlord</div><div class="tl">Ancient. Already decided.</div><div class="chips"><span class="chip">Drama 4.5</span><span class="chip">Edge 4.5</span><span class="chip">Structure 3.8</span></div></div>
+            </div>
+            <div class="row-actions"><div class="btn primary">Wear this</div><div class="btn ghost"><svg width="16" height="16" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M30 34 A28 28 0 1 1 26 62"/><path d="M30 20 L30 34 L44 34"/></svg></div></div>
+            <div class="lbl">Three ways to go tonight</div>
+            <div class="hscroll">
+              <div class="mini"><div class="ophoto"><img src="outfits/outfit_24.jpg" onerror="this.style.display='none'"></div><div class="cap">Monochrome Grey</div><div class="vb">Tonal</div></div>
+              <div class="mini"><div class="ophoto"><img src="outfits/outfit_17.jpg" onerror="this.style.display='none'"></div><div class="cap">Off-White Contrast</div><div class="vb">Contrast</div></div>
+              <div class="mini"><div class="ophoto"><img src="outfits/outfit_16.jpg" onerror="this.style.display='none'"></div><div class="cap">Sequin Night</div><div class="vb">Night Out</div></div>
+            </div>
+          </div>
+
+          <!-- WARDROBE / CLOSET -->
+          <div class="screen" data-s="wardrobe">
+            <div class="appbar"><div class="h1s">Your <b>Wardrobe</b></div><svg class="ic" viewBox="0 0 100 100"><circle cx="44" cy="44" r="26"/><path d="M63 63 L82 82"/></svg></div>
+            <div class="date">88 pieces · 15 houses</div>
+            <input class="search" value="Search pieces…" readonly>
+            <div class="brandrow"><span class="vchip on">All</span><span class="vchip">Minoar</span><span class="vchip">Orttu</span><span class="vchip">RYVK</span><span class="vchip">YA|SAR</span><span class="vchip">FRKM</span></div>
+            <div class="pgrid">
+              <div class="piece"><div><div class="br">Minoar</div><div class="nm">Aspect Layered Skirt Trousers</div></div><div class="foot"><span class="dot" style="background:#111"></span><span class="cl">Black</span><span class="sbar"><i style="width:100%"></i></span></div></div>
+              <div class="piece"><div><div class="br">Orttu</div><div class="nm">Christian Shirt</div></div><div class="foot"><span class="dot" style="background:#111"></span><span class="cl">Black</span><span class="sbar"><i style="width:60%"></i></span></div></div>
+              <div class="piece"><div><div class="br">Orttu</div><div class="nm">Roberto Jacket</div></div><div class="foot"><span class="dot" style="background:#8a8a8a"></span><span class="cl">Grey</span><span class="sbar"><i style="width:70%"></i></span></div></div>
+              <div class="piece"><div><div class="br">RYVK</div><div class="nm">Synth Flare Sequin Jacket</div></div><div class="foot"><span class="dot" style="background:#2a1b3a"></span><span class="cl">Night</span><span class="sbar"><i style="width:95%"></i></span></div></div>
+              <div class="piece"><div><div class="br">YA|SAR</div><div class="nm">Zipped Tall Boots</div></div><div class="foot"><span class="dot" style="background:#111"></span><span class="cl">Black</span><span class="sbar"><i style="width:80%"></i></span></div></div>
+              <div class="piece"><div><div class="br">Minoar</div><div class="nm">Hexa Long Sleeveless Coat</div></div><div class="foot"><span class="dot" style="background:#111"></span><span class="cl">Black</span><span class="sbar"><i style="width:100%"></i></span></div></div>
+              <div class="piece"><div><div class="br">Orttu</div><div class="nm">Star Neck Shirt Couture</div></div><div class="foot"><span class="dot" style="background:#cdbb98"></span><span class="cl">Beige</span><span class="sbar"><i style="width:75%"></i></span></div></div>
+              <div class="piece"><div><div class="br">FRKM SCD</div><div class="nm">Layered Belt Apron Skirt</div></div><div class="foot"><span class="dot" style="background:#111"></span><span class="cl">Black</span><span class="sbar"><i style="width:85%"></i></span></div></div>
+            </div>
+          </div>
+
+          <!-- BUILD -->
+          <div class="screen" data-s="build">
+            <div class="appbar"><div class="h1s">Build a <b>look</b></div></div>
+            <div class="date">Start from one piece — Alter completes it</div>
+            <div class="lbl">Building around</div>
+            <div class="anchor"><div class="sw"><svg width="18" height="22" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M50 30 L50 22 A6 6 0 1 0 43 22"/><path d="M50 30 L26 56"/><path d="M50 30 L74 56"/></svg></div><div><div class="br" style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">Minoar</div><div style="font-size:12.5px;color:var(--text);margin-top:2px">Aspect Layered Skirt Trousers</div></div></div>
+            <div class="lbl">Alter suggests</div>
+            <div class="card prop"><div class="ophoto"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"><span class="tag" style="top:10px;left:10px">94% · Dark / Minimal</span></div><div class="body"><div class="score">Full Architecture</div><div class="plist"><span class="pchip">+ Christian Shirt</span><span class="pchip">+ Hexa Coat</span><span class="pchip">+ Tall Boots</span></div></div></div>
+            <div class="card prop"><div class="ophoto"><img src="outfits/outfit_25.jpg" onerror="this.style.display='none'"><span class="tag" style="top:10px;left:10px">88% · Tonal</span></div><div class="body"><div class="score">Grey on Grey</div><div class="plist"><span class="pchip">+ Roberto Jacket</span><span class="pchip">+ Star Neck Couture</span></div></div></div>
+          </div>
+
+          <!-- LOOKS = Outfits + Proposals -->
+          <div class="screen" data-s="looks">
+            <div class="appbar"><div class="h1s">Your <b>Looks</b></div><svg class="ic" viewBox="0 0 100 100" style="stroke-width:6"><path d="M50 24 L50 76 M24 50 L76 50"/></svg></div>
+            <div class="seg"><button class="on" data-seg="outfits" onclick="seg(this,'outfits')">Outfits · 39</button><button data-seg="proposals" onclick="seg(this,'proposals')">Proposals · 4</button></div>
+
+            <div id="seg-outfits">
+              <div class="vibes" style="margin-bottom:14px"><span class="vchip on">All</span><span class="vchip">Dark</span><span class="vchip">Tonal</span><span class="vchip">Contrast</span><span class="vchip">Night</span></div>
+              <div class="lgrid">
+                <div class="look" onclick="openSheet('outfit')"><div class="ophoto"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"></div><div class="cap">All Black Structured</div><div class="vb">Dark / Minimal · 3×</div></div>
+                <div class="look"><div class="ophoto"><img src="outfits/outfit_24.jpg" onerror="this.style.display='none'"></div><div class="cap">Monochrome Grey</div><div class="vb">Tonal · 1×</div></div>
+                <div class="look"><div class="ophoto"><img src="outfits/outfit_17.jpg" onerror="this.style.display='none'"></div><div class="cap">Off-White Contrast</div><div class="vb">Contrast · new</div></div>
+                <div class="look"><div class="ophoto"><img src="outfits/outfit_22.jpg" onerror="this.style.display='none'"></div><div class="cap">Deconstructed Layers</div><div class="vb">Dark / Minimal · 2×</div></div>
+                <div class="look"><div class="ophoto"><img src="outfits/outfit_27.jpg" onerror="this.style.display='none'"></div><div class="cap">Porto Linen Day</div><div class="vb">Tonal · 1×</div></div>
+                <div class="look"><div class="ophoto"><img src="outfits/outfit_31.jpg" onerror="this.style.display='none'"></div><div class="cap">Refract Track</div><div class="vb">Contrast · 4×</div></div>
+              </div>
+            </div>
+
+            <div id="seg-proposals" style="display:none">
+              <div class="date" style="margin-bottom:12px">Session 4 · Amazon Edits · generated by Alter</div>
+              <div class="card prop"><div class="ophoto"><img src="outfits/outfit_33.jpg" onerror="this.style.display='none'"><span class="tag" style="top:10px;left:10px">Best · 92%</span></div><div class="body"><div class="score">Contrast</div><div class="propname">Fishnet Harness</div><div class="plist"><span class="pchip">Sheer Shirt</span><span class="pchip">Cargo Trousers</span><span class="pchip">Tall Boots</span></div><div class="row-actions" style="margin-top:10px"><div class="btn primary" style="padding:9px;font-size:9px">Add to looks</div><div class="btn ghost" style="flex:0 0 42px"><svg width="14" height="14" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-width="8" stroke-linecap="round"><path d="M30 30 L70 70 M70 30 L30 70"/></svg></div></div></div></div>
+              <div class="card prop"><div class="ophoto"><img src="outfits/outfit_23.jpg" onerror="this.style.display='none'"><span class="tag" style="top:10px;left:10px">Night · 87%</span></div><div class="body"><div class="score">Night Out</div><div class="propname">Rhinestone Hexa</div><div class="plist"><span class="pchip">Sequin Vest</span><span class="pchip">Prism Pants</span></div></div></div>
+            </div>
+          </div>
+
+          <!-- YOU = Profile -->
+          <div class="screen" data-s="you">
+            <div class="appbar"><div class="h1s">Style <b>DNA</b></div><svg class="ic" viewBox="0 0 100 100"><circle cx="50" cy="30" r="14"/><path d="M24 78 C24 60 76 60 76 78"/></svg></div>
+            <div class="statrow"><div class="stat"><div class="v">88</div><div class="k">Pieces</div></div><div class="stat"><div class="v">39</div><div class="k">Outfits</div></div><div class="stat"><div class="v">15</div><div class="k">Brands</div></div></div>
+            <div class="dna" id="dna"></div>
+            <div class="lbl">Your characters <a onclick="show('personas')">See all →</a></div>
+            <div class="charscroll">
+              <div class="charc" onclick="openSheet('persona')"><div class="ophoto"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"></div><div class="cn">Overlord</div><div class="ct">Character 01</div></div>
+              <div class="charc" onclick="show('personas')"><div class="ophoto"><img src="outfits/outfit_02.jpg" onerror="this.style.display='none'"></div><div class="cn">The Wanderer</div><div class="ct">Character 02</div></div>
+              <div class="charc" onclick="show('personas')"><div class="ophoto"><img src="outfits/outfit_16.jpg" onerror="this.style.display='none'"></div><div class="cn">Night Shift</div><div class="ct">Character 03</div></div>
+              <div class="charc" onclick="show('personas')"><div class="ophoto"><img src="outfits/outfit_38.jpg" onerror="this.style.display='none'"></div><div class="cn">Civilian</div><div class="ct">Character 04</div></div>
+              <div class="charc" onclick="show('personas')"><div class="ophoto"><img src="outfits/outfit_12.jpg" onerror="this.style.display='none'"></div><div class="cn">Viceroy</div><div class="ct">Character 05</div></div>
+            </div>
+            <div class="lbl">Brands</div>
+            <div class="bar"><span class="bn">Minoar</span><span class="bt"><i style="width:100%"></i></span><span class="bc">20</span></div>
+            <div class="bar"><span class="bn">Orttu</span><span class="bt"><i style="width:90%"></i></span><span class="bc">18</span></div>
+            <div class="bar"><span class="bn">CRAFTD</span><span class="bt"><i style="width:60%"></i></span><span class="bc">12</span></div>
+            <div class="bar"><span class="bn">RYVK</span><span class="bt"><i style="width:25%"></i></span><span class="bc">5</span></div>
+            <div class="lbl">Outfit vibes</div>
+            <div class="bar"><span class="bn">Dark</span><span class="bt"><i style="width:39%"></i></span><span class="bc">39%</span></div>
+            <div class="bar"><span class="bn">Tonal</span><span class="bt"><i style="width:26%"></i></span><span class="bc">26%</span></div>
+            <div class="bar"><span class="bn">Contrast</span><span class="bt"><i style="width:26%"></i></span><span class="bc">26%</span></div>
+            <div class="bar"><span class="bn">Night</span><span class="bt"><i style="width:13%"></i></span><span class="bc">13%</span></div>
+            <div class="lbl">Recent wears <a onclick="show('history')">History →</a></div>
+            <div class="logrow"><div class="th"><img src="outfits/outfit_24.jpg" onerror="this.style.display='none'"></div><div><div class="d">Jul 15 · Tue</div><div class="n">Monochrome Grey</div></div></div>
+            <div class="logrow" style="border:none"><div class="th"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"></div><div><div class="d">Jul 12 · Sat</div><div class="n">All Black Structured</div></div></div>
+          </div>
+
+          <!-- PERSONAS (sub) -->
+          <div class="screen" data-s="personas">
+            <div class="appbar"><svg class="back" viewBox="0 0 100 100" onclick="show('you')"><path d="M60 24 L32 50 L60 76"/></svg><div class="h1s">The <b>Characters</b></div><span style="width:26px"></span></div>
+            <div class="date">Five selves in your wardrobe</div>
+            <div class="percard" onclick="openSheet('persona')"><div class="ophoto" style="position:absolute;inset:0"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"><div class="fade"></div></div><div class="meta"><div class="pn">Character 01 · aka Zayder</div><div class="nm">Overlord</div><div class="tl">Ancient. Already decided.</div></div></div>
+            <div class="percard"><div class="ophoto" style="position:absolute;inset:0"><img src="outfits/outfit_02.jpg" onerror="this.style.display='none'"><div class="fade"></div></div><div class="meta"><div class="pn">Character 02 · aka Caius</div><div class="nm">The Wanderer</div><div class="tl">Ancient. Still moving.</div></div></div>
+            <div class="percard"><div class="ophoto" style="position:absolute;inset:0"><img src="outfits/outfit_16.jpg" onerror="this.style.display='none'"><div class="fade"></div></div><div class="meta"><div class="pn">Character 03 · aka Zay</div><div class="nm">Night Shift</div><div class="tl">Rules don't apply after dark.</div></div></div>
+            <div class="percard"><div class="ophoto" style="position:absolute;inset:0"><img src="outfits/outfit_38.jpg" onerror="this.style.display='none'"><div class="fade"></div></div><div class="meta"><div class="pn">Character 04</div><div class="nm">Civilian</div><div class="tl">No audience. No armor.</div></div></div>
+            <div class="percard"><div class="ophoto" style="position:absolute;inset:0"><img src="outfits/outfit_12.jpg" onerror="this.style.display='none'"><div class="fade"></div></div><div class="meta"><div class="pn">Character 05 · aka Gunray</div><div class="nm">Viceroy</div><div class="tl">Authority inside the system.</div></div></div>
+          </div>
+
+          <!-- HISTORY (sub) -->
+          <div class="screen" data-s="history">
+            <div class="appbar"><svg class="back" viewBox="0 0 100 100" onclick="show('you')"><path d="M60 24 L32 50 L60 76"/></svg><div class="h1s">Wear <b>History</b></div><span style="width:26px"></span></div>
+            <div class="date">July · 12 wears this month</div>
+            <div class="cal">
+              <span class="dow">S</span><span class="dow">M</span><span class="dow">T</span><span class="dow">W</span><span class="dow">T</span><span class="dow">F</span><span class="dow">S</span>
+              <span class="day">6</span><span class="day worn">7</span><span class="day">8</span><span class="day worn">9</span><span class="day">10</span><span class="day">11</span><span class="day worn">12</span>
+              <span class="day">13</span><span class="day">14</span><span class="day worn">15</span><span class="day">16</span><span class="day worn">17</span><span class="day">18</span><span class="day today">19</span>
+              <span class="day">20</span><span class="day">21</span><span class="day worn">22</span><span class="day">23</span><span class="day">24</span><span class="day worn">25</span><span class="day">26</span>
+            </div>
+            <div class="lbl">Recent</div>
+            <div class="logrow"><div class="th"><img src="outfits/outfit_17.jpg" onerror="this.style.display='none'"></div><div><div class="d">Jul 17 · Thu</div><div class="n">Off-White Contrast</div></div></div>
+            <div class="logrow"><div class="th"><img src="outfits/outfit_24.jpg" onerror="this.style.display='none'"></div><div><div class="d">Jul 15 · Tue</div><div class="n">Monochrome Grey</div></div></div>
+            <div class="logrow"><div class="th"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"></div><div><div class="d">Jul 12 · Sat</div><div class="n">All Black Structured</div></div></div>
+            <div class="logrow" style="border:none"><div class="th"><img src="outfits/outfit_31.jpg" onerror="this.style.display='none'"></div><div><div class="d">Jul 9 · Wed</div><div class="n">Refract Track</div></div></div>
+          </div>
+
+        </div>
+
+        <!-- OUTFIT SHEET -->
+        <div class="sheet" id="sheet-outfit">
+          <div class="scrim" onclick="closeSheet()"></div>
+          <div class="panel">
+            <div class="grab"></div>
+            <div class="sheetphoto"><div class="close-x" onclick="closeSheet()">✕</div><div class="ophoto" style="position:absolute;inset:0;border-radius:0"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"><div class="fade"></div></div></div>
+            <div class="sheetbody">
+              <div class="sd-nm">All Black Structured</div><div class="sd-vb">Dark / Minimal</div>
+              <div class="chips" style="margin-top:10px"><span class="chip">Drama 5</span><span class="chip">Structure 5</span><span class="chip">Edge 4</span><span class="chip">Skin 1</span></div>
+              <div class="worn">Worn 3 times · last on Jul 12</div>
+              <div class="lbl">The pieces</div>
+              <div class="pieceline"><span class="sw"></span><div><div class="br">Minoar</div><div class="nm">Aspect Layered Skirt Trousers</div></div></div>
+              <div class="pieceline"><span class="sw"></span><div><div class="br">Orttu</div><div class="nm">Christian Shirt · Black</div></div></div>
+              <div class="pieceline"><span class="sw"></span><div><div class="br">Minoar</div><div class="nm">Hexa Long Sleeveless Coat</div></div></div>
+              <div class="pieceline" style="border:none"><span class="sw"></span><div><div class="br">YA|SAR</div><div class="nm">Zipped Tall Boots</div></div></div>
+              <div class="row-actions" style="margin-top:16px"><div class="btn primary">Wear today</div><div class="btn ghost"><svg width="16" height="16" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-width="7" stroke-linecap="round"><path d="M30 50 L45 65 L72 32"/></svg></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERSONA SHEET -->
+        <div class="sheet" id="sheet-persona">
+          <div class="scrim" onclick="closeSheet()"></div>
+          <div class="panel">
+            <div class="grab"></div>
+            <div class="sheetphoto" style="height:290px"><div class="close-x" onclick="closeSheet()">✕</div><div class="ophoto" style="position:absolute;inset:0;border-radius:0"><img src="outfits/outfit_01.jpg" onerror="this.style.display='none'"><div class="fade"></div></div><div style="position:absolute;left:16px;bottom:14px"><div style="font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent)">Character 01 · aka Zayder</div><div class="sd-nm" style="font-size:26px;color:#fff">Overlord</div><div style="font-size:10px;color:#d8d2c4;margin-top:3px">Ancient. Already decided.</div></div></div>
+            <div class="sheetbody">
+              <div class="chips"><span class="chip">Core Identity</span><span class="chip">Any Environment</span><span class="chip">Maximum Edge</span></div>
+              <p class="lore">Ancient. Has been in every room worth being in and still walks into this one like it owes him something. The all-black isn't intimidation — it's <span class="champ">verdict</span>. You feel judged before he speaks, decided before he moves. Whatever is about to happen, he already knows.</p>
+              <div class="lbl">Signature move · ultimate</div>
+              <div class="anchor"><div class="sw" style="background:var(--accent-soft)"><svg width="16" height="16" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-width="7"><path d="M50 20 L50 80 M20 50 L80 50" transform="rotate(45 50 50)"/></svg></div><div><div style="font-size:11px;color:var(--white);font-weight:600;letter-spacing:.04em;text-transform:uppercase">Verdict</div><div style="font-size:10.5px;color:var(--muted);margin-top:3px">Does nothing. The outcome was already decided before he arrived.</div></div></div>
+              <div class="row-actions" style="margin-top:16px"><div class="btn primary">Dress as this</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- bottom nav -->
+        <div class="nav">
+          <div class="nb on" data-t="today" onclick="show('today')"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="16"/><path d="M50 12 L50 20 M50 80 L50 88 M12 50 L20 50 M80 50 L88 50 M25 25 L30 30 M70 70 L75 75 M75 25 L70 30 M30 70 L25 75"/></svg><span>Today</span></div>
+          <div class="nb" data-t="wardrobe" onclick="show('wardrobe')"><svg viewBox="0 0 100 100"><path d="M50 30 L50 22 A6 6 0 1 0 43 22"/><path d="M50 30 L24 58"/><path d="M50 30 L76 58"/><path d="M23 58 Q50 68 77 58"/></svg><span>Wardrobe</span></div>
+          <div class="nb build" data-t="build" onclick="show('build')"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30"/><path d="M50 36 L50 64 M36 50 L64 50"/></svg><span>Build</span></div>
+          <div class="nb" data-t="looks" onclick="show('looks')"><svg viewBox="0 0 100 100"><rect x="20" y="20" width="26" height="26" rx="5"/><rect x="54" y="20" width="26" height="26" rx="5"/><rect x="20" y="54" width="26" height="26" rx="5"/><rect x="54" y="54" width="26" height="26" rx="5"/></svg><span>Looks</span></div>
+          <div class="nb" data-t="you" onclick="show('you')"><svg viewBox="0 0 100 100"><path d="M50 20 C34 20 30 38 32 54 C34 70 42 80 50 80 C58 80 66 70 68 54 C70 38 66 20 50 20 Z"/><path d="M50 24 L50 78" opacity=".5"/></svg><span>You</span></div>
+        </div>
+
+      </div>
+      <div class="hint">↑ Tap the bottom bar · Looks has Outfits + Proposals · You → Characters &amp; History</div>
+    </div>
+  </div>
+
+  <!-- product notes -->
+  <div class="notes">
+    <h2>Desktop → Mobile</h2>
+    <div class="nsub">Every page in your web app, mapped to a mobile surface.</div>
+    <div class="maprow">
+      <span class="m">Wardrobe → <b>Wardrobe tab</b></span>
+      <span class="m">Builder → <b>Build tab</b></span>
+      <span class="m">Outfits → <b>Looks · Outfits</b></span>
+      <span class="m">Proposals → <b>Looks · Proposals</b></span>
+      <span class="m">Profile → <b>You</b></span>
+      <span class="m">Personas → <b>You · Characters</b></span>
+      <span class="m">History → <b>You · History</b></span>
+    </div>
+    <div class="ngrid">
+      <div class="note"><div class="nk">Home</div><div class="nt">Today</div><p>The one screen the desktop doesn't have — a mobile home that answers <b>“who am I today?”</b> with a character + a complete look, one tap to wear.</p></div>
+      <div class="note"><div class="nk">Wardrobe + Builder</div><div class="nt">Pieces &amp; Build</div><p>Your <b>88 pieces</b> as a filterable grid, and the <b>build-around-a-piece</b> flow with scored suggestions — the two core creation tools, thumb-first.</p></div>
+      <div class="note"><div class="nk">Outfits + Proposals</div><div class="nt">Looks</div><p>One tab, a segmented toggle: your <b>39 saved outfits</b>, and Alter's <b>AI proposal sessions</b> with match scores and one-tap “add to looks.”</p></div>
+      <div class="note"><div class="nk">Profile · Personas · History</div><div class="nt">You</div><p>Your <b>Style DNA</b> radar and breakdowns, your five <b>characters</b> (full Personas screen), and a <b>wear calendar</b> — the whole identity layer in one place.</p></div>
+    </div>
+  </div>
+
+  <footer>Now sharing your <span class="champ">alter-theme.css</span> — flip light/dark above and the phone follows. Drop this file beside <span class="champ">outfits/</span> for live photos.</footer>
+</div>
+
+<script>
+  function show(name){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on', s.dataset.s===name));
+    var navFor = (name==='personas'||name==='history') ? 'you' : name;
+    document.querySelectorAll('.nb').forEach(n=>n.classList.toggle('on', n.dataset.t===navFor));
+    document.querySelector('.screens').scrollTop = 0;
+  }
+  function seg(btn, which){
+    btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b===btn));
+    document.getElementById('seg-outfits').style.display = which==='outfits'?'block':'none';
+    document.getElementById('seg-proposals').style.display = which==='proposals'?'block':'none';
+  }
+  function openSheet(w){ document.getElementById('sheet-'+w).classList.add('on'); }
+  function closeSheet(){ document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on')); }
+
+  // page light/dark toggle (writes the same key the app uses)
+  var tgl=document.getElementById('tgl');
+  function paintTgl(){var d=(document.documentElement.getAttribute('data-theme')||'dark')==='dark';document.getElementById('tgl-i').textContent=d?'☀':'☽';document.getElementById('tgl-l').textContent=d?'Light':'Dark';}
+  tgl.addEventListener('click',function(){var n=((document.documentElement.getAttribute('data-theme')||'dark')==='dark')?'light':'dark';document.documentElement.setAttribute('data-theme',n);try{localStorage.setItem('alter-theme',n);}catch(e){}paintTgl();});
+  paintTgl();
+
+  // Style-DNA radar (uses shared theme .dv-* classes → adapts to light/dark)
+  (function(){
+    var stats=[['Drama',3.2],['Struct',2.5],['Skin',1.7],['Edge',3.1],['Form',2.8]];
+    var size=176, cx=size/2, cy=size/2, R=size*0.30, N=stats.length;
+    function ang(i){ return -Math.PI/2 + i*2*Math.PI/N; }
+    var rings='';
+    for(var lv=1;lv<=5;lv++){ var pts=stats.map(function(_,i){var a=ang(i),rr=R*lv/5;return (cx+rr*Math.cos(a))+','+(cy+rr*Math.sin(a));}).join(' '); rings+='<polygon points="'+pts+'" class="dv-axis" fill="none" stroke-width="0.6"/>'; }
+    var axes='',labels='';
+    stats.forEach(function(s,i){var a=ang(i);axes+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+R*Math.cos(a))+'" y2="'+(cy+R*Math.sin(a))+'" class="dv-axis" stroke-width="0.6"/>';var lr=R*1.3,lx=cx+lr*Math.cos(a),ly=cy+lr*Math.sin(a),anc=lx<cx-3?'end':lx>cx+3?'start':'middle';labels+='<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" dominant-baseline="middle" font-size="7.5" class="dv-label">'+s[0].toUpperCase()+'</text>';});
+    var poly=stats.map(function(s,i){var a=ang(i),v=s[1]/5;return (cx+R*v*Math.cos(a))+','+(cy+R*v*Math.sin(a));}).join(' ');
+    var dots=stats.map(function(s,i){var a=ang(i),v=s[1]/5;return '<circle cx="'+(cx+R*v*Math.cos(a))+'" cy="'+(cy+R*v*Math.sin(a))+'" r="2.5" class="dv-dot"/>';}).join('');
+    document.getElementById('dna').innerHTML='<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'+rings+axes+'<polygon points="'+poly+'" class="dv-poly" fill="var(--accent-soft)" stroke-width="1.4"/>'+dots+labels+'</svg>';
+  })();
+</script>
+</body>
+</html>

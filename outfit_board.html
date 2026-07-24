@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter — Outfit Board</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<style>
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #e8e4df;
+    --muted: #6b6b6b;
+    --accent: #e2d3b4;
+    --accent2: #c9b98f;
+    --white: #f5f2ee;
+    --tag-orttu: #1f2937;
+    --tag-minoar: #1a1a2e;
+    --tag-ryvk: #2d1b1b;
+    --tag-frkm: #1a1510;
+    --tag-yasar: #0f0f0f;
+    --tag-teamm8: #1a1a2e;
+    --tag-arahant: #1a0e10;
+    --tag-gasper: #14100a;
+    --tag-koe: #1c1a16;
+    --green: var(--success, #2e7d32);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: #000;
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .header-left h1 {
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .header-left p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .header-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius:8px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(226, 211, 180,0.06);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .container { display: flex; height: calc(100vh - 69px); }
+
+  /* ── WARDROBE SIDEBAR ── */
+  .sidebar {
+    width: 280px;
+    min-width: 280px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding-bottom: 32px;
+  }
+  .sidebar-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: #111;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-wrap: wrap;
+  }
+  .sidebar-tab {
+    flex: 1;
+    padding: 9px 4px;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .sidebar-tab:hover { color: var(--text); }
+  .sidebar-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .sidebar-section {
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-section-header {
+    padding: 12px 16px 10px;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    background: #111;
+    position: sticky;
+    top: 37px;
+    z-index: 2;
+  }
+  .wardrobe-item {
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(42,42,42,0.5);
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: background 0.1s;
+    user-select: none;
+  }
+  .wardrobe-item:hover { background: var(--surface2); }
+  .wardrobe-item:active { cursor: grabbing; }
+  .item-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .item-thumb {
+    width: 32px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius:6px;
+    overflow: hidden;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .item-thumb-empty {
+    width: 100%;
+    height: 100%;
+    background: var(--surface2);
+  }
+  .item-info { flex: 1; min-width: 0; }
+  .item-name {
+    font-size: 11px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+  }
+  .item-meta {
+    font-size: 9px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .item-tag {
+    font-size: 8px;
+    padding: 2px 5px;
+    border-radius:6px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  /* ── OUTFIT CANVAS ── */
+  .canvas-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 28px 60px;
+    background: var(--bg);
+  }
+  .canvas-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .canvas-top h2 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .btn-add {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 7px 16px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius:6px;
+    transition: opacity 0.15s;
+  }
+  .btn-add:hover { opacity: 0.85; }
+
+  /* ── OUTFIT CARDS ── */
+  .outfits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .outfit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .outfit-card:hover { border-color: var(--accent2); }
+  .outfit-card.has-photo { cursor: pointer; }
+  .outfit-card-header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .outfit-number {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 2px;
+  }
+  .outfit-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .outfit-vibe {
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .outfit-card-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .action-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 26px;
+    height: 26px;
+    border-radius:6px;
+    cursor: pointer;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .action-btn.saved { border-color: var(--green); color: var(--green); }
+
+  .outfit-pieces {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .piece-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .piece-thumb {
+    width: 30px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius:6px;
+    overflow: hidden;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .piece-thumb:hover { border-color: var(--accent2); }
+  .piece-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .piece-thumb-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--border);
+  }
+  .piece-role {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 52px;
+    flex-shrink: 0;
+  }
+  .piece-name {
+    font-size: 11px;
+    color: var(--text);
+    flex: 1;
+  }
+  .piece-brand {
+    font-size: 8px;
+    padding: 2px 5px;
+    border-radius:6px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  /* drop zone */
+  .drop-zone {
+    border: 1px dashed var(--border);
+    border-radius:6px;
+    padding: 10px 12px;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin: 0 16px 12px;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(226, 211, 180,0.04);
+  }
+
+  /* new outfit modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius:8px;
+    width: 440px;
+    max-width: 95vw;
+    padding: 24px;
+  }
+  .modal h3 {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .modal input, .modal textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 9px 12px;
+    font-size: 12px;
+    border-radius:6px;
+    margin-bottom: 12px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal input:focus, .modal textarea:focus { border-color: var(--accent); }
+  .modal textarea { min-height: 60px; resize: vertical; }
+  .modal-footer {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: flex-end;
+  }
+  .btn-cancel {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 16px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius:6px;
+  }
+  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+
+  /* color dots by brand */
+  .dot-orttu  { background: #4a6fa5; }
+  .dot-minoar { background: #7c6f5e; }
+  .dot-ryvk   { background: #9b4a4a; }
+  .dot-frkm   { background: #6b5a3e; }
+  .dot-yasar  { background: #3d3d3d; }
+  .dot-teamm8 { background: #4a4a7a; }
+  .dot-arahant { background: #7a3040; }
+  .dot-gasper  { background: #b8952a; }
+  .dot-koe     { background: #8b7355; }
+
+  .tag-orttu  { background: var(--tag-orttu);  color: #6b8fc4; }
+  .tag-minoar { background: var(--tag-minoar); color: var(--accent); }
+  .tag-ryvk   { background: var(--tag-ryvk);   color: #c47a7a; }
+  .tag-frkm   { background: var(--tag-frkm);   color: #a08a6a; }
+  .tag-yasar  { background: var(--tag-yasar);  color: var(--muted); border: 1px solid #2a2a2a; }
+  .tag-teamm8  { background: var(--tag-teamm8); color: #7a7aaa; }
+  .tag-arahant { background: var(--tag-arahant); color: #c08090; }
+  .tag-gasper  { background: var(--tag-gasper);  color: #d4af37; }
+  .tag-koe     { background: var(--tag-koe);     color: #c4a882; }
+
+  /* saved star */
+  .star { font-size: 13px; }
+
+  /* empty state */
+  .empty-card {
+    border: 1px dashed var(--border);
+    border-radius:8px;
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+  }
+
+  /* scroll bar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius:8px; }
+
+  .separator {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* ── IMAGE PREVIEW PANEL ── */
+  .preview-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-overlay.open { display: flex; }
+  .preview-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    max-width: 700px;
+    width: 92%;
+    max-height: 88vh;
+    overflow: hidden;
+  }
+  .preview-img-wrap {
+    width: 300px;
+    min-width: 300px;
+    background: var(--surface2);
+    overflow: hidden;
+  }
+  .preview-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .preview-no-img {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .preview-info {
+    padding: 32px 28px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .preview-close-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    align-self: flex-end;
+    margin-bottom: 20px;
+  }
+  .preview-close-btn:hover { color: var(--white); }
+  .preview-brand-link {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .preview-brand-link:hover { color: var(--white); }
+  .preview-item-name {
+    font-size: 16px;
+    color: var(--white);
+    line-height: 1.35;
+    margin-bottom: 20px;
+  }
+  .preview-item-meta {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .preview-item-meta .meta-row { display: flex; gap: 8px; }
+  .preview-item-meta .meta-label {
+    color: #3a3a3a;
+    min-width: 52px;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    padding-top: 1px;
+  }
+  .piece-name-link {
+    cursor: pointer;
+    transition: color 0.12s;
+  }
+  .piece-name-link:hover {
+    color: var(--white);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+  .wardrobe-item { cursor: pointer; }
+
+  /* ── OUTFIT PHOTO THUMBNAIL ── */
+  .outfit-photo {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: var(--surface2);
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  .outfit-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .outfit-photo:hover img { transform: scale(1.04); }
+  .outfit-photo-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    min-height: 140px;
+    transition: color 0.15s;
+  }
+  .outfit-photo-empty:hover { color: var(--accent); }
+  .outfit-photo-empty::before { content: '⊕'; font-size: 18px; opacity: 0.35; }
+  .btn-generate-photo {
+    background: none;
+    border: 1px solid #3a2e26;
+    color: var(--accent2);
+    padding: 5px 11px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius:6px;
+    transition: all 0.15s;
+    margin-top: 2px;
+  }
+  .btn-generate-photo:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(226, 211, 180,0.06);
+  }
+  .btn-generate-photo.generating {
+    border-color: #4a8c5a;
+    color: #6abc7e;
+    pointer-events: none;
+  }
+  .generating-toast {
+    position: fixed;
+    bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    padding: 10px 20px;
+    border-radius:8px;
+    z-index: 400;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .generating-toast.show { opacity: 1; }
+  .outfit-photo-view {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .outfit-photo:hover .outfit-photo-view { opacity: 1; }
+  .outfit-photo-view span {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.55);
+    padding: 3px 7px;
+    cursor: pointer;
+  }
+
+  /* load photos button */
+  .btn-load-photos {
+    background: none;
+    border: 1px solid var(--accent2);
+    color: var(--accent);
+    padding: 5px 12px;
+    border-radius:8px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .btn-load-photos:hover {
+    background: rgba(226, 211, 180,0.08);
+    border-color: var(--accent);
+  }
+
+  /* full-screen photo lightbox */
+  .photo-lightbox {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 300;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .photo-lightbox.open { display: flex; }
+  .photo-lightbox-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
+    max-height: 90vh;
+  }
+  .photo-lightbox img {
+    max-height: 88vh;
+    max-width: 60vw;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .photo-lightbox-info {
+    width: 240px;
+    flex-shrink: 0;
+    color: var(--text);
+    overflow-y: auto;
+    max-height: 88vh;
+  }
+  .lb-outfit-num {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .lb-outfit-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .lb-outfit-vibe {
+    font-size: 11px;
+    color: var(--accent);
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+  .lb-pieces-title {
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+  }
+  .lb-piece-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .lb-piece-thumb {
+    width: 38px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius:6px;
+    overflow: hidden;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+  }
+  .lb-piece-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .lb-piece-thumb-empty {
+    width: 100%; height: 100%;
+    background: var(--surface2);
+  }
+  .lb-piece-info { flex: 1; min-width: 0; }
+  .lb-piece-role {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1px;
+  }
+  .lb-piece-name {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .lb-piece-brand {
+    font-size: 8px;
+    color: var(--accent2);
+    margin-top: 1px;
+  }
+  .photo-lightbox-close {
+    position: absolute; top: 20px; right: 24px;
+    background: none; border: none;
+    color: var(--muted); font-size: 20px;
+    cursor: pointer;
+  }
+  .photo-lightbox-close:hover { color: var(--white); }
+</style>
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Outfit Board</h1>
+    <p id="stats-line">Loading wardrobe…</p>
+  </div>
+  <div class="header-right">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="dark">Dark / Minimal</button>
+    <button class="filter-btn" data-filter="tonal">Tonal</button>
+    <button class="filter-btn" data-filter="contrast">Contrast</button>
+    <button class="filter-btn" data-filter="night">Night Out</button>
+    <button class="filter-btn" data-filter="saved">★ Saved</button>
+    <button class="btn-load-photos" id="btn-load-photos">⊕ Load Photos</button>
+    <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none">
+    <input type="file" id="photo-single-input" accept="image/*" style="display:none">
+  </div>
+</header>
+
+<div class="generating-toast" id="generating-toast"></div>
+
+<!-- Photo Lightbox -->
+<div class="photo-lightbox" id="photo-lightbox">
+  <button class="photo-lightbox-close" id="photo-lightbox-close">✕</button>
+  <div class="photo-lightbox-inner">
+    <img id="photo-lightbox-img" src="" alt="">
+    <div class="photo-lightbox-info" id="photo-lightbox-info"></div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-tabs" id="sidebar-tabs">
+      <button class="sidebar-tab active" data-sort="brand">Brand</button>
+      <button class="sidebar-tab" data-sort="type">Type</button>
+      <button class="sidebar-tab" data-sort="color">Color</button>
+      <button class="sidebar-tab" data-sort="style">Style</button>
+    </div>
+    <div id="sidebar"></div>
+  </aside>
+
+  <!-- CANVAS -->
+  <main class="canvas-area">
+    <div class="canvas-top">
+      <h2 id="outfit-count-label">19 Outfits</h2>
+      <button class="btn-add" id="btn-new-outfit">+ New Outfit</button>
+    </div>
+    <div class="outfits-grid" id="outfits-grid"></div>
+  </main>
+</div>
+
+<!-- Image Preview Panel -->
+<div class="preview-overlay" id="preview-overlay">
+  <div class="preview-panel">
+    <div class="preview-img-wrap" id="preview-img-wrap"></div>
+    <div class="preview-info">
+      <button class="preview-close-btn" id="preview-close">✕</button>
+      <a class="preview-brand-link" id="preview-brand" href="#" target="_blank"></a>
+      <div class="preview-item-name" id="preview-name"></div>
+      <div class="preview-item-meta" id="preview-meta"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>New Outfit</h3>
+    <input type="text" id="new-outfit-name" placeholder="Outfit name (e.g. 'Dark Editorial')">
+    <input type="text" id="new-outfit-vibe" placeholder="Vibe / notes (e.g. 'Tonal black, layered')">
+    <div class="modal-footer">
+      <button class="btn-cancel" id="btn-cancel-modal">Cancel</button>
+      <button class="btn-add" id="btn-save-modal">Create</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const BRANDS = {
+  ORTTU:   { label: "Orttu",        dot: "dot-orttu",  tag: "tag-orttu"  },
+  MINOAR:  { label: "Minoar",       dot: "dot-minoar", tag: "tag-minoar" },
+  RYVK:    { label: "RYVK",         dot: "dot-ryvk",   tag: "tag-ryvk"   },
+  FRKM:    { label: "FRKM",         dot: "dot-frkm",   tag: "tag-frkm"   },
+  YASAR:   { label: "Ya|Sar",       dot: "dot-yasar",  tag: "tag-yasar"  },
+  TEAMM8:  { label: "Teamm8",       dot: "dot-teamm8", tag: "tag-teamm8" },
+  ARAHANT: { label: "Arahant",      dot: "dot-arahant",tag: "tag-arahant"},
+  GASPER:  { label: "Gasper",       dot: "dot-gasper", tag: "tag-gasper" },
+  KOE:     { label: "Kids of Eden", dot: "dot-koe",    tag: "tag-koe"   },
+};
+
+const WARDROBE = {
+  "Tops & Shirts": [
+    { id:"o1",  name:"New York Jersey Pants",           brand:"ORTTU",  color:"Black",     size:"XL",  cat:"Pants"   },
+    { id:"o2",  name:"Brunello Pants",                  brand:"ORTTU",  color:"Black",     size:"M",   cat:"Pants"   },
+    { id:"o3",  name:"Roberto Pants",                   brand:"ORTTU",  color:"Grey",      size:"M",   cat:"Pants"   },
+    { id:"o4",  name:"Roberto Jacket",                  brand:"ORTTU",  color:"Grey",      size:"XXL", cat:"Jacket"  },
+    { id:"o5",  name:"Porto Long Shirt",                brand:"ORTTU",  color:"Olive",     size:"OS",  cat:"Shirt"   },
+    { id:"o6",  name:"Raphael Shirt",                   brand:"ORTTU",  color:"Pink",      size:"L",   cat:"Shirt"   },
+    { id:"o7",  name:"Raphael Jacket",                  brand:"ORTTU",  color:"Pink",      size:"L",   cat:"Jacket"  },
+    { id:"o8",  name:"Addams Skirt",                    brand:"ORTTU",  color:"Black",     size:"S",   cat:"Skirt"   },
+    { id:"o9",  name:"Emanuel Shirt",                   brand:"ORTTU",  color:"Off-White", size:"M",   cat:"Shirt"   },
+    { id:"o10", name:"Star Neck Lace Shirt",            brand:"ORTTU",  color:"Off-White", size:"M",   cat:"Shirt"   },
+    { id:"o11", name:"Walker Denim Skirt",              brand:"ORTTU",  color:"Blue",      size:"S",   cat:"Skirt"   },
+    { id:"o12", name:"Jesse Top with Scarf",            brand:"ORTTU",  color:"Black",     size:"XL",  cat:"Top"     },
+    { id:"o13", name:"Christian Shirt",                 brand:"ORTTU",  color:"Black",     size:"M",   cat:"Shirt"   },
+    { id:"o14", name:"Cambridge Skirt",                 brand:"ORTTU",  color:"White",     size:"S",   cat:"Skirt"   },
+    { id:"o15", name:"Alejandro Cardigan",              brand:"ORTTU",  color:"Black",     size:"OS",  cat:"Cardigan"},
+    { id:"o16", name:"Star Neck Shirt Couture",         brand:"ORTTU",  color:"Beige",     size:"L",   cat:"Shirt"   },
+    { id:"o17", name:"Garson Pants",                    brand:"ORTTU",  color:"Ivory",     size:"L",   cat:"Pants"   },
+    { id:"o18", name:"Star Neck Cardigan Sleeveless",   brand:"ORTTU",  color:"Green",     size:"XL",  cat:"Cardigan"},
+    // Minoar #89465
+    { id:"m1",  name:"Aspect Layered Construct Skirt Trousers",  brand:"MINOAR", color:"Black", size:"L", cat:"Skirt-Trouser"},
+    { id:"m2",  name:"Quark Linen Cargo Layered Skirt Trousers", brand:"MINOAR", color:"—",     size:"L", cat:"Skirt-Trouser"},
+    { id:"m3",  name:"Aspect Ripstop Alternated Trousers",       brand:"MINOAR", color:"Black", size:"L", cat:"Trousers"},
+    { id:"m4",  name:"Layered Sleeveless Collar Shirt",          brand:"MINOAR", color:"Black", size:"L", cat:"Shirt"  },
+    { id:"m5",  name:"Layered Sleeveless White Collar Shirt",    brand:"MINOAR", color:"White", size:"L", cat:"Shirt"  },
+    { id:"m6",  name:"Sleeveless Collar Shirt",                  brand:"MINOAR", color:"Black", size:"L", cat:"Shirt"  },
+    { id:"m7",  name:"Elongated Trigon Shirt",                   brand:"MINOAR", color:"White", size:"XL",cat:"Shirt"  },
+    { id:"m8",  name:"Trigon Layered Sleeveless Shirt",          brand:"MINOAR", color:"Black", size:"—", cat:"Shirt"  },
+    { id:"m9",  name:"Trigon Black Layers Volume Pants",         brand:"MINOAR", color:"Black", size:"—", cat:"Pants"  },
+    // Minoar #90047
+    { id:"m10", name:"Trigon Layered Linen Trousers",            brand:"MINOAR", color:"Grey",  size:"—", cat:"Trousers"},
+    { id:"m11", name:"Wide Layered Crushed Cropped Pants",       brand:"MINOAR", color:"Black", size:"—", cat:"Pants"  },
+    { id:"m12", name:"Graphite External Bias Cargo Trousers",    brand:"MINOAR", color:"Graphite","—":"", cat:"Trousers"},
+    { id:"m13", name:"Division Cut Linear Collar Shirt",         brand:"MINOAR", color:"White", size:"—", cat:"Shirt"  },
+    // Minoar #145129
+    { id:"m14", name:"Fiber Bond Magma Tech Hood Cardigan",      brand:"MINOAR", color:"Black", size:"—", cat:"Cardigan"},
+    { id:"m15", name:"Reverse Edge Construct Jogger",            brand:"MINOAR", color:"Black", size:"—", cat:"Pants"  },
+    { id:"m16", name:"Hexa Long Layers Sleeveless Coat",         brand:"MINOAR", color:"Black", size:"—", cat:"Coat"   },
+    { id:"m17", name:"External Cropped Loose Grey Trousers",     brand:"MINOAR", color:"Grey",  size:"—", cat:"Trousers"},
+    { id:"m18", name:"Cargo Volume Transform Denim Skirt",       brand:"MINOAR", color:"Black", size:"—", cat:"Skirt"  },
+    { id:"m19", name:"Reverse Edge Hood Buckle Cardigan",        brand:"MINOAR", color:"Black", size:"—", cat:"Cardigan"},
+    { id:"m20", name:"Trigon Layered Linen Trousers (×2)",       brand:"MINOAR", color:"Grey",  size:"—", cat:"Trousers"},
+    { id:"m21", name:"Graphite External Bias Cargo Trousers (×2)",brand:"MINOAR",color:"Graphite",size:"—",cat:"Trousers"},
+    { id:"m22", name:"Nuance Dyed Refract Segment Track Pants",  brand:"MINOAR", color:"Grey",  size:"—", cat:"Pants"  },
+    // RYVK
+    { id:"r1",  name:"Sheer Contrast Floral Print Shirts",       brand:"RYVK",   color:"Multi", size:"2XL",cat:"Shirt" },
+    { id:"r2",  name:"Fever Arc Sequin Embroidery Vest",         brand:"RYVK",   color:"—",     size:"XL", cat:"Vest"  },
+    { id:"r3",  name:"Synth Flare Long Sleeve Sequin Jacket",    brand:"RYVK",   color:"—",     size:"XL", cat:"Jacket"},
+    { id:"r4",  name:"Prism Flow Tulle Wide Leg Pants",          brand:"RYVK",   color:"—",     size:"XL", cat:"Pants" },
+    // FRKM
+    { id:"f1",  name:"25FW Layered Belt Apron Skirt",            brand:"FRKM",   color:"Black", size:"OS", cat:"Skirt" },
+    // YA|SAR
+    { id:"y1",  name:"Zipped Tall Boots",                        brand:"YASAR",  color:"Black", size:"45", cat:"Boots" },
+    { id:"y2",  name:"Side-Zip Goat Leather Boots",              brand:"YASAR",  color:"Black", size:"45", cat:"Boots" },
+    // Arahant Studio
+    { id:"a1",  name:"Magi Sentient Robe",                       brand:"ARAHANT",color:"Black", size:"—",  cat:"Robe"  },
+    // Gasper
+    // Kids of Eden
+    { id:"k1",  name:"Protanopia Cloak Hoodie",                   brand:"KOE",    color:"Dust",  size:"—",  cat:"Hoodie"},
+    // Gasper
+    { id:"g1",  name:"Touch of God Ring",                        brand:"GASPER", color:"Gold",  size:"—",  cat:"Ring"  },
+    { id:"g2",  name:"Touch of God Cuff",                        brand:"GASPER", color:"Gold",  size:"—",  cat:"Cuff"  },
+    { id:"g3",  name:"Square Onyx Ring",                         brand:"GASPER", color:"Gold",  size:"—",  cat:"Ring"  },
+  ]
+};
+
+// ─── PRODUCT IMAGES ──────────────────────────────────────────────────────────
+const IMAGES = {
+  // ── Orttu ──
+  "New York Jersey Pants":        "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/1-7_9a8eeee2-36e9-43e7-a575-16eb717b1b05.jpg?v=1729253591",
+  "Brunello Pants":               "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/31Subject-photo-2_b9602a90-516b-431c-a883-abaff3931578.jpg?v=1664459691",
+  "Roberto Pants":                "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/22_1a50a9e6-0274-4348-8bc1-1a5a5dfd1b7e.jpg?v=1671137917",
+  "Jesse Top with Scarf":         "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/55-1_76076a1a-1fef-4bef-86c8-0dd59f36d277.jpg?v=1720214602",
+  "Cambridge Skirt":              "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/73Subject-photo-2.jpg?v=1671135726",
+  "Alejandro Cardigan":           "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/4_0dfb9b5b-8cde-4711-878c-b65738add53b.jpg?v=1671019814",
+  "Christian Shirt":              "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/Subject-photo45.jpg?v=1666769684",
+  "Roberto Jacket":               "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/Subject-phot3o69.jpg?v=1662360379",
+  "Addams Skirt":                 "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/11_bfa063cd-f1ab-41e7-ba12-86ce49c76881.jpg?v=1682420753",
+  "Porto Long Shirt":             "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/18-7_c13b0692-4966-41f8-869a-bd225617e7cf.jpg?v=1689578387",
+  "Raphael Shirt":                "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732",
+  "Raphael Jacket":               "https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732",
+  "Emanuel Shirt":                "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/345.jpg?v=1724254102",
+  "Star Neck Lace Shirt":         "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/Orttu2_b63b6182-fdd3-425d-a0a2-0989b488717e.jpg?v=1722860216",
+  "Walker Denim Skirt":           "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/35-3_3e90bfc3-65f1-4afc-876c-cfac4826a545.jpg?v=1723637966",
+  "Star Neck Shirt Couture":      "https://orttu.com/cdn/shop/files/star-neck-couture-shirt.jpg?v=1722959711",
+  "Garson Pants":                 "https://cdn.shopify.com/s/files/1/0033/3676/5493/files/4-15_4699ff2b-ac46-4bfb-a691-cf1f50ff863c.jpg?v=1760093103",
+  "Star Neck Cardigan Sleeveless":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/2-10_33001647-139a-4616-a5c4-851098b3c6f2.jpg?v=1720195581",
+  // ── Minoar ──
+  "Aspect Layered Construct Skirt Trousers":   "https://media.minoar.com/2021/08/Aspect-Layered-Construct-Skirt-Trousers-2.jpg",
+  "Quark Linen Cargo Layered Skirt Trousers":  "https://media.minoar.com/2020/07/Quark-Linen-Cargo-Layered-Skirt-Trousers-1-2.jpg",
+  "Aspect Ripstop Alternated Trousers":        "https://media.minoar.com/2021/08/Aspect-Ripstop-Alternated-Trousers-4.jpg",
+  "Layered Sleeveless Collar Shirt":           "https://media.minoar.com/2019/05/Layered-Sleeveless-Collar-Shirt-5-1.jpg",
+  "Layered Sleeveless White Collar Shirt":     "https://media.minoar.com/2019/05/Layered-Sleeveless-White-Collar-Shirt-3-1.jpg",
+  "Elongated Trigon Shirt":                    "https://media.minoar.com/2022/05/Minoar-Elongated-Trigon-Shirt-2.jpg",
+  "Trigon Layered Sleeveless Shirt":           "https://media.minoar.com/2022/05/Trigon-Layered-Sleeveless-Shirt-Ghost.jpg",
+  "Trigon Layered Linen Trousers":             "https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Linen-Trousers-2.jpg",
+  "Wide Layered Crushed Cropped Pants":        "https://media.minoar.com/2022/05/Minoar-Wide-Layered-Crushed-Cropped-Pants-1-1.jpg",
+  "Graphite External Bias Cargo Trousers":     "https://media.minoar.com/2022/05/Minoar-Graphite-External-Bias-Cargo-Trousers-1.jpg",
+  "Division Cut Linear Collar Shirt":          "https://media.minoar.com/2022/06/Division-Cut-Linear-Collar-Shirt-2.jpg",
+  "Fiber Bond Magma Tech Hood Cardigan":       "https://media.minoar.com/2024/11/Fiber_Bond_Magma_Tech_Hood_Cardigan_1.jpg",
+  "Reverse Edge Construct Jogger":             "https://media.minoar.com/2024/11/Minoar_Reverse_Edge_Construct_Jogger_MNR-5.jpg",
+  "External Cropped Loose Grey Trousers":      "https://media.minoar.com/2021/08/External-Cropped-Loose-Grey-Trousers-2.jpg",
+  "Cargo Volume Transform Denim Skirt":        "https://media.minoar.com/2024/11/Cargo_Volume_Transform_Denim_Skirt_1.jpg",
+  "Reverse Edge Hood Buckle Cardigan":         "https://media.minoar.com/2024/11/Reverse_Edge_Hood_Buckle_Cardigan_MNR-11.jpg",
+  "Nuance Dyed Refract Segment Track Pants":   "https://media.minoar.com/2022/05/Nuance-Dyed-Refract-Segment-Track-Pants-1.jpg",
+  "Sleeveless Collar Shirt":                   "https://media.minoar.com/2018/05/sleeveless-raw-shirt-standing-collar-black-dark_1-1.jpg",
+  "Trigon Black Layers Volume Pants":          "https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Volume-Pants-1.jpg",
+  "Hexa Long Layers Sleeveless Coat":          "https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg",
+  // ── FRKM ──
+  "25FW Layered Belt Apron Skirt":             "https://cdn.shopify.com/s/files/1/0607/0494/8305/files/1_b1a049d4-0de0-4da2-a6dc-8ab4dfb1df49.jpg?v=1755683858",
+  // ── RYVK Studio ──
+  "Sheer Contrast Floral Print Shirts":    "https://cdn.shopify.com/s/files/1/0714/6848/2717/files/SheerContrastFloralPrintShirts_1.jpg?v=1761904504",
+  "Fever Arc Sequin Embroidery Vest":      "https://cdn.shopify.com/s/files/1/0714/6848/2717/files/FeverArcSequinEmbroideryVest_1.jpg?v=1780040848",
+  "Synth Flare Long Sleeve Sequin Jacket": "https://cdn.shopify.com/s/files/1/0714/6848/2717/files/SynthFlareLongSleeveSequinJacket_1.jpg?v=1780040838",
+  "Prism Flow Tulle Wide Leg Pants":       "https://cdn.shopify.com/s/files/1/0714/6848/2717/files/PrismFlowTulleWideLegPants_1.jpg?v=1780040845",
+  // ── YA|SAR ──
+  "Zipped Tall Boots":           "https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468",
+  "Side-Zip Goat Leather Boots": "https://cdn.shopify.com/s/files/1/0653/3683/6274/files/side_zip_goat_leather_boots_1.jpg?v=1739387263",
+  // ── Arahant Studio ──
+  "Magi Sentient Robe":          "https://i.etsystatic.com/24446956/r/il/ada9fd/2891345427/il_1080xN.2891345427_ab5z.jpg",
+  // ── Kids of Eden ──
+  "Protanopia Cloak Hoodie":     "https://cdn.shopify.com/s/files/1/0620/3880/2614/products/KIDSOFEDENHEAVYWEIGHTHOODIEMEN_STAUPEFRONT-636740.jpg?v=1683087494",
+  // ── Gasper ──
+  "Touch of God Ring":           "https://cdn.shopify.com/s/files/1/0099/3325/8848/files/touch-g.jpg?v=1705602506",
+  "Touch of God Cuff":           "https://cdn.shopify.com/s/files/1/0099/3325/8848/files/cuff2-g.jpg?v=1729633779",
+  "Square Onyx Ring":            "https://cdn.shopify.com/s/files/1/0099/3325/8848/files/square-onyx-ring-g.jpg?v=1705606430",
+};
+
+const BRAND_URLS = {
+  ORTTU:  "https://orttu.com",
+  MINOAR: "https://minoar.com",
+  RYVK:   "https://ryvkstudio.com",
+  FRKM:   "https://frkm-scd.com",
+  YASAR:   "https://ya-sar.com",
+  ARAHANT: "https://www.etsy.com/shop/ArahantStudio",
+  GASPER:  "https://gasper.co",
+  KOE:     "https://kidsofeden.earth",
+};
+
+const OUTFITS_DEFAULT = [
+  { id:1,  name:"All Black Structured",     vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Jesse Top with Scarf",                brand:"ORTTU"},
+      {role:"Bottom",  name:"Reverse Edge Construct Jogger",        brand:"MINOAR"},
+      {role:"Outer",   name:"Hexa Long Layers Sleeveless Coat",     brand:"MINOAR"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:2,  name:"Monochrome Grey",           vibe:"Tonal", tags:["tonal"],
+    pieces:[
+      {role:"Top",     name:"Layered Sleeveless Collar Shirt",      brand:"MINOAR"},
+      {role:"Bottom",  name:"Roberto Pants",                        brand:"ORTTU"},
+      {role:"Outer",   name:"Roberto Jacket",                       brand:"ORTTU"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:3,  name:"White / Off-White Contrast",vibe:"Contrast", tags:["contrast"],
+    pieces:[
+      {role:"Top",     name:"Division Cut Linear Collar Shirt",     brand:"MINOAR"},
+      {role:"Bottom",  name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+  { id:4,  name:"Deconstructed Layers",      vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Elongated Trigon Shirt",               brand:"MINOAR"},
+      {role:"Bottom",  name:"Cargo Volume Transform Denim Skirt",   brand:"MINOAR"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:5,  name:"Avant-Garde Casual",        vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Christian Shirt",                      brand:"ORTTU"},
+      {role:"Bottom",  name:"Nuance Dyed Refract Segment Track Pants",brand:"MINOAR"},
+      {role:"Outer",   name:"Fiber Bond Magma Tech Hood Cardigan",  brand:"MINOAR"},
+    ]},
+  { id:6,  name:"Full Minoar Skirt Trouser", vibe:"Tonal", tags:["dark","tonal"],
+    pieces:[
+      {role:"Top",     name:"Sleeveless Collar Shirt",              brand:"MINOAR"},
+      {role:"Bottom",  name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+  { id:7,  name:"Earth Tone Mix",            vibe:"Tonal", tags:["tonal"],
+    pieces:[
+      {role:"Top",     name:"Porto Long Shirt",                     brand:"ORTTU"},
+      {role:"Bottom",  name:"Trigon Layered Linen Trousers",        brand:"MINOAR"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:8,  name:"Linen & Lace",              vibe:"Contrast", tags:["contrast"],
+    pieces:[
+      {role:"Top",     name:"Star Neck Lace Shirt",                 brand:"ORTTU"},
+      {role:"Bottom",  name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+  { id:9,  name:"Pink Power Set",            vibe:"Contrast", tags:["contrast"],
+    pieces:[
+      {role:"Top",     name:"Raphael Shirt",                        brand:"ORTTU"},
+      {role:"Bottom",  name:"Wide Layered Crushed Cropped Pants",   brand:"MINOAR"},
+      {role:"Outer",   name:"Raphael Jacket",                       brand:"ORTTU"},
+    ]},
+  { id:10, name:"Dark Academia",             vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Christian Shirt",                      brand:"ORTTU"},
+      {role:"Bottom",  name:"Brunello Pants",                       brand:"ORTTU"},
+      {role:"Outer",   name:"Alejandro Cardigan",                   brand:"ORTTU"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:11, name:"Textured Black + Blue Pop", vibe:"Contrast", tags:["contrast"],
+    pieces:[
+      {role:"Top",     name:"Christian Shirt",                      brand:"ORTTU"},
+      {role:"Bottom",  name:"Walker Denim Skirt",                   brand:"ORTTU"},
+      {role:"Outer",   name:"Reverse Edge Hood Buckle Cardigan",    brand:"MINOAR"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+  { id:12, name:"Ivory/Cream Editorial",     vibe:"Tonal", tags:["tonal"],
+    pieces:[
+      {role:"Top",     name:"Star Neck Shirt Couture",              brand:"ORTTU"},
+      {role:"Bottom",  name:"Garson Pants",                         brand:"ORTTU"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:13, name:"Bold Green Statement",      vibe:"Contrast", tags:["contrast"],
+    pieces:[
+      {role:"Top/Layer",name:"Star Neck Cardigan Sleeveless",       brand:"ORTTU"},
+      {role:"Bottom",  name:"New York Jersey Pants",                brand:"ORTTU"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:14, name:"Grid + Cargo",              vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Layered Sleeveless Collar Shirt",      brand:"MINOAR"},
+      {role:"Bottom",  name:"Cambridge Skirt",                      brand:"ORTTU"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+  { id:15, name:"Full Minoar Dark",          vibe:"Dark / Minimal", tags:["dark","tonal"],
+    pieces:[
+      {role:"Top",     name:"Sleeveless Collar Shirt",              brand:"MINOAR"},
+      {role:"Outer",   name:"Fiber Bond Magma Tech Hood Cardigan",  brand:"MINOAR"},
+      {role:"Bottom",  name:"Aspect Ripstop Alternated Trousers",   brand:"MINOAR"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:16, name:"Club / Night Sequin",       vibe:"Night Out", tags:["night"],
+    pieces:[
+      {role:"Top",     name:"Fever Arc Sequin Embroidery Vest",     brand:"RYVK"},
+      {role:"Bottom",  name:"Prism Flow Tulle Wide Leg Pants",      brand:"RYVK"},
+    ]},
+  { id:17, name:"Avant × Rave Clash",        vibe:"Night Out", tags:["night","contrast"],
+    pieces:[
+      {role:"Top",     name:"Elongated Trigon Shirt",               brand:"MINOAR"},
+      {role:"Bottom",  name:"Prism Flow Tulle Wide Leg Pants",      brand:"RYVK"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:18, name:"Print + Dark Base",         vibe:"Contrast", tags:["contrast"],
+    pieces:[
+      {role:"Top",     name:"Sheer Contrast Floral Print Shirts",   brand:"RYVK"},
+      {role:"Bottom",  name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+  { id:19, name:"Structured Sequin",         vibe:"Night Out", tags:["night"],
+    pieces:[
+      {role:"Top",     name:"Fever Arc Sequin Embroidery Vest",     brand:"RYVK"},
+      {role:"Bottom",  name:"Roberto Pants",                        brand:"ORTTU"},
+      {role:"Shoes",   name:"Pai-Weite High-Top Sneakers Black",    brand:"JAKCUZ"},
+    ]},
+  { id:20, name:"Apron Skirt Statement",     vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Trigon Layered Sleeveless Shirt",      brand:"MINOAR"},
+      {role:"Bottom",  name:"25FW Layered Belt Apron Skirt",        brand:"FRKM"},
+      {role:"Boots",   name:"Zipped Tall Boots",                    brand:"YASAR"},
+    ]},
+  { id:21, name:"Volume Silhouette",         vibe:"Dark / Minimal", tags:["dark"],
+    pieces:[
+      {role:"Top",     name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},
+      {role:"Bottom",  name:"Trigon Black Layers Volume Pants",     brand:"MINOAR"},
+      {role:"Boots",   name:"Side-Zip Goat Leather Boots",          brand:"YASAR"},
+    ]},
+];
+
+// ─── OUTFIT PHOTOS (in-memory, keyed by outfit id) ───────────────────────────
+let OUTFIT_PHOTOS = {};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let outfits = JSON.parse(localStorage.getItem('outfits') || 'null') || OUTFITS_DEFAULT;
+let saved = new Set(JSON.parse(localStorage.getItem('saved') || '[]'));
+let currentFilter = 'all';
+
+function persist() {
+  localStorage.setItem('outfits', JSON.stringify(outfits));
+  localStorage.setItem('saved', JSON.stringify([...saved]));
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+let sidebarSort = 'brand';
+
+// Style labels derived from outfit tags per piece
+const PIECE_STYLES = (() => {
+  const map = {};
+  OUTFITS_DEFAULT.forEach(o => {
+    const style = o.tags?.includes('night') ? 'Night Out'
+      : o.tags?.includes('contrast') ? 'Contrast'
+      : o.tags?.includes('tonal') ? 'Tonal'
+      : 'Dark / Minimal';
+    o.pieces.forEach(p => {
+      if (!map[p.name]) map[p.name] = new Set();
+      map[p.name].add(style);
+    });
+  });
+  return map;
+})();
+
+function buildSidebar() {
+  const el = document.getElementById('sidebar');
+  const allItems = WARDROBE["Tops & Shirts"];
+
+  // Group key function per sort mode
+  const keyFn = {
+    brand: item => item.brand,
+    type:  item => item.cat,
+    color: item => item.color || 'Unknown',
+    style: item => [...(PIECE_STYLES[item.name] || new Set(['—']))][0],
+  }[sidebarSort];
+
+  // Ordered group keys
+  const orderMap = {
+    brand: ['ORTTU','MINOAR','RYVK','FRKM','YASAR','ARAHANT','GASPER','KOE'],
+    type:  ['Shirt','Top','Cardigan','Jacket','Pants','Skirt','Boots'],
+    color: null,
+    style: ['Dark / Minimal','Tonal','Contrast','Night Out','—'],
+  };
+
+  const grouped = {};
+  allItems.forEach(item => {
+    const key = keyFn(item);
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(item);
+  });
+
+  const keys = orderMap[sidebarSort]
+    ? orderMap[sidebarSort].filter(k => grouped[k])
+    : Object.keys(grouped).sort();
+
+  // add any keys not in the predefined order
+  Object.keys(grouped).forEach(k => { if (!keys.includes(k)) keys.push(k); });
+
+  let html = '';
+  keys.forEach(key => {
+    const items = grouped[key] || [];
+    html += `<div class="sidebar-section">
+      <div class="sidebar-section-header">${key}</div>`;
+    items.forEach(item => {
+      const b = BRANDS[item.brand] || { dot: '', label: item.brand };
+      const metaParts = {
+        brand: `${item.cat} · ${item.color} · ${item.size}`,
+        type:  `${b.label} · ${item.color} · ${item.size}`,
+        color: `${b.label} · ${item.cat} · ${item.size}`,
+        style: `${b.label} · ${item.cat}`,
+      }[sidebarSort];
+      const tag = sidebarSort !== 'brand'
+        ? `<span class="item-tag ${b.tag || ''}">${b.label}</span>` : '';
+      const sidebarImgUrl = IMAGES[item.name];
+      const sidebarThumb = sidebarImgUrl
+        ? `<div class="item-thumb"><img src="${sidebarImgUrl}" alt="${item.name}" loading="lazy"></div>`
+        : `<div class="item-thumb"><div class="item-thumb-empty"></div></div>`;
+      html += `<div class="wardrobe-item" data-id="${item.id}" draggable="true">
+        ${sidebarThumb}
+        <div class="item-info">
+          <div class="item-name">${item.name}</div>
+          <div class="item-meta">${metaParts}</div>
+        </div>
+        <div class="item-dot ${b.dot}" style="margin-left:auto;flex-shrink:0"></div>
+        ${tag}
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  el.innerHTML = html;
+
+  document.getElementById('stats-line').textContent =
+    `${allItems.length} pieces · ${outfits.length} outfits`;
+
+  el.querySelectorAll('.wardrobe-item').forEach(itemEl => {
+    itemEl.addEventListener('click', () => {
+      const item = allItems.find(i => i.id === itemEl.dataset.id);
+      if (item) showPreview(item.name, item.brand);
+    });
+    itemEl.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', itemEl.dataset.id);
+    });
+  });
+}
+
+// Sidebar tab switching
+document.getElementById('sidebar-tabs').addEventListener('click', e => {
+  const tab = e.target.closest('.sidebar-tab');
+  if (!tab) return;
+  document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  sidebarSort = tab.dataset.sort;
+  buildSidebar();
+});
+
+// ─── OUTFIT CARD ─────────────────────────────────────────────────────────────
+function brandTag(brand) {
+  const key = brand.toUpperCase().replace(/[^A-Z]/g,'').replace('YASAR','YASAR').replace('TEAMM8','TEAMM8');
+  const match = BRANDS[key] || BRANDS[brand] || { label: brand, tag: '' };
+  return `<span class="piece-brand ${match.tag}">${match.label || brand}</span>`;
+}
+
+function renderCard(outfit) {
+  const isSaved = saved.has(outfit.id);
+  const pieces = outfit.pieces.map(p => {
+    const imgUrl = IMAGES[p.name];
+    const thumb = imgUrl
+      ? `<div class="piece-thumb piece-name-link" data-item="${p.name}" data-brand="${p.brand}"><img src="${imgUrl}" alt="${p.name}" loading="lazy"></div>`
+      : `<div class="piece-thumb piece-thumb-empty piece-name-link" data-item="${p.name}" data-brand="${p.brand}">·</div>`;
+    return `
+    <div class="piece-row">
+      ${thumb}
+      <span class="piece-role">${p.role}</span>
+      <span class="piece-name piece-name-link" data-item="${p.name}" data-brand="${p.brand}">${p.name}</span>
+      ${brandTag(p.brand)}
+    </div>`;
+  }).join('');
+
+  const photoSrc = OUTFIT_PHOTOS[outfit.id];
+  const photoHtml = photoSrc
+    ? `<div class="outfit-photo" data-photo-id="${outfit.id}">
+        <img src="${photoSrc}" alt="Outfit ${outfit.id}">
+        <div class="outfit-photo-view">
+          <span data-view-photo="${outfit.id}">↗ View</span>
+        </div>
+       </div>`
+    : `<div class="outfit-photo outfit-photo-empty" data-pick-photo="${outfit.id}">
+        <span>add photo</span>
+        <button class="btn-generate-photo" data-generate="${outfit.id}">✦ Generate</button>
+       </div>`;
+
+  return `<div class="outfit-card${photoSrc ? ' has-photo' : ''}" data-id="${outfit.id}" data-tags="${(outfit.tags||[]).join(',')}">
+    ${photoHtml}
+    <div class="outfit-card-header">
+      <div>
+        <div class="outfit-number">NO. ${String(outfit.id).padStart(2,'0')}</div>
+        <div class="outfit-name">${outfit.name}</div>
+        <div class="outfit-vibe">${outfit.vibe || ''}</div>
+      </div>
+      <div class="outfit-card-actions">
+        <button class="action-btn ${isSaved ? 'saved' : ''}" data-action="save" title="Save">
+          <span class="star">${isSaved ? '★' : '☆'}</span>
+        </button>
+        <button class="action-btn" data-action="delete" title="Delete">✕</button>
+      </div>
+    </div>
+    <div class="outfit-pieces">${pieces}</div>
+    <div class="drop-zone" data-outfit-id="${outfit.id}">+ drop piece here</div>
+  </div>`;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('outfits-grid');
+  let filtered = outfits;
+  if (currentFilter === 'saved') {
+    filtered = outfits.filter(o => saved.has(o.id));
+  } else if (currentFilter !== 'all') {
+    filtered = outfits.filter(o => (o.tags||[]).includes(currentFilter));
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-card">No outfits match this filter.<br>Try "All" or create a new outfit.</div>`;
+  } else {
+    grid.innerHTML = filtered.map(renderCard).join('');
+  }
+
+  document.getElementById('outfit-count-label').textContent =
+    `${filtered.length} Outfit${filtered.length !== 1 ? 's' : ''}`;
+
+  // action buttons
+  grid.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const card = btn.closest('.outfit-card');
+      const id = parseInt(card.dataset.id);
+      if (btn.dataset.action === 'save') {
+        if (saved.has(id)) saved.delete(id); else saved.add(id);
+        persist();
+        renderGrid();
+      } else if (btn.dataset.action === 'delete') {
+        outfits = outfits.filter(o => o.id !== id);
+        persist();
+        renderGrid();
+        buildSidebar();
+      }
+    });
+  });
+
+  // piece image preview clicks
+  grid.querySelectorAll('.piece-name-link').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      showPreview(el.dataset.item, el.dataset.brand);
+    });
+  });
+
+  // photo: click anywhere on card to view fullscreen (if photo loaded)
+  grid.querySelectorAll('.outfit-card').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('[data-action]') || e.target.closest('.drop-zone') ||
+          e.target.closest('.piece-name-link') || e.target.closest('[data-pick-photo]')) return;
+      const id = parseInt(card.dataset.id);
+      if (!OUTFIT_PHOTOS[id]) return;
+      openLightbox(id);
+    });
+  });
+
+  // photo: view fullscreen (via ↗ button)
+  grid.querySelectorAll('[data-view-photo]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      openLightbox(parseInt(el.dataset.viewPhoto));
+    });
+  });
+
+  // photo: click empty slot to pick a single photo
+  grid.querySelectorAll('[data-pick-photo]').forEach(el => {
+    el.addEventListener('click', e => {
+      if (e.target.closest('[data-generate]')) return; // let generate button handle it
+      e.stopPropagation();
+      const input = document.getElementById('photo-single-input');
+      input.dataset.outfitId = el.dataset.pickPhoto;
+      input.click();
+    });
+  });
+
+  // generate photo button
+  grid.querySelectorAll('[data-generate]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = parseInt(btn.dataset.generate);
+      generateOutfitPhoto(id, btn);
+    });
+  });
+
+  // drop zones
+  grid.querySelectorAll('.drop-zone').forEach(dz => {
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('drag-over');
+      const itemId = e.dataTransfer.getData('text/plain');
+      const item = WARDROBE["Tops & Shirts"].find(i => i.id === itemId);
+      if (!item) return;
+      const outfitId = parseInt(dz.dataset.outfitId);
+      const outfit = outfits.find(o => o.id === outfitId);
+      if (!outfit) return;
+      outfit.pieces.push({ role: item.cat, name: item.name, brand: item.brand });
+      persist();
+      renderGrid();
+    });
+  });
+}
+
+// ─── IMAGE PREVIEW ───────────────────────────────────────────────────────────
+function showPreview(name, brand) {
+  const brandKey = brand.toUpperCase().replace(/[^A-Z]/g,'').replace('YASAR','YASAR');
+  const allItems = WARDROBE["Tops & Shirts"];
+  const item = allItems.find(i => i.name === name);
+  const imgUrl = IMAGES[name];
+  const b = BRANDS[brandKey] || { label: brand };
+  const url = BRAND_URLS[brandKey] || '#';
+
+  const imgWrap = document.getElementById('preview-img-wrap');
+  imgWrap.innerHTML = imgUrl
+    ? `<img src="${imgUrl}" alt="${name}" loading="lazy">`
+    : `<div class="preview-no-img"><span>No preview</span><span style="font-size:9px;opacity:0.4;letter-spacing:0.1em">available</span></div>`;
+
+  const brandEl = document.getElementById('preview-brand');
+  brandEl.textContent = b.label;
+  brandEl.href = url;
+
+  document.getElementById('preview-name').textContent = name;
+
+  const metaEl = document.getElementById('preview-meta');
+  if (item) {
+    metaEl.innerHTML = `
+      <div class="meta-row"><span class="meta-label">Type</span><span>${item.cat}</span></div>
+      <div class="meta-row"><span class="meta-label">Color</span><span>${item.color}</span></div>
+      <div class="meta-row"><span class="meta-label">Size</span><span>${item.size}</span></div>
+    `;
+  } else {
+    metaEl.innerHTML = '';
+  }
+
+  document.getElementById('preview-overlay').classList.add('open');
+}
+
+const previewOverlay = document.getElementById('preview-overlay');
+document.getElementById('preview-close').addEventListener('click', () => previewOverlay.classList.remove('open'));
+previewOverlay.addEventListener('click', e => { if (e.target === previewOverlay) previewOverlay.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') previewOverlay.classList.remove('open'); });
+
+// ─── FILTERS ─────────────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGrid();
+  });
+});
+
+// ─── NEW OUTFIT MODAL ────────────────────────────────────────────────────────
+const modal = document.getElementById('modal');
+document.getElementById('btn-new-outfit').addEventListener('click', () => {
+  modal.classList.add('open');
+  document.getElementById('new-outfit-name').focus();
+});
+document.getElementById('btn-cancel-modal').addEventListener('click', () => {
+  modal.classList.remove('open');
+});
+document.getElementById('btn-save-modal').addEventListener('click', () => {
+  const name = document.getElementById('new-outfit-name').value.trim();
+  const vibe = document.getElementById('new-outfit-vibe').value.trim();
+  if (!name) return;
+  const newId = Math.max(0, ...outfits.map(o => o.id)) + 1;
+  outfits.push({ id: newId, name, vibe, tags: [], pieces: [] });
+  persist();
+  modal.classList.remove('open');
+  document.getElementById('new-outfit-name').value = '';
+  document.getElementById('new-outfit-vibe').value = '';
+  renderGrid();
+  buildSidebar();
+});
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+// ─── INDEXEDDB PHOTO STORAGE ─────────────────────────────────────────────────
+const IDB = {
+  _db: null,
+  async open() {
+    if (this._db) return this._db;
+    return new Promise((res, rej) => {
+      const req = indexedDB.open('outfitBoardPhotos', 1);
+      req.onupgradeneeded = e => e.target.result.createObjectStore('photos');
+      req.onsuccess = e => { this._db = e.target.result; res(this._db); };
+      req.onerror = rej;
+    });
+  },
+  async put(id, blob) {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const tx = db.transaction('photos', 'readwrite');
+      tx.objectStore('photos').put(blob, id);
+      tx.oncomplete = res; tx.onerror = rej;
+    });
+  },
+  async getAll() {
+    const db = await this.open();
+    return new Promise((res, rej) => {
+      const tx = db.transaction('photos', 'readonly');
+      const out = {};
+      tx.objectStore('photos').openCursor().onsuccess = e => {
+        const c = e.target.result;
+        if (c) { out[c.key] = c.value; c.continue(); } else res(out);
+      };
+      tx.onerror = rej;
+    });
+  }
+};
+
+// ─── PHOTO LOADING ───────────────────────────────────────────────────────────
+async function applyPhotoFiles(files) {
+  let matched = 0;
+  const saves = [];
+  [...files].forEach(f => {
+    const m = f.name.match(/(?:wardrobe_)?outfit_(\d+)\.(jpg|jpeg|png|webp)/i);
+    if (m) {
+      const num = parseInt(m[1]);
+      if (num >= 1 && num <= 21) {
+        if (OUTFIT_PHOTOS[num]) URL.revokeObjectURL(OUTFIT_PHOTOS[num]);
+        OUTFIT_PHOTOS[num] = URL.createObjectURL(f);
+        saves.push(IDB.put(num, f));
+        matched++;
+      }
+    }
+  });
+  await Promise.all(saves);
+  renderGrid();
+  return matched;
+}
+
+// Auto-load from IndexedDB on startup
+async function initPhotos() {
+  try {
+    const stored = await IDB.getAll();
+    let count = 0;
+    Object.entries(stored).forEach(([id, blob]) => {
+      OUTFIT_PHOTOS[parseInt(id)] = URL.createObjectURL(blob);
+      count++;
+    });
+    if (count > 0) {
+      renderGrid();
+      const btn = document.getElementById('btn-load-photos');
+      btn.textContent = `✓ ${count} Photos`;
+      btn.style.borderColor = '#4a8c5a';
+      btn.style.color = '#6abc7e';
+    }
+  } catch(e) { /* storage unavailable, skip silently */ }
+}
+
+// Load all photos button
+document.getElementById('btn-load-photos').addEventListener('click', () => {
+  document.getElementById('photo-file-input').click();
+});
+document.getElementById('photo-file-input').addEventListener('change', async function() {
+  const matched = await applyPhotoFiles(this.files);
+  if (matched > 0) {
+    const btn = document.getElementById('btn-load-photos');
+    btn.textContent = `✓ ${matched} Photos`;
+    btn.style.borderColor = '#4a8c5a';
+    btn.style.color = '#6abc7e';
+  }
+  this.value = '';
+});
+
+// Single photo picker per card
+document.getElementById('photo-single-input').addEventListener('change', async function() {
+  const id = parseInt(this.dataset.outfitId);
+  if (this.files[0] && id) {
+    if (OUTFIT_PHOTOS[id]) URL.revokeObjectURL(OUTFIT_PHOTOS[id]);
+    OUTFIT_PHOTOS[id] = URL.createObjectURL(this.files[0]);
+    await IDB.put(id, this.files[0]);
+    renderGrid();
+  }
+  this.value = '';
+});
+
+// ─── GENERATE OUTFIT PHOTO ───────────────────────────────────────────────────
+const CHATGPT_CONVO = 'https://chatgpt.com/c/6a4052a6-400c-83ea-bcb6-e4add9de229a';
+
+function showToast(msg, duration = 4000) {
+  const t = document.getElementById('generating-toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function buildPrompt(outfit) {
+  const brandLabels = { ORTTU:'Orttu', MINOAR:'Minoar', RYVK:'RYVK Studio', FRKM:'FRKM SCD', YASAR:'YA|SAR' };
+  const pieceList = outfit.pieces.map(p =>
+    `- ${p.role}: ${p.name} (${brandLabels[p.brand] || p.brand})`
+  ).join('\n');
+  return `Please generate a new editorial outfit photo using my reference photos from earlier in this conversation.
+
+Outfit: "${outfit.name}" — ${outfit.vibe || ''}
+${pieceList}
+
+Full body editorial shot. Dark avant-garde aesthetic, moody studio or industrial setting. Use my exact likeness (Black male, locs, tall lean build).`;
+}
+
+async function generateOutfitPhoto(outfitId, btn) {
+  const outfit = outfits.find(o => o.id === outfitId);
+  if (!outfit) return;
+
+  btn.textContent = '✦ Sending…';
+  btn.classList.add('generating');
+
+  const prompt = buildPrompt(outfit);
+
+  // Open ChatGPT conversation in a new tab and send the prompt
+  const win = window.open(CHATGPT_CONVO, '_blank');
+
+  // Copy prompt to clipboard as fallback
+  try { await navigator.clipboard.writeText(prompt); } catch(e) {}
+
+  showToast('Prompt sent to ChatGPT → when image is ready, click the photo slot on this card to load it', 7000);
+
+  // After a moment, inject the prompt via the opened window
+  // (user may need to paste manually if the tab blocks injection)
+  setTimeout(() => {
+    btn.textContent = '✦ Check ChatGPT';
+    btn.style.borderColor = '#4a8c5a';
+    btn.style.color = '#6abc7e';
+  }, 2000);
+}
+
+// ─── LIGHTBOX ────────────────────────────────────────────────────────────────
+function openLightbox(outfitId) {
+  const outfit = outfits.find(o => o.id === outfitId);
+  if (!outfit || !OUTFIT_PHOTOS[outfitId]) return;
+
+  document.getElementById('photo-lightbox-img').src = OUTFIT_PHOTOS[outfitId];
+
+  const piecesHtml = outfit.pieces.map(p => {
+    const imgUrl = IMAGES[p.name];
+    const b = BRANDS[p.brand] || { label: p.brand };
+    const thumb = imgUrl
+      ? `<div class="lb-piece-thumb"><img src="${imgUrl}" alt="${p.name}" loading="lazy"></div>`
+      : `<div class="lb-piece-thumb"><div class="lb-piece-thumb-empty"></div></div>`;
+    return `<div class="lb-piece-row">
+      ${thumb}
+      <div class="lb-piece-info">
+        <div class="lb-piece-role">${p.role}</div>
+        <div class="lb-piece-name">${p.name}</div>
+        <div class="lb-piece-brand">${b.label}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('photo-lightbox-info').innerHTML = `
+    <div class="lb-outfit-num">No. ${String(outfit.id).padStart(2,'0')}</div>
+    <div class="lb-outfit-name">${outfit.name}</div>
+    <div class="lb-outfit-vibe">${outfit.vibe || ''}</div>
+    <div class="lb-pieces-title">Pieces</div>
+    ${piecesHtml}
+  `;
+
+  document.getElementById('photo-lightbox').classList.add('open');
+}
+
+// Lightbox close
+document.getElementById('photo-lightbox-close').addEventListener('click', () => {
+  document.getElementById('photo-lightbox').classList.remove('open');
+});
+document.getElementById('photo-lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('photo-lightbox').classList.remove('open');
+});
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+buildSidebar();
+renderGrid();
+initPhotos(); // auto-load saved photos from IndexedDB
+</script>
+</body>
+</html>

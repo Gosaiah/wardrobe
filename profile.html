@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter · Style Profile</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #161616;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e8e8;
+    --muted: rgba(255,255,255,0.35);
+    --accent: #e2d3b4;
+    --accent2: rgba(226, 211, 180,0.4);
+    --white: #ffffff;
+  }
+  html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 14px; line-height: 1.5; }
+  body { margin: 0; padding: 0; }
+  .page-content { max-width: 960px; margin: 0 auto; padding: 24px 24px 80px; }
+
+
+  /* ── SECTION LABEL ── */
+  .section-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 28px; }
+  .section { margin-bottom: 80px; }
+
+  /* ── HERO ── */
+  .hero { margin-bottom: 80px; }
+  .hero-name { font-size: clamp(48px, 8vw, 96px); font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: var(--white); margin-bottom: 16px; }
+  .hero-tagline { font-size: 14px; color: var(--muted); letter-spacing: 0.06em; max-width: 480px; line-height: 1.7; }
+  .hero-tagline em { color: var(--accent); font-style: normal; }
+
+  /* ── STYLE SIGNATURE ── */
+  .signature-grid { display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center; }
+  .signature-spider { flex-shrink: 0; }
+  .signature-text h3 { font-size: 22px; font-weight: 600; color: var(--white); margin-bottom: 16px; line-height: 1.3; letter-spacing: -0.01em; }
+  .signature-text p { font-size: 13px; color: var(--muted); line-height: 1.8; max-width: 440px; }
+  .signature-text p + p { margin-top: 12px; }
+  .stat-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .stat-pill { display: flex; align-items: center; gap: 6px; }
+  .stat-pill-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .stat-pill-bar { width: 60px; height: 2px; background: var(--surface2); border-radius:6px; overflow: hidden; }
+  .stat-pill-fill { height: 100%; background: var(--accent); border-radius:6px; }
+  .stat-pill-val { font-size: 10px; color: var(--accent); font-weight: 600; min-width: 20px; }
+
+  /* ── NUMBERS ── */
+  .numbers-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; }
+  .numbers-cell { background: var(--surface); padding: 24px; }
+  .numbers-value { font-size: 36px; font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px; }
+  .numbers-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .chart-block { background: var(--surface); border: 1px solid var(--border); padding: 24px; }
+  .chart-title { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+
+  .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .brand-name { font-size: 10px; letter-spacing: 0.1em; color: var(--text); min-width: 72px; text-transform: uppercase; }
+  .brand-bar-track { flex: 1; height: 3px; background: var(--surface2); border-radius:6px; }
+  .brand-bar-fill { height: 100%; border-radius:6px; background: var(--accent); transition: width 0.6s ease; }
+  .brand-count { font-size: 10px; color: var(--muted); min-width: 20px; text-align: right; }
+
+  .vibe-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .vibe-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .vibe-label { font-size: 11px; color: var(--text); flex: 1; }
+  .vibe-count { font-size: 11px; color: var(--muted); }
+  .vibe-pct { font-size: 10px; color: var(--accent); min-width: 32px; text-align: right; }
+
+  /* ── PERSONAS ── */
+  .persona { border: 1px solid var(--border); margin-bottom: 2px; }
+  .persona-header { display: grid; grid-template-columns: auto 1fr; gap: 40px; padding: 40px; align-items: start; border-bottom: 1px solid var(--border); }
+  .persona-spider { flex-shrink: 0; }
+  .persona-meta {}
+  .persona-number { font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .persona-name { font-size: 32px; font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px; }
+  .persona-alias { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 10px; letter-spacing: 0.04em; }
+  .persona-tagline { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+  .persona-desc { font-size: 13px; color: var(--muted); line-height: 1.8; max-width: 480px; }
+  .persona-link { display: inline-block; margin-top: 20px; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent2); padding-bottom: 2px; transition: color 0.15s, border-color 0.15s; }
+  .persona-link:hover { color: var(--white); border-color: var(--white); }
+  .persona-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .persona-photo-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--surface2); }
+  .persona-photo-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .persona-photo-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 12px 12px; background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.75)); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+
+  /* ── FOOTER ── */
+  .footer { border-top: 1px solid var(--border); padding-top: 32px; text-align: center; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+  @media (max-width: 600px) {
+    .signature-grid { grid-template-columns: 1fr; }
+    .charts-grid { grid-template-columns: 1fr; }
+    .persona-header { grid-template-columns: 1fr; gap: 24px; }
+    .numbers-row { grid-template-columns: 1fr; }
+  }
+</style>
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+
+<script src="nav.js"></script>
+
+<div class="page-content">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-name">Style<br>Profile</div>
+  <p class="hero-tagline">Dark. Structured. <em>Always intentional.</em><br>A wardrobe built around silhouette, edge, and the discipline to never dress average.</p>
+</div>
+
+<!-- STYLE SIGNATURE -->
+<section class="section">
+  <div class="section-label">Style Signature</div>
+  <div class="signature-grid">
+    <div class="signature-spider" id="spider-main"></div>
+    <div class="signature-text">
+      <h3>Edge over everything.<br>Structure as language.</h3>
+      <p>The wardrobe skews dark and minimal, built on avant-garde Japanese construction and sharp ORTTU tailoring. Drama and edge lead — formality and structure support without ever softening the intention.</p>
+      <p>Skin exposure is deliberately low. The power here is in silhouette, not surface. Pieces earn their place through what they do to a room, not just how they photograph.</p>
+      <div class="stat-pills" id="stat-pills-main"></div>
+    </div>
+  </div>
+</section>
+
+<!-- BY THE NUMBERS -->
+<section class="section">
+  <div class="section-label">By The Numbers</div>
+  <div class="numbers-row">
+    <div class="numbers-cell"><div class="numbers-value">88</div><div class="numbers-label">Total Pieces</div></div>
+    <div class="numbers-cell"><div class="numbers-value">39</div><div class="numbers-label">Outfits</div></div>
+    <div class="numbers-cell"><div class="numbers-value">15</div><div class="numbers-label">Brands</div></div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-block">
+      <div class="chart-title">Brand Breakdown</div>
+      <div id="brand-chart"></div>
+    </div>
+    <div class="chart-block">
+      <div class="chart-title">Outfit Vibes</div>
+      <div id="vibe-chart"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAS -->
+<section class="section">
+  <div class="section-label">The Characters</div>
+
+  <!-- 1: Overlord -->
+  <div class="persona">
+    <div class="persona-header">
+      <div class="persona-spider" id="spider-p1"></div>
+      <div class="persona-meta">
+        <div class="persona-number">Character 01</div>
+        <div class="persona-name">Overlord</div>
+        <div class="persona-alias">aka Zayder</div>
+        <div class="persona-tagline">Ancient. Already decided.</div>
+        <p class="persona-desc">Ancient. Has been in every room worth being in and still walks into this one like it owes him something. The all-black isn't intimidation — it's verdict. You feel judged before he speaks, decided before he moves. Whatever is about to happen, he already knows. The clothes are the last warning.</p>
+        <a href="persona.html?id=overlord" class="persona-link">Explore Persona →</a>
+      </div>
+    </div>
+    <div class="persona-photos">
+      <div class="persona-photo-wrap"><img src="outfits/outfit_01.jpg" alt="All Black Structured"><div class="persona-photo-label">All Black Structured</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_06.jpg" alt="Outfit 06"><div class="persona-photo-label">Outfit 06</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_15.jpg" alt="Outfit 15"><div class="persona-photo-label">Outfit 15</div></div>
+    </div>
+  </div>
+
+  <!-- 2: The Wanderer -->
+  <div class="persona">
+    <div class="persona-header">
+      <div class="persona-spider" id="spider-p2"></div>
+      <div class="persona-meta">
+        <div class="persona-number">Character 02</div>
+        <div class="persona-name">The Wanderer</div>
+        <div class="persona-alias">aka Caius</div>
+        <div class="persona-tagline">Ancient. Still moving.</div>
+        <p class="persona-desc">Ancient. Has been in even more rooms — and left without needing anyone to notice. Layers like sediment, grey like something worn smooth by time. The authority isn't in what he's about to do. It's in what you can tell he's already done. You wonder what he's seen. He doesn't tell you. The clothes carry the answer.</p>
+        <a href="persona.html?id=wanderer" class="persona-link">Explore Persona →</a>
+      </div>
+    </div>
+    <div class="persona-photos">
+      <div class="persona-photo-wrap"><img src="outfits/outfit_02.jpg" alt="Monochrome Grey"><div class="persona-photo-label">Monochrome Grey</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_24.jpg" alt="White / Grey Columns"><div class="persona-photo-label">White / Grey Columns</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_25.jpg" alt="Earth Cloak"><div class="persona-photo-label">Earth Cloak</div></div>
+    </div>
+  </div>
+
+  <!-- 3: Night Shift -->
+  <div class="persona">
+    <div class="persona-header">
+      <div class="persona-spider" id="spider-p3"></div>
+      <div class="persona-meta">
+        <div class="persona-number">Character 03</div>
+        <div class="persona-name">Night Shift</div>
+        <div class="persona-alias">aka Zay</div>
+        <div class="persona-tagline">Rules don't apply after dark.</div>
+        <p class="persona-desc">Forgot the rules — not because he doesn't know them, but because tonight they don't apply. The sequins aren't trying to be serious. The fringe moves. This version takes up space not to claim it but because he's enjoying it. Rarest of the five. Probably the most honest.</p>
+        <a href="persona.html?id=night-shift" class="persona-link">Explore Persona →</a>
+      </div>
+    </div>
+    <div class="persona-photos">
+      <div class="persona-photo-wrap"><img src="outfits/outfit_16.jpg" alt="Fringe Cloak Night"><div class="persona-photo-label">Fringe Cloak Night</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_19.jpg" alt="Sequin Vest Night"><div class="persona-photo-label">Sequin Vest Night</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_28.jpg" alt="Night Tone Wave"><div class="persona-photo-label">Night Tone Wave</div></div>
+    </div>
+  </div>
+
+  <!-- 4: Civilian -->
+  <div class="persona">
+    <div class="persona-header">
+      <div class="persona-spider" id="spider-p4"></div>
+      <div class="persona-meta">
+        <div class="persona-number">Character 04</div>
+        <div class="persona-name">Civilian</div>
+        <div class="persona-tagline">No audience. No armor.</div>
+        <p class="persona-desc">No agenda. No audience. This is the version that shows up when there's nothing to prove — weekend, day off, close friends only. The clothes are still intentional, just quietly. The one most people never see.</p>
+        <a href="persona.html?id=civilian" class="persona-link">Explore Persona →</a>
+      </div>
+    </div>
+    <div class="persona-photos">
+      <div class="persona-photo-wrap"><img src="outfits/outfit_30.jpg" alt="Outfit 30"><div class="persona-photo-label">Outfit 30</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_33.jpg" alt="Outfit 33"><div class="persona-photo-label">Outfit 33</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_38.jpg" alt="Outfit 38"><div class="persona-photo-label">Outfit 38</div></div>
+    </div>
+  </div>
+
+  <!-- 5: Viceroy -->
+  <div class="persona">
+    <div class="persona-header">
+      <div class="persona-spider" id="spider-p5"></div>
+      <div class="persona-meta">
+        <div class="persona-number">Character 05</div>
+        <div class="persona-name">Viceroy</div>
+        <div class="persona-alias">aka Gunray</div>
+        <div class="persona-tagline">Authority inside the system.</div>
+        <p class="persona-desc">Moves through conventional spaces without bending to them. Polished where the Overlord is armored, deliberate where the others are expressive. Knows which room he's in and dresses accordingly — not to fit in, but to hold authority inside a system that expects it.</p>
+        <a href="persona.html?id=viceroy" class="persona-link">Explore Persona →</a>
+      </div>
+    </div>
+    <div class="persona-photos">
+      <div class="persona-photo-wrap"><img src="outfits/outfit_12.jpg" alt="Ivory / Cream Editorial"><div class="persona-photo-label">Ivory / Cream Editorial</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_23.jpg" alt="Couture Contrast"><div class="persona-photo-label">Couture Contrast</div></div>
+      <div class="persona-photo-wrap"><img src="outfits/outfit_13.jpg" alt="Outfit 13"><div class="persona-photo-label">Outfit 13</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">Isaiah · Style Profile · 2026</div>
+
+</div><!-- /page-content -->
+
+<script>
+// ── Spider chart ──
+function drawSpider(stats, size, fillColor) {
+  const KEYS = ["drama","structure","skin","edge","formality"];
+  const LBLS = {drama:"Drama",structure:"Structure",skin:"Skin",edge:"Edge",formality:"Formality"};
+  const cx = size/2, cy = size/2, R = size*0.34, N = KEYS.length;
+  const ang = i => (Math.PI*2*i/N) - Math.PI/2;
+  let rings='', axes='';
+  for (let r=1;r<=5;r++){
+    const pts = KEYS.map((_,i)=>{const a=ang(i),rr=(r/5)*R;return`${cx+rr*Math.cos(a)},${cy+rr*Math.sin(a)}`;}).join(' ');
+    rings+=`<polygon points="${pts}" class="dv-axis" fill="none" stroke-width="0.5"/>`;
+  }
+  KEYS.forEach((_,i)=>{ const a=ang(i); axes+=`<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}" class="dv-axis" stroke-width="0.5"/>`; });
+  const poly_pts = KEYS.map((k,i)=>{const v=(stats[k]||0)/5,a=ang(i);return`${cx+R*v*Math.cos(a)},${cy+R*v*Math.sin(a)}`;}).join(' ');
+  const dots = KEYS.map((k,i)=>{const v=(stats[k]||0)/5,a=ang(i);return`<circle cx="${cx+R*v*Math.cos(a)}" cy="${cy+R*v*Math.sin(a)}" r="2.5" class="dv-dot"/>`;}).join('');
+  const lbls = KEYS.map((k,i)=>{const a=ang(i),lr=R*1.38,lx=cx+lr*Math.cos(a),ly=cy+lr*Math.sin(a),anc=lx<cx-3?'end':lx>cx+3?'start':'middle';return`<text x="${lx}" y="${ly}" text-anchor="${anc}" dominant-baseline="middle" font-size="7.5" class="dv-label" font-family="-apple-system,sans-serif" letter-spacing="0.08em">${LBLS[k].toUpperCase()}</text>`;}).join('');
+  return`<svg width="${size}" height="${size}" viewBox="-40 -40 ${size+80} ${size+80}">${rings}${axes}<polygon points="${poly_pts}" class="dv-poly" fill="${fillColor}" stroke-width="1.2"/>${dots}${lbls}</svg>`;
+}
+
+// ── Data ──
+const WARDROBE_STATS = {drama:3.18, structure:2.45, skin:1.66, edge:3.10, formality:2.82};
+
+const PERSONA_STATS = {
+  p1: {drama:4.5, structure:3.8, skin:1.5, edge:4.5, formality:3.2},  // Overlord
+  p2: {drama:3.8, structure:3.2, skin:1.8, edge:3.5, formality:2.5},  // The Wanderer
+  p3: {drama:3.8, structure:2.5, skin:2.2, edge:3.8, formality:3.2},  // Night Shift
+  p4: {drama:2.0, structure:1.8, skin:1.5, edge:2.0, formality:1.5},  // Civilian
+  p5: {drama:3.5, structure:3.5, skin:1.5, edge:3.3, formality:3.8},  // Viceroy
+};
+
+const BRANDS = [
+  {name:"MINOAR", count:20, max:20},
+  {name:"ORTTU",  count:18, max:20},
+  {name:"CRAFTD", count:12, max:20},
+  {name:"GASPER", count:6,  max:20},
+  {name:"RYVK",   count:5,  max:20},
+  {name:"DERNHOLT",count:3, max:20},
+  {name:"AMAZON", count:3,  max:20},
+  {name:"YASAR",  count:2,  max:20},
+  {name:"JAKCUZ", count:2,  max:20},
+];
+
+const VIBES = [
+  {label:"Dark / Minimal", count:15, color:"var(--cat-dark)"},
+  {label:"Tonal",           count:10, color:"var(--cat-tonal)"},
+  {label:"Contrast",        count:10, color:"var(--cat-contrast)"},
+  {label:"Night Out",       count:5,  color:"var(--cat-night)"},
+];
+const TOTAL_OUTFITS = 38;
+
+// ── Render main spider ──
+document.getElementById("spider-main").innerHTML = drawSpider(WARDROBE_STATS, 200, "rgba(226, 211, 180,0.18)");
+
+// ── Render persona spiders ──
+['p1','p2','p3','p4','p5'].forEach(id => {
+  document.getElementById("spider-"+id).innerHTML = drawSpider(PERSONA_STATS[id], 210, "rgba(226, 211, 180,0.22)");
+});
+
+// ── Stat pills ──
+const pillsEl = document.getElementById("stat-pills-main");
+const STAT_LABELS = {drama:"Drama",structure:"Structure",skin:"Skin",edge:"Edge",formality:"Formality"};
+Object.entries(WARDROBE_STATS).forEach(([k,v]) => {
+  pillsEl.innerHTML += `<div class="stat-pill">
+    <span class="stat-pill-label">${STAT_LABELS[k]}</span>
+    <div class="stat-pill-bar"><div class="stat-pill-fill" style="width:${(v/5)*100}%"></div></div>
+    <span class="stat-pill-val">${v.toFixed(1)}</span>
+  </div>`;
+});
+
+// ── Brand chart ──
+const brandEl = document.getElementById("brand-chart");
+BRANDS.forEach(b => {
+  brandEl.innerHTML += `<div class="brand-row">
+    <span class="brand-name">${b.name}</span>
+    <div class="brand-bar-track"><div class="brand-bar-fill" style="width:${(b.count/b.max)*100}%"></div></div>
+    <span class="brand-count">${b.count}</span>
+  </div>`;
+});
+
+// ── Vibe chart ──
+const vibeEl = document.getElementById("vibe-chart");
+VIBES.forEach(v => {
+  const pct = Math.round((v.count/TOTAL_OUTFITS)*100);
+  vibeEl.innerHTML += `<div class="vibe-row">
+    <div class="vibe-dot" style="background:${v.color}"></div>
+    <span class="vibe-label">${v.label}</span>
+    <span class="vibe-count">${v.count} outfits</span>
+    <span class="vibe-pct">${pct}%</span>
+  </div>`;
+});
+</script>
+</body>
+</html>

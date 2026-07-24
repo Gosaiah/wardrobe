@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outfit Picker — Isaiah</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Space+Grotesk:wght@300;400;500&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --deep: #111111;
+    --surface: #161616;
+    --border: #242424;
+    --border-light: #2e2e2e;
+    --muted: #555555;
+    --mid: #888888;
+    --text: #d4d4d4;
+    --bright: #f0f0f0;
+    --accent: #c8b89a;
+    --accent-dim: rgba(200, 184, 154, 0.12);
+    --red: #c0392b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 28px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 22px;
+    letter-spacing: 0.08em;
+    color: var(--bright);
+  }
+
+  header span {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    min-height: 0;
+  }
+
+  /* LEFT PANEL */
+  .input-panel {
+    border-right: 1px solid var(--border);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .panel-label {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .input-section { display: flex; flex-direction: column; }
+
+  textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--bright);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 16px;
+    resize: none;
+    outline: none;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+    height: 120px;
+  }
+
+  textarea::placeholder { color: var(--muted); }
+  textarea:focus { border-color: var(--accent); }
+
+  .quick-prompts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .quick-chip {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--mid);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+
+  .quick-chip:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* MODIFIERS */
+  .modifier-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .modifier-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .modifier-item label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    padding: 9px 12px;
+    outline: none;
+    border-radius: 2px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  select:focus { border-color: var(--accent); }
+
+  /* SUBMIT */
+  .submit-btn {
+    background: var(--accent);
+    border: none;
+    color: var(--black);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 16px 24px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: opacity 0.2s;
+    margin-top: auto;
+  }
+
+  .submit-btn:hover { opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* RIGHT PANEL */
+  .output-panel {
+    padding: 40px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    opacity: 0.3;
+    letter-spacing: -4px;
+  }
+
+  .empty-state p {
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 280px;
+    color: var(--muted);
+  }
+
+  /* LOADING */
+  .loading-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .loading-bar-track {
+    width: 200px;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loading-bar-fill {
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: var(--accent);
+    animation: sweep 1.4s ease-in-out infinite;
+  }
+
+  @keyframes sweep {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  .loading-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* RESULT */
+  .result-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-event {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .result-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 32px;
+    color: var(--bright);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .result-summary {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--mid);
+    max-width: 560px;
+  }
+
+  /* OUTFIT CARD */
+  .outfit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .outfit-card-header {
+    padding: 20px 24px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .outfit-number {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .outfit-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: var(--bright);
+  }
+
+  .outfit-category-tag {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .outfit-card-body { padding: 20px 24px; }
+
+  .pieces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .piece-chip {
+    background: var(--deep);
+    border: 1px solid var(--border-light);
+    border-radius: 2px;
+    padding: 10px 12px;
+  }
+
+  .piece-role {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .piece-name {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .piece-brand {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .outfit-rationale {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--mid);
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* VIBE SCORE */
+  .vibe-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .vibe-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    width: 90px;
+    flex-shrink: 0;
+  }
+
+  .vibe-track {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .vibe-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  .vibe-score-num {
+    font-size: 11px;
+    color: var(--accent);
+    width: 28px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .outfit-footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--border);
+    background: var(--deep);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-note {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .footer-dot {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* BEST PICK highlight */
+  .outfit-card.best {
+    border-color: var(--accent);
+  }
+
+  .best-badge {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--accent);
+    padding: 4px 8px;
+    border-radius: 2px;
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  /* ERROR */
+  .error-state {
+    background: rgba(192, 57, 43, 0.08);
+    border: 1px solid rgba(192, 57, 43, 0.3);
+    border-radius: 2px;
+    padding: 20px 24px;
+    color: #e07060;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; }
+    .input-panel { border-right: none; border-bottom: 1px solid var(--border); }
+    header { padding: 20px 24px; }
+    .input-panel, .output-panel { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Outfit Picker</h1>
+  <span>Isaiah — Wardrobe Intelligence</span>
+</header>
+
+<main>
+  <!-- LEFT: INPUT -->
+  <div class="input-panel">
+    <div class="input-section">
+      <div class="panel-label">Describe the occasion</div>
+      <textarea id="eventInput" placeholder="e.g. gallery opening in Tribeca, rooftop drinks at sunset, casual lunch but want to look intentional…" rows="5"></textarea>
+      <div class="quick-prompts">
+        <button class="quick-chip" onclick="fillPrompt('Gallery opening in NYC')">Gallery opening</button>
+        <button class="quick-chip" onclick="fillPrompt('Dinner date in the West Village, intimate restaurant')">Dinner date</button>
+        <button class="quick-chip" onclick="fillPrompt('Night out at a dark ambient club')">Night out</button>
+        <button class="quick-chip" onclick="fillPrompt('Creative industry meeting, want to look editorial but not overdressed')">Creative meeting</button>
+        <button class="quick-chip" onclick="fillPrompt('Casual weekend in the city, errands and coffee')">Casual day</button>
+        <button class="quick-chip" onclick="fillPrompt('Rooftop party at golden hour, warm weather')">Rooftop party</button>
+      </div>
+    </div>
+
+    <div class="input-section">
+      <div class="panel-label">Refine</div>
+      <div class="modifier-grid">
+        <div class="modifier-item">
+          <label>Weather</label>
+          <select id="weatherSel">
+            <option value="">Not specified</option>
+            <option value="hot and sunny">Hot & sunny</option>
+            <option value="warm">Warm</option>
+            <option value="mild">Mild</option>
+            <option value="cold">Cold</option>
+            <option value="rainy">Rainy</option>
+          </select>
+        </div>
+        <div class="modifier-item">
+          <label>Energy level</label>
+          <select id="energySel">
+            <option value="">Not specified</option>
+            <option value="low-key, understated">Low-key</option>
+            <option value="confident and intentional">Confident</option>
+            <option value="maximalist and dramatic">Dramatic</option>
+            <option value="quiet luxury, elevated minimal">Elevated minimal</option>
+          </select>
+        </div>
+        <div class="modifier-item">
+          <label>Walking</label>
+          <select id="walkSel">
+            <option value="">Not specified</option>
+            <option value="minimal walking, mostly seated">Minimal</option>
+            <option value="some walking">Some</option>
+            <option value="a lot of walking">A lot</option>
+          </select>
+        </div>
+        <div class="modifier-item">
+          <label>Outfits to show</label>
+          <select id="countSel">
+            <option value="1">1 (best pick only)</option>
+            <option value="2">2 options</option>
+            <option value="3" selected>3 options</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="getOutfits()">
+      Find My Outfit →
+    </button>
+  </div>
+
+  <!-- RIGHT: OUTPUT -->
+  <div class="output-panel" id="outputPanel">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">◈ ◈ ◈</div>
+      <p>Describe where you're going and your wardrobe will be read to find the right outfit.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+const WARDROBE_CONTEXT = `
+Isaiah's wardrobe and style context:
+
+STYLE IDENTITY: Dark avant-garde / deconstructed minimalism. Layered silhouettes, structural cuts, tonal black and grey with occasional contrast. Brands sit in the experimental/editorial space. Think "well-dressed villain" energy — structural dark avant-garde with dramatic silhouettes, strategic skin, Disney villain aesthetic. Key priority: showcasing physique (exposed arms, abs framing via high-waisted bottoms). Drama through movement — cape-like, flowing, layered elements that respond to motion.
+
+KEY STYLE PRINCIPLES:
+- Long tops are load-bearing: length elongates torso and adds drama
+- High-waisted bottoms are non-negotiable: frame torso and abs
+- Wide hakama/culotte silhouettes are a strong bottom preference
+- Prints should read as tonal texture, not loud pattern
+- Drama lives in movement
+
+OWNED PIECES BY BRAND:
+
+ORTTU (18 pieces):
+- Brunello Pants (black)
+- Roberto Pants (grey)
+- Roberto Jacket (grey)
+- Garson Pants (ivory)
+- Alejandro Cardigan (black)
+- Addams Skirt (black)
+- Walker Denim Skirt (blue)
+- Cambridge Skirt (white)
+- Jesse Top with Scarf (black)
+- Christian Shirt (black)
+- Emanuel Shirt (off-white)
+- Star Neck Lace Shirt (off-white)
+- Star Neck Shirt Couture (beige)
+- Star Neck Cardigan Sleeveless (green)
+- Porto Long Shirt (olive)
+- Raphael Shirt (pink)
+- Raphael Jacket (pink)
+- New York Jersey Pants (black XL)
+
+MINOAR (22 pieces, structural/technical):
+- Aspect Layered Construct Skirt Trousers
+- Quark Linen Cargo Layered Skirt Trousers
+- Trigon Shirt (multiple)
+- Trigon Pants (multiple)
+- Graphite External Bias Cargo Trousers
+- Fiber Bond Magma Tech Hood Cardigan
+- Hexa Long Layers Sleeveless Coat
+- Reverse Edge Shirt
+- Reverse Edge Pants
+- Cargo Volume Transform Denim Skirt
+- Nuance Dyed Refract Segment Track Pants
+- (additional layered shirts, cargo trousers, hooded cardigans, joggers)
+
+RYVK STUDIO (4 pieces, rave/night-out):
+- Sheer Contrast Floral Print Shirt
+- Fever Arc Sequin Embroidery Vest
+- Synth Flare Long Sleeve Sequin Jacket
+- Prism Flow Tulle Wide Leg Pants
+
+FRKM SCD (1 piece):
+- 25FW Layered Belt Apron Skirt (black)
+
+YA|SAR BOOTS (2 pairs):
+- Zipped Tall Boots (black goat leather)
+- Side-Zip Goat Leather Boots (black, silver chain + tourmaline detail)
+
+OUTFIT CATEGORIES:
+- Dark / Minimal: all-black or near-black, structural Minoar layering
+- Tonal: grey/grey or ivory/cream combos, often Orttu + Minoar
+- Contrast: white/black, print vs plain, or unexpected colour pop
+- Night Out: RYVK sequin/sheer pieces as centrepiece
+
+LAYERING SYSTEM:
+- Cold weather: fitted top + high-waisted wide bottom + long structured outer layer
+- Warm weather: sleeveless/open top + high-waisted bottom + lightweight kimono or sleeveless cape layer
+- Shorts: drama shifts upward — sheer, open, or sleeveless tops rather than volume below
+`;
+
+const SYSTEM_PROMPT = `You are Isaiah's personal wardrobe stylist. You know his full wardrobe intimately and his aesthetic identity: dark avant-garde / deconstructed minimalism, "well-dressed villain" energy, structural silhouettes, high-waisted bottoms that frame his physique, and drama through movement and layering.
+
+${WARDROBE_CONTEXT}
+
+When given an event or occasion, recommend complete outfits from his actual owned pieces. You must respond ONLY with valid JSON — no preamble, no markdown fences, no explanation outside the JSON.
+
+Response format:
+{
+  "event_read": "short poetic title for the occasion (3-6 words)",
+  "opening": "2-3 sentence intro about how you're reading this occasion and what his wardrobe brings to it",
+  "outfits": [
+    {
+      "name": "outfit name (evocative, 2-4 words)",
+      "category": "Dark/Minimal | Tonal | Contrast | Night Out | Editorial",
+      "pieces": [
+        { "role": "Top / Bottom / Outer / Shoes / Layer", "item": "exact piece name", "brand": "brand name" }
+      ],
+      "rationale": "2-3 sentences on why this works for the occasion — reference the event energy, the silhouette logic, and what makes it distinctive",
+      "vibes": {
+        "drama": 0-10,
+        "comfort": 0-10,
+        "occasion_fit": 0-10,
+        "editorial": 0-10
+      },
+      "notes": ["short practical note", "optional second note"]
+    }
+  ],
+  "best_pick_index": 0
+}
+
+Rules:
+- Only use pieces Isaiah actually owns from the wardrobe context above
+- Recommend between 1-3 outfits based on the count requested
+- The best_pick_index should indicate which outfit is the strongest match (0-indexed)
+- Always think about the layering system: cold = structured outer layer, warm = kimono/cape/sleeveless layer
+- Consider YA|SAR boots for footwear always — specify which pair and why
+- Drama, comfort, and occasion_fit should be genuinely calibrated, not all high
+- Make outfit names feel editorial and intentional, not generic`;
+
+function fillPrompt(text) {
+  document.getElementById('eventInput').value = text;
+  document.getElementById('eventInput').focus();
+}
+
+async function getOutfits() {
+  const eventText = document.getElementById('eventInput').value.trim();
+  if (!eventText) {
+    document.getElementById('eventInput').focus();
+    return;
+  }
+
+  const weather = document.getElementById('weatherSel').value;
+  const energy = document.getElementById('energySel').value;
+  const walking = document.getElementById('walkSel').value;
+  const count = document.getElementById('countSel').value;
+
+  let prompt = `Event/occasion: ${eventText}`;
+  if (weather) prompt += `\nWeather: ${weather}`;
+  if (energy) prompt += `\nDesired energy: ${energy}`;
+  if (walking) prompt += `\nAmount of walking: ${walking}`;
+  prompt += `\nNumber of outfit options to recommend: ${count}`;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+
+  showLoading();
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'API error');
+    }
+
+    const rawText = data.content.map(b => b.text || '').join('');
+    const clean = rawText.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    renderResult(result, eventText);
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function showLoading() {
+  const panel = document.getElementById('outputPanel');
+  panel.innerHTML = `
+    <div class="loading-state">
+      <div class="loading-bar-track"><div class="loading-bar-fill"></div></div>
+      <div class="loading-label">Reading your wardrobe…</div>
+    </div>
+  `;
+}
+
+function showError(msg) {
+  const panel = document.getElementById('outputPanel');
+  panel.innerHTML = `<div class="error-state">Something went wrong: ${msg}</div>`;
+}
+
+function renderResult(data, rawEvent) {
+  const panel = document.getElementById('outputPanel');
+
+  let html = `
+    <div class="result-header">
+      <div class="result-event">${rawEvent}</div>
+      <div class="result-title">${data.event_read}</div>
+      <div class="result-summary">${data.opening}</div>
+    </div>
+  `;
+
+  data.outfits.forEach((outfit, i) => {
+    const isBest = i === data.best_pick_index;
+
+    const piecesHTML = outfit.pieces.map(p => `
+      <div class="piece-chip">
+        <div class="piece-role">${p.role}</div>
+        <div class="piece-name">${p.item}</div>
+        <div class="piece-brand">${p.brand}</div>
+      </div>
+    `).join('');
+
+    const vibeKeys = ['drama', 'comfort', 'occasion_fit', 'editorial'];
+    const vibeLabels = { drama: 'Drama', comfort: 'Comfort', occasion_fit: 'Occasion fit', editorial: 'Editorial' };
+    const vibesHTML = vibeKeys.map(k => {
+      const val = outfit.vibes?.[k] ?? 0;
+      return `
+        <div class="vibe-bar-row">
+          <div class="vibe-label">${vibeLabels[k]}</div>
+          <div class="vibe-track"><div class="vibe-fill" style="width:${val * 10}%"></div></div>
+          <div class="vibe-score-num">${val}</div>
+        </div>
+      `;
+    }).join('');
+
+    const notesHTML = (outfit.notes || []).map(n => `
+      <div class="footer-note"><div class="footer-dot"></div>${n}</div>
+    `).join('');
+
+    html += `
+      <div class="outfit-card${isBest ? ' best' : ''}">
+        <div class="outfit-card-header">
+          <div>
+            <div class="outfit-number">Option ${i + 1}${isBest ? `<span class="best-badge">Best pick</span>` : ''}</div>
+            <div class="outfit-name">${outfit.name}</div>
+          </div>
+          <div class="outfit-category-tag">${outfit.category}</div>
+        </div>
+        <div class="outfit-card-body">
+          <div class="pieces-grid">${piecesHTML}</div>
+          ${vibesHTML}
+          <div class="outfit-rationale">${outfit.rationale}</div>
+        </div>
+        ${notesHTML ? `<div class="outfit-footer">${notesHTML}</div>` : ''}
+      </div>
+    `;
+  });
+
+  panel.innerHTML = html;
+
+  // Animate vibe bars
+  requestAnimationFrame(() => {
+    panel.querySelectorAll('.vibe-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0%';
+      requestAnimationFrame(() => { el.style.width = w; });
+    });
+  });
+}
+</script>
+</body>
+</html>

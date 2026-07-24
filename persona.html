@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter · Persona</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #e8e4df;
+    --muted: #6b6b6b;
+    --accent: #e2d3b4;
+    --accent2: #c9b98f;
+    --white: #f5f2ee;
+  }
+  html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 14px; line-height: 1.5; }
+  body { margin: 0; padding: 0; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    height: 90vh;
+    min-height: 500px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+  }
+  .hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    filter: brightness(0.45);
+  }
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      transparent 32%,
+      var(--bg) 100%
+    );
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 48px 56px;
+    width: 100%;
+  }
+  .hero-number {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .hero-name {
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .hero-alias {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .hero-tagline {
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .hero-badge {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent2);
+    padding: 4px 10px;
+    border-radius:6px;
+  }
+
+  /* ── PAGE CONTENT ── */
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px 120px;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-top: 80px; }
+  .section-label {
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-left: 2px solid var(--accent);
+    padding-left: 12px;
+    margin-bottom: 32px;
+  }
+
+  /* ── LORE ── */
+  .lore-text {
+    font-size: 18px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 720px;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+  }
+  .lore-text em { color: var(--accent); font-style: normal; font-weight: 400; }
+
+  /* ── CLASSIFICATION ── */
+  .class-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  .class-cell {
+    background: var(--surface);
+    padding: 28px 24px;
+  }
+  .class-key {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .class-val {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .stat-bars { display: flex; flex-direction: column; gap: 16px; }
+  .stat-row { display: flex; align-items: center; gap: 14px; }
+  .stat-name {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 80px;
+  }
+  .stat-track {
+    flex: 1;
+    height: 3px;
+    background: var(--surface2);
+    border-radius:6px;
+    overflow: hidden;
+  }
+  .stat-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius:6px;
+    transition: width 0.8s ease;
+  }
+  .stat-val {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 16px;
+    text-align: right;
+  }
+
+  /* ── SPECIALIZATIONS ── */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .spec-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 32px 28px;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+  .spec-card:hover { border-color: var(--accent2); }
+  .spec-number {
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .spec-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .spec-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .spec-anchor-label {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 4px;
+  }
+  .spec-anchor {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── MOVES ── */
+  .moves-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .move-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 28px 24px;
+    transition: border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .move-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--border);
+  }
+  .move-card.ultimate {
+    border-color: var(--accent2);
+    background: linear-gradient(135deg, #1a1714 0%, var(--surface) 60%);
+  }
+  .move-card.ultimate::before {
+    background: linear-gradient(to right, var(--accent), transparent);
+  }
+  .move-card:hover { border-color: var(--accent2); }
+  .move-card.ultimate:hover { border-color: var(--accent); }
+  .move-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .move-type {
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius:6px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .move-type.passive  { color: var(--passive); background: var(--passive-tint); border: 1px solid var(--passive-border); }
+  .move-type.active   { color: var(--active); background: var(--active-tint); border: 1px solid var(--active-border); }
+  .move-type.ultimate { color: var(--accent); background: rgba(226, 211, 180,0.12); border: 1px solid var(--accent2); }
+  .move-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .move-card.ultimate .move-name { color: var(--accent); }
+  .move-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .move-effect-label {
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 5px;
+  }
+  .move-effect {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .move-card.ultimate .move-effect { color: var(--accent); }
+
+  /* ── PIECES ── */
+  .pieces-list { display: flex; flex-direction: column; gap: 2px; }
+  .piece-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 56px 90px 1fr;
+    align-items: center;
+    gap: 0;
+    transition: border-color 0.2s;
+    overflow: hidden;
+  }
+  .piece-row:hover { border-color: var(--accent2); }
+  .piece-thumb {
+    width: 56px;
+    height: 72px;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    flex-shrink: 0;
+    filter: brightness(0.9);
+  }
+  .piece-role-col {
+    padding: 0 16px;
+    border-right: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .piece-role {
+    font-size: 8px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .piece-info {
+    padding: 0 24px;
+  }
+  .piece-name {
+    font-size: 13px;
+    color: var(--white);
+    font-weight: 500;
+    margin-bottom: 3px;
+  }
+  .piece-brand {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── GALLERY ── */
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .gallery-item {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: var(--surface2);
+    cursor: pointer;
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.4s ease, filter 0.4s ease;
+    filter: brightness(0.85);
+  }
+  .gallery-item:hover img { transform: scale(1.03); filter: brightness(1); }
+  .gallery-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 32px 16px 16px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── OTHER PERSONAS ── */
+  .personas-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 32px;
+  }
+  .persona-card {
+    position: relative;
+    aspect-ratio: 2/3;
+    overflow: hidden;
+    background: var(--surface2);
+    text-decoration: none;
+    display: block;
+  }
+  .persona-card img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: top center;
+    filter: brightness(0.35);
+    transition: filter 0.3s;
+  }
+  .persona-card:hover img { filter: brightness(0.55); }
+  .persona-card.current img { filter: brightness(0.2); }
+  .persona-card-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 14px 14px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.85));
+  }
+  .persona-card-num {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .persona-card-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+  }
+  .persona-card.current .persona-card-name { color: var(--muted); }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 64px 0 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero-content { padding: 0 24px 40px; }
+    .page { padding: 0 24px 80px; }
+    .specs-grid { grid-template-columns: 1fr; }
+    .moves-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .personas-row { grid-template-columns: repeat(2, 1fr); }
+    .class-grid { grid-template-columns: 1fr; }
+  }
+</style>
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+
+<script src="nav.js"></script>
+
+<div id="persona-root"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const PERSONAS = {
+  'overlord': {
+    id: 'overlord',
+    alias: 'Zayder',
+    number: 'CHARACTER 01',
+    name: 'Overlord',
+    tagline: 'Ancient. Already decided.',
+    badges: ['Core Identity', 'Any Environment', 'Maximum Edge'],
+    hero: 'outfits/outfit_01.jpg',
+    lore: 'Ancient. Has been in every room worth being in and still walks into this one like it owes him something. The all-black isn\'t intimidation — it\'s verdict. You feel judged before he speaks, decided before he moves. Whatever is about to happen, he already knows. The clothes are the last warning.',
+    classification: [
+      { key: 'Occasion', val: 'Any Environment' },
+      { key: 'Intensity', val: 'Maximum' },
+      { key: 'Frequency', val: 'Core Identity' }
+    ],
+    stats: {drama:4.5, structure:3.8, skin:1.5, edge:4.5, formality:3.2},
+    spiderColor: '#e2d3b4',
+    specializations: [
+      {
+        name: 'Monolith',
+        desc: 'Single dark tone pushed to its absolute limit. Maximum structure, zero distraction. The look that needs no explanation in any room.',
+        anchor: 'All-black MINOAR coat + base layer + tall boots'
+      },
+      {
+        name: 'Shadow Layer',
+        desc: 'Layered darks playing depth without relying on pattern. Texture creates all contrast when color refuses to.',
+        anchor: 'Hexa coat over sleeveless top over jogger'
+      },
+      {
+        name: 'Full MINOAR',
+        desc: 'Every piece from the same world. Silhouette complete from boots upward. Only activated when the stakes match.',
+        anchor: 'Full MINOAR top-to-toe — skirt trouser or wide leg'
+      }
+    ],
+    moves: [
+      { type: 'passive',  name: 'Dark Presence', desc: 'Those nearby make disadvantage rolls on confidence checks without knowing why. Nothing was said. Nothing was done. The field just exists.', effect: 'The room recalibrates before he speaks.' },
+      { type: 'active',   name: 'Ignite', desc: 'Sets the terms of any room he enters — retroactively. The framing was his before anyone agreed to it.', effect: 'Others argue within the context he created. None of them notice.' },
+      { type: 'active',   name: 'Decree', desc: 'Speaks once. Does not repeat it. Does not follow up. The room rearranges around it.', effect: 'Whatever was going to happen changes. Quietly. Permanently.' },
+      { type: 'ultimate', name: 'Verdict', desc: 'Does nothing. The outcome was already decided before he arrived. Only activates in rooms that deserve it.', effect: 'Everyone present understands what was decided. No one can point to the moment it happened.' }
+    ],
+    pieces: [
+      { role: 'Anchor', name: 'Hexa Long Layers Sleeveless Coat', brand: 'MINOAR', img: 'https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg' },
+      { role: 'Layer', name: 'Trigon Layered Sleeveless Shirt', brand: 'MINOAR', img: 'https://media.minoar.com/2022/05/Trigon-Layered-Sleeveless-Shirt-Ghost.jpg' },
+      { role: 'Foundation', name: 'Zipped Tall Boots', brand: 'YASAR', img: 'https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468' }
+    ],
+    outfits: [
+      { num: '01', img: 'outfits/outfit_01.jpg', label: 'All Black Structured' },
+      { num: '06', img: 'outfits/outfit_06.jpg', label: 'Full Minoar Skirt Trouser' },
+      { num: '15', img: 'outfits/outfit_15.jpg', label: 'Full Minoar Dark' }
+    ]
+  },
+
+  'wanderer': {
+    id: 'wanderer',
+    alias: 'Caius',
+    number: 'CHARACTER 02',
+    name: 'The Wanderer',
+    tagline: 'Ancient. Still moving.',
+    badges: ['Daily Practice', 'Any Environment', 'Quiet Authority'],
+    hero: 'outfits/outfit_02.jpg',
+    lore: 'Ancient. Has been in even more rooms — and left without needing anyone to notice. Layers like sediment, grey like something worn smooth by time. The authority isn\'t in what he\'s about to do. It\'s in what you can tell he\'s already done. You wonder what he\'s seen. He doesn\'t tell you. The clothes carry the answer.',
+    classification: [
+      { key: 'Occasion', val: 'Any Environment' },
+      { key: 'Intensity', val: 'Calibrated' },
+      { key: 'Frequency', val: 'Daily Practice' }
+    ],
+    stats: {drama:3.8, structure:3.2, skin:1.8, edge:3.5, formality:2.5},
+    spiderColor: '#a8a090',
+    specializations: [
+      {
+        name: 'Grey Scale',
+        desc: 'Cool monochrome from deep charcoal to ash. Layers built like sediment — each one adding depth without noise.',
+        anchor: 'Grey MINOAR column + Roberto jacket + tall boots'
+      },
+      {
+        name: 'Earth Cloak',
+        desc: 'Browns, taupes, and warm neutrals held in the same value range. Heavy outer layer over a controlled interior.',
+        anchor: 'Earth tone cloak or robe over structured base'
+      },
+      {
+        name: 'Linen Stack',
+        desc: 'Lighter fabrications in tonal range. Relaxed but intentional. The version that travels without announcing itself.',
+        anchor: 'Porto linen shirt + loose trouser + clean boots'
+      }
+    ],
+    moves: [
+      { type: 'passive',  name: 'Ancient Ground', desc: 'Plants lean toward him. Animals don\'t flee. The earth recognizes something older than the room he\'s standing in.', effect: 'People feel inexplicably settled in his presence. Like the ground is more solid.' },
+      { type: 'passive',  name: 'Witness', desc: 'People tell him things they didn\'t plan to. Truth surfaces without pressure. He doesn\'t ask the right questions — he just makes lying feel unnecessary.', effect: 'Conversations go somewhere real within minutes. He didn\'t steer them there.' },
+      { type: 'active',   name: 'Layer of Years', desc: 'Removes one layer to reveal something older underneath. Not a reveal — a reminder. Whatever is beneath has been there longer than this room has existed.', effect: 'The look deepens. The room gets quieter.' },
+      { type: 'ultimate', name: 'What He\'s Seen', desc: 'Speaks once. Everyone in range understands something they didn\'t before and cannot explain why. Not wisdom. Something older than wisdom.', effect: 'Nobody forgets it. Nobody can quote it exactly. Both things are true.' }
+    ],
+    pieces: [
+      { role: 'Anchor', name: 'Roberto Jacket', brand: 'ORTTU', img: 'https://cdn.shopify.com/s/files/1/0033/3676/5493/files/18-7_c13b0692-4966-41f8-869a-bd225617e7cf.jpg?v=1689578387' },
+      { role: 'Layer', name: 'Layered Sleeveless Collar Shirt', brand: 'MINOAR', img: 'https://media.minoar.com/2022/05/Trigon-Layered-Sleeveless-Shirt-Ghost.jpg' },
+      { role: 'Foundation', name: 'Reverse Edge Hood Buckle Cardigan', brand: 'MINOAR', img: 'https://media.minoar.com/2024/11/Reverse_Edge_Hood_Buckle_Cardigan_MNR-11.jpg' }
+    ],
+    outfits: [
+      { num: '02', img: 'outfits/outfit_02.jpg', label: 'Monochrome Grey' },
+      { num: '24', img: 'outfits/outfit_24.jpg', label: 'White / Grey Columns' },
+      { num: '25', img: 'outfits/outfit_25.jpg', label: 'Earth Cloak' }
+    ]
+  },
+
+  'night-shift': {
+    id: 'night-shift',
+    alias: 'Zay',
+    number: 'CHARACTER 03',
+    name: 'Night Shift',
+    tagline: 'Rules don\'t apply after dark.',
+    badges: ['High Stakes', 'Evening / Events', 'Most Honest'],
+    hero: 'outfits/outfit_16.jpg',
+    lore: 'Forgot the rules — not because he doesn\'t know them, but because tonight they don\'t apply. The sequins aren\'t trying to be serious. The fringe moves. This version takes up space not to claim it but because he\'s enjoying it. Rarest of the five. Probably the most honest.',
+    classification: [
+      { key: 'Occasion', val: 'Evening / Events' },
+      { key: 'Intensity', val: 'Elevated' },
+      { key: 'Frequency', val: 'High Stakes' }
+    ],
+    stats: {drama:3.8, structure:2.5, skin:2.2, edge:3.8, formality:3.2},
+    spiderColor: '#b8a0d8',
+    specializations: [
+      {
+        name: 'Fringe & Movement',
+        desc: 'Pieces that move with the body. The outfit as an event. Hardware that swings, fringe that follows, fabric that responds.',
+        anchor: 'RYVK fringe cloak + dark base + chain'
+      },
+      {
+        name: 'Sequin & Sheen',
+        desc: 'Fabric that upgrades under venue light. The look changes as the night changes — same outfit, different story at midnight.',
+        anchor: 'Sequin vest + structured trouser + pendant'
+      },
+      {
+        name: 'Print & Dark Base',
+        desc: 'One expressive piece over a controlled dark foundation. The print does the work. Everything else gets out of the way.',
+        anchor: 'Bold print or floral over black base layer'
+      }
+    ],
+    moves: [
+      { type: 'passive',  name: 'Resonance', desc: 'Every room he enters finds its own tempo shifting without anyone deciding it. The music feels better. The conversation gets easier. Nobody clocks why.', effect: 'The night gets better after he arrives. Measurably.' },
+      { type: 'active',   name: 'Sequin Flash', desc: 'Bends light around himself. Cameras find him whether he poses or not. The sequins aren\'t reflecting the room — the room is reflecting the sequins.', effect: 'Every photo from the night has him in focus. He wasn\'t trying.' },
+      { type: 'active',   name: 'The Night Is Young', desc: 'Resets the clock. The party was going to end. Coats were on. Then he said something, or moved a certain way, and now it isn\'t ending.', effect: 'Two more hours, minimum. Nobody planned this.' },
+      { type: 'ultimate', name: 'Remembered', desc: 'Leaves without posting. Without documenting. Without announcing. Just leaves.', effect: 'Three people text separately the next day asking about the look. The night is over. The outfit isn\'t.' }
+    ],
+    pieces: [
+      { role: 'Anchor', name: 'Obscure Cloak Fringe Crop Top', brand: 'RYVK', img: 'https://cdn.shopify.com/s/files/1/0714/6848/2717/files/ObscureCloakFringeCropTop_1.jpg' },
+      { role: 'Layer', name: 'Fever Arc Sequin Embroidery Vest', brand: 'RYVK', img: 'https://cdn.shopify.com/s/files/1/0714/6848/2717/files/FeverArcSequinEmbroideryVest_1.jpg?v=1780040848' },
+      { role: 'Detail', name: 'Arrow Pendant', brand: 'CRAFTD', img: 'https://cdn.shopify.com/s/files/1/2219/3483/files/arrow-pendant-gold.png?v=1747719903' }
+    ],
+    outfits: [
+      { num: '16', img: 'outfits/outfit_16.jpg', label: 'Fringe Cloak Night' },
+      { num: '19', img: 'outfits/outfit_19.jpg', label: 'Sequin Vest Night' },
+      { num: '28', img: 'outfits/outfit_28.jpg', label: 'Night Tone Wave' }
+    ]
+  },
+
+  'civilian': {
+    id: 'civilian',
+    alias: null,
+    number: 'CHARACTER 04',
+    name: 'Civilian',
+    tagline: 'No audience. No armor.',
+    badges: ['Day Off', 'Close Circle', 'Quietly Intentional'],
+    hero: 'outfits/outfit_38.jpg',
+    lore: 'No agenda. No audience. This is the version that shows up when there\'s nothing to prove — weekend, day off, close friends only. The clothes are still intentional, just quietly. The one most people never see.',
+    classification: [
+      { key: 'Occasion', val: 'Day Off / Weekend' },
+      { key: 'Intensity', val: 'Low' },
+      { key: 'Frequency', val: 'Close Circle' }
+    ],
+    stats: {drama:2.0, structure:1.8, skin:1.5, edge:2.0, formality:1.5},
+    spiderColor: '#8a8880',
+    specializations: [
+      {
+        name: 'Tonal Ease',
+        desc: 'Earth and neutral tones worn without trying. No statement. No architecture. Just clothes that feel right on a quiet day.',
+        anchor: 'Brown tonal mix + relaxed trouser + simple boot'
+      },
+      {
+        name: 'Volume Without Drama',
+        desc: 'Relaxed silhouettes that are comfortable first, considered second. The proportions are right — but they\'re not performing.',
+        anchor: 'Volume trouser or wide leg + plain top'
+      },
+      {
+        name: 'Off Day',
+        desc: 'The version that doesn\'t get photographed. Low stakes, fully comfortable. Still more intentional than most people\'s best effort.',
+        anchor: 'Anything that doesn\'t need to be explained'
+      }
+    ],
+    moves: [
+      { type: 'passive',  name: 'No Threat', desc: 'People let their guard down within 10ft without knowing why. No performance is required of them. The armor comes off on its own.', effect: 'Conversations go real faster than they should. Nobody questions it.' },
+      { type: 'passive',  name: 'Unmarked', desc: 'Passes through any environment without leaving a social footprint. Nobody can describe exactly what he was wearing afterward. They just remember he was there.', effect: 'He moves through rooms like water. No trace. No residue.' },
+      { type: 'active',   name: 'Ground', desc: 'When a room gets loud or performative, people unconsciously orbit him for calm. He isn\'t doing anything. That\'s exactly why it works.', effect: 'The noise level drops within a 15ft radius. Nobody announced this.' },
+      { type: 'ultimate', name: 'The Private Look', desc: 'The one most people never see. Cannot be photographed authentically without his consent. The camera finds something else to focus on.', effect: 'Remembered by the people who matter. Unknown to everyone else. By design.' }
+    ],
+    pieces: [
+      { role: 'Base', name: 'Brown Tonal Work', brand: 'ORTTU / MINOAR', img: 'outfits/outfit_38.jpg' },
+      { role: 'Layer', name: 'Volume trouser or wide leg', brand: 'MINOAR', img: 'outfits/outfit_35.jpg' },
+      { role: 'Foundation', name: 'Clean simple boots', brand: 'YASAR', img: 'outfits/outfit_30.jpg' }
+    ],
+    outfits: [
+      { num: '38', img: 'outfits/outfit_38.jpg', label: 'Brown Tonal Work' },
+      { num: '30', img: 'outfits/outfit_30.jpg', label: 'Blue Volume Night' },
+      { num: '35', img: 'outfits/outfit_35.jpg', label: 'Portrait Tee Volume' }
+    ]
+  },
+
+  'viceroy': {
+    id: 'viceroy',
+    alias: 'Gunray',
+    number: 'CHARACTER 05',
+    name: 'Viceroy',
+    tagline: 'Authority inside the system.',
+    badges: ['Work / Meetings', 'Conventional Spaces', 'Deliberate'],
+    hero: 'outfits/outfit_12.jpg',
+    lore: 'Moves through conventional spaces without bending to them. Polished where the Overlord is armored, deliberate where the others are expressive. Knows which room he\'s in and dresses accordingly — not to fit in, but to hold authority inside a system that expects it.',
+    classification: [
+      { key: 'Occasion', val: 'Work / Meetings' },
+      { key: 'Intensity', val: 'Refined' },
+      { key: 'Frequency', val: 'Situational' }
+    ],
+    stats: {drama:3.5, structure:3.5, skin:1.5, edge:3.3, formality:3.8},
+    spiderColor: '#c0a870',
+    specializations: [
+      {
+        name: 'Cream & Off-White',
+        desc: 'Light tones executed with structural precision. Enters a professional room and remains the most considered person in it.',
+        anchor: 'Ivory editorial top + dark structured trouser'
+      },
+      {
+        name: 'Couture Contrast',
+        desc: 'A single polished piece against a controlled dark or neutral base. Formal without announcing it. The contrast is the argument.',
+        anchor: 'Star Neck Couture shirt + Garson ivory trousers'
+      },
+      {
+        name: 'Work Day',
+        desc: 'Dressed for the environment while remaining entirely himself. The system expects a certain thing. He provides it. On his own terms.',
+        anchor: 'Cardigan or structured layer + clean trouser'
+      }
+    ],
+    moves: [
+      { type: 'passive',  name: 'Protocol', desc: 'Any room with rules adapts those rules slightly in his favor without anyone noticing. The system wasn\'t designed for him. It adjusts anyway.', effect: 'He operates at full capacity inside environments built to constrain.' },
+      { type: 'passive',  name: 'Formality Anchor', desc: 'The outfit sets the register of the room without trying to. Others dress up or down relative to wherever he lands.', effect: 'He is the calibration point. Nobody voted for this. It just happened.' },
+      { type: 'active',   name: 'The System Bends', desc: 'Enters a space not designed for him. Conventional spaces, conventional expectations. Becomes the most credible occupant within minutes.', effect: 'The room realigns. He didn\'t fight the system. The system moved.' },
+      { type: 'ultimate', name: 'Mandate', desc: 'Issues a direction. Doesn\'t repeat it. Doesn\'t follow up. Gets followed by people who thought they wouldn\'t.', effect: 'The thing gets done. Nobody can explain why they agreed so quickly.' }
+    ],
+    pieces: [
+      { role: 'Anchor', name: 'Star Neck Lace Shirt Couture', brand: 'ORTTU', img: 'https://cdn.shopify.com/s/files/1/0033/3676/5493/files/18-7_c13b0692-4966-41f8-869a-bd225617e7cf.jpg?v=1689578387' },
+      { role: 'Foundation', name: 'Garson Pants', brand: 'ORTTU', img: 'https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Linen-Trousers-2.jpg' },
+      { role: 'Layer', name: 'Reverse Edge Hood Buckle Cardigan', brand: 'MINOAR', img: 'https://media.minoar.com/2024/11/Reverse_Edge_Hood_Buckle_Cardigan_MNR-11.jpg' }
+    ],
+    outfits: [
+      { num: '12', img: 'outfits/outfit_12.jpg', label: 'Ivory/Cream Editorial' },
+      { num: '23', img: 'outfits/outfit_23.jpg', label: 'Couture Contrast' },
+      { num: '13', img: 'outfits/outfit_13.jpg', label: 'Bold Green Statement' }
+    ]
+  }
+};
+
+const ALL_ORDER = ['overlord', 'wanderer', 'night-shift', 'civilian', 'viceroy'];
+
+
+// ── SPIDER CHART ─────────────────────────────────────────────────────────────
+function drawSpider(stats, size, fillColor, uid) {
+  const keys = Object.keys(stats);
+  const vals = Object.values(stats);
+  const n = keys.length;
+  const cx = size / 2, cy = size / 2;
+  const r = size * 0.38;
+  const labelR = size * 0.48;
+  const step = (2 * Math.PI) / n;
+  const toXY = (i, v) => {
+    const a = -Math.PI / 2 + i * step;
+    return [cx + Math.cos(a) * r * (v / 5), cy + Math.sin(a) * r * (v / 5)];
+  };
+  const toLabel = (i) => {
+    const a = -Math.PI / 2 + i * step;
+    return [cx + Math.cos(a) * labelR, cy + Math.sin(a) * labelR];
+  };
+
+  // Grid rings
+  let rings = '';
+  [1,2,3,4,5].forEach(lvl => {
+    const pts = keys.map((_, i) => {
+      const a = -Math.PI / 2 + i * step;
+      return `${cx + Math.cos(a) * r * (lvl/5)},${cy + Math.sin(a) * r * (lvl/5)}`;
+    }).join(' ');
+    rings += `<polygon points="${pts}" class="dv-axis" fill="none" stroke-width="1"/>`;
+  });
+
+  // Spokes
+  let spokes = '';
+  keys.forEach((_, i) => {
+    const a = -Math.PI / 2 + i * step;
+    spokes += `<line x1="${cx}" y1="${cy}" x2="${cx + Math.cos(a)*r}" y2="${cy + Math.sin(a)*r}" class="dv-axis" stroke-width="1"/>`;
+  });
+
+  // Fill polygon
+  const fillPts = vals.map((v, i) => toXY(i, v).join(',')).join(' ');
+  const fillSvg = `<polygon points="${fillPts}" fill="${fillColor}" fill-opacity="0.18" stroke="${fillColor}" stroke-width="1.5"/>`;
+
+  // Dots
+  let dots = '';
+  vals.forEach((v, i) => {
+    const [x, y] = toXY(i, v);
+    dots += `<circle cx="${x}" cy="${y}" r="3" fill="${fillColor}"/>`;
+  });
+
+  // Labels
+  let labels = '';
+  keys.forEach((k, i) => {
+    const [x, y] = toLabel(i);
+    const anchor = x < cx - 4 ? 'end' : x > cx + 4 ? 'start' : 'middle';
+    labels += `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle" font-size="9" class="dv-label" letter-spacing="1.5" font-family="-apple-system,sans-serif" text-transform="uppercase">${k.toUpperCase()}</text>`;
+  });
+
+  return `<svg width="${size}" height="${size}" viewBox="-40 -40 ${size+80} ${size+80}" xmlns="http://www.w3.org/2000/svg">${rings}${spokes}${fillSvg}${dots}${labels}</svg>`;
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id') || 'overlord';
+  const p = PERSONAS[id] || PERSONAS['overlord'];
+
+  document.title = `Alter · ${p.name.replace('\n', ' ')}`;
+
+  const heroName = p.name.replace('\n', '<br>');
+
+  const statsHtml = Object.entries(p.stats).map(([k, v]) =>
+    `<div class="stat-row">
+      <span class="stat-name">${k.charAt(0).toUpperCase()+k.slice(1)}</span>
+      <div class="stat-track"><div class="stat-fill" style="width:${v/5*100}%"></div></div>
+      <span class="stat-val">${v.toFixed(1)}</span>
+    </div>`
+  ).join('');
+
+  const specsHtml = p.specializations.map((s, i) =>
+    `<div class="spec-card">
+      <div class="spec-number">SPEC 0${i+1}</div>
+      <div class="spec-name">${s.name}</div>
+      <div class="spec-desc">${s.desc}</div>
+      <div class="spec-anchor-label">Signature Pieces</div>
+      <div class="spec-anchor">${s.anchor}</div>
+    </div>`
+  ).join('');
+
+  const movesHtml = p.moves.map(m =>
+    `<div class="move-card${m.type === 'ultimate' ? ' ultimate' : ''}">
+      <div class="move-header">
+        <span class="move-type ${m.type}">${m.type}</span>
+        <span class="move-name">${m.name}</span>
+      </div>
+      <div class="move-desc">${m.desc}</div>
+      <div class="move-effect-label">Effect</div>
+      <div class="move-effect">${m.effect}</div>
+    </div>`
+  ).join('');
+
+  const piecesHtml = p.pieces.map(pc =>
+    `<div class="piece-row">
+      <img class="piece-thumb" src="${pc.img}" alt="${pc.name}" loading="lazy">
+      <div class="piece-role-col"><span class="piece-role">${pc.role}</span></div>
+      <div class="piece-info">
+        <div class="piece-name">${pc.name}</div>
+        <div class="piece-brand">${pc.brand}</div>
+      </div>
+    </div>`
+  ).join('');
+
+  const galleryHtml = p.outfits.map(o =>
+    `<div class="gallery-item">
+      <img src="${o.img}" alt="${o.label}" loading="lazy">
+      <div class="gallery-label">${o.label}</div>
+    </div>`
+  ).join('');
+
+  const personasHtml = ALL_ORDER.map(pid => {
+    const other = PERSONAS[pid];
+    const isCurrent = pid === id;
+    return `<a href="persona.html?id=${pid}" class="persona-card${isCurrent ? ' current' : ''}">
+      <img src="${other.hero}" alt="${other.name}" loading="lazy">
+      <div class="persona-card-info">
+        <div class="persona-card-num">${other.number}</div>
+        <div class="persona-card-name">${other.name.replace('\n', ' ')}</div>
+      </div>
+    </a>`;
+  }).join('');
+
+  const badgesHtml = p.badges.map(b => `<span class="hero-badge">${b}</span>`).join('');
+  const spiderSvg = drawSpider(p.stats, 220, p.spiderColor, id);
+
+  document.getElementById('persona-root').innerHTML = `
+    <!-- HERO -->
+    <div class="hero">
+      <img class="hero-img" src="${p.hero}" alt="${p.name}">
+      <div class="hero-gradient"></div>
+      <div class="hero-content">
+        <div class="hero-number">${p.number}</div>
+        <h1 class="hero-name">${heroName}</h1>
+        ${p.alias ? `<div class="hero-alias">aka ${p.alias}</div>` : ''}
+        <div class="hero-tagline">${p.tagline}</div>
+        <div class="hero-badges">${badgesHtml}</div>
+      </div>
+    </div>
+
+    <div class="page">
+
+      <!-- LORE -->
+      <div class="section">
+        <div class="section-label">Background</div>
+        <p class="lore-text">${p.lore}</p>
+        <div class="class-grid">
+          ${p.classification.map(c => `<div class="class-cell"><div class="class-key">${c.key}</div><div class="class-val">${c.val}</div></div>`).join('')}
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="section">
+        <div class="section-label">Style Stats</div>
+        <div class="stats-grid">
+          <div>${spiderSvg}</div>
+          <div class="stat-bars">${statsHtml}</div>
+        </div>
+      </div>
+
+      <!-- SPECIALIZATIONS -->
+      <div class="section">
+        <div class="section-label">Specializations</div>
+        <div class="specs-grid">${specsHtml}</div>
+      </div>
+
+      <!-- SIGNATURE MOVES -->
+      <div class="section">
+        <div class="section-label">Signature Moves</div>
+        <div class="moves-grid">${movesHtml}</div>
+      </div>
+
+      <!-- SIGNATURE PIECES -->
+      <div class="section">
+        <div class="section-label">Signature Pieces</div>
+        <div class="pieces-list">${piecesHtml}</div>
+      </div>
+
+      <!-- GALLERY -->
+      <div class="section">
+        <div class="section-label">Gallery</div>
+        <div class="gallery">${galleryHtml}</div>
+      </div>
+
+      <!-- OTHER PERSONAS -->
+      <hr class="divider">
+      <div class="section">
+        <div class="section-label">Other Personas</div>
+        <div class="personas-row">${personasHtml}</div>
+      </div>
+
+    </div>
+  `;
+}
+
+render();
+</script>
+
+</body>
+</html>

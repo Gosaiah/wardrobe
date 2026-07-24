@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alter · Theme</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-ui); transition: background .2s, color .2s; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 32px 90px; }
+  .title { font-family: var(--font-display); font-weight: 200; font-size: 30px; letter-spacing: .34em; text-transform: uppercase; padding-left: .34em; }
+  .lead { color: var(--muted); font-size: 12.5px; letter-spacing: .04em; margin-top: 12px; line-height: 1.7; max-width: 640px; }
+  .lead code { color: var(--accent); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; }
+  h2 { font-family: var(--font-display); font-weight: 400; font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); margin: 48px 0 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+  .sw { border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; background: var(--surface); }
+  .sw .chip { height: 62px; }
+  .sw .meta { padding: 9px 11px; }
+  .sw .nm { font-size: 11px; color: var(--text); font-weight: 500; }
+  .sw .val { font-size: 10px; color: var(--muted); font-family: ui-monospace, Menlo, monospace; margin-top: 2px; word-break: break-all; }
+
+  .radii { display: flex; gap: 18px; flex-wrap: wrap; }
+  .radii .r { text-align: center; }
+  .radii .rbox { width: 84px; height: 62px; background: var(--surface); border: 1px solid var(--border); }
+  .radii .rl { font-size: 10px; color: var(--muted); margin-top: 8px; font-family: ui-monospace, Menlo, monospace; }
+
+  .spacing { display: flex; flex-direction: column; gap: 10px; }
+  .spacing .s { display: flex; align-items: center; gap: 14px; }
+  .spacing .bar { height: 14px; background: var(--accent); border-radius: 3px; }
+  .spacing .sl { font-size: 10px; color: var(--muted); font-family: ui-monospace, Menlo, monospace; }
+
+  .type-row { margin-bottom: 14px; }
+  .type-row .disp { font-family: var(--font-display); font-weight: 200; font-size: 30px; letter-spacing: .18em; color: var(--white); }
+  .type-row .ui { font-family: var(--font-ui); font-size: 15px; color: var(--text); }
+  .type-row .cap { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-top: 2px; }
+
+  .demo { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn-primary { background: var(--accent); color: var(--on-accent); border: none; font-family: var(--font-ui); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; font-size: 11px; padding: 12px 20px; border-radius: var(--r-md); cursor: pointer; }
+  .btn-ghost { background: none; color: var(--muted); border: 1px solid var(--border); font-family: var(--font-ui); letter-spacing: .14em; text-transform: uppercase; font-size: 11px; padding: 12px 20px; border-radius: var(--r-sm); cursor: pointer; }
+  .btn-ghost:hover { color: var(--text); border-color: var(--accent2); }
+  .badge { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; padding: 4px 9px; border-radius: var(--r-sm); font-weight: 600; }
+  .b-pass { color: var(--passive); background: var(--passive-tint); border: 1px solid var(--passive-border); }
+  .b-act { color: var(--active); background: var(--active-tint); border: 1px solid var(--active-border); }
+  .b-ult { color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent2); }
+  .b-dngr { color: var(--danger); background: var(--danger-tint); border: 1px solid var(--danger-border); }
+
+  .card-demo { max-width: 300px; background: var(--card-grad); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--card-shadow); padding: 22px; }
+  .card-demo .k { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+  .card-demo .t { font-family: var(--font-display); font-size: 18px; color: var(--white); margin-top: 6px; }
+  .card-demo .d { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+
+  .toggle { display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-pill); padding: 7px 14px; cursor: pointer; color: var(--text); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+</style>
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<script src="nav.js"></script>
+
+<div class="wrap">
+  <div class="title">Design System</div>
+  <p class="lead">Every colour, font, radius and space in the Alter app is a token in <code>alter-theme.css</code>. Change a value there and it updates across every page. This sheet reads the tokens <em>live</em> — flip light/dark below (or from the nav) to preview both.</p>
+  <div class="toggle" id="page-toggle"><span id="toggle-icon">☀</span><span id="toggle-label">Switch to light</span></div>
+
+  <h2>Colour</h2>
+  <div class="swatches" id="sw-colour"></div>
+
+  <h2>Semantic</h2>
+  <div class="swatches" id="sw-semantic"></div>
+
+  <h2>Style-category palette</h2>
+  <div class="swatches" id="sw-cat"></div>
+
+  <h2>Typography</h2>
+  <div class="type-row"><div class="disp">Alter — Display</div><div class="cap">--font-display · Avenir Next · headings &amp; wordmark</div></div>
+  <div class="type-row"><div class="ui">The quick brown fox jumps over the lazy dog. 0123456789</div><div class="cap">--font-ui · Helvetica Neue · interface text</div></div>
+
+  <h2>Radius</h2>
+  <div class="radii" id="radii"></div>
+
+  <h2>Spacing</h2>
+  <div class="spacing" id="spacing"></div>
+
+  <h2>Buttons &amp; badges</h2>
+  <div class="demo" style="margin-bottom:16px">
+    <button class="btn-primary">Primary</button>
+    <button class="btn-ghost">Ghost</button>
+  </div>
+  <div class="demo">
+    <span class="badge b-pass">Passive</span>
+    <span class="badge b-act">Active</span>
+    <span class="badge b-ult">Ultimate</span>
+    <span class="badge b-dngr">Delete</span>
+  </div>
+
+  <h2>Card</h2>
+  <div class="card-demo">
+    <div class="k">Dark / Minimal</div>
+    <div class="t">All Black Structured</div>
+    <div class="d">A card surface using --card-grad, --card-shadow, --r-lg and --border. It re-tints itself in light mode automatically.</div>
+  </div>
+</div>
+
+<script>
+  const cs = () => getComputedStyle(document.documentElement);
+  function val(name){ return cs().getPropertyValue(name).trim(); }
+  function swatchInto(id, tokens){
+    const el = document.getElementById(id);
+    el.innerHTML = tokens.map(function(t){
+      return "<div class='sw'><div class='chip' style='background:var("+t+")'></div>"+
+             "<div class='meta'><div class='nm'>"+t+"</div><div class='val'>"+ (val(t)||'—') +"</div></div></div>";
+    }).join('');
+  }
+  swatchInto('sw-colour', ['--bg','--surface','--surface2','--border','--text','--muted','--white','--accent','--accent2','--on-accent']);
+  swatchInto('sw-semantic', ['--success','--danger','--danger-strong','--passive','--active']);
+  swatchInto('sw-cat', ['--cat-dark','--cat-tonal','--cat-contrast','--cat-night']);
+
+  // radii
+  document.getElementById('radii').innerHTML = ['--r-sm','--r-md','--r-lg','--r-xl','--r-pill'].map(function(t){
+    return "<div class='r'><div class='rbox' style='border-radius:var("+t+")'></div><div class='rl'>"+t+" · "+val(t)+"</div></div>";
+  }).join('');
+
+  // spacing
+  document.getElementById('spacing').innerHTML = ['--sp-1','--sp-2','--sp-3','--sp-4','--sp-5','--sp-6'].map(function(t){
+    return "<div class='s'><div class='bar' style='width:calc(var("+t+")*6)'></div><span class='sl'>"+t+" · "+val(t)+"</span></div>";
+  }).join('');
+
+  // page toggle (mirrors the nav toggle)
+  const pt = document.getElementById('page-toggle');
+  function refreshTokens(){ swatchInto('sw-colour', ['--bg','--surface','--surface2','--border','--text','--muted','--white','--accent','--accent2','--on-accent']); swatchInto('sw-semantic', ['--success','--danger','--danger-strong','--passive','--active']); swatchInto('sw-cat', ['--cat-dark','--cat-tonal','--cat-contrast','--cat-night']);
+    const dark = (document.documentElement.getAttribute('data-theme')||'dark')==='dark';
+    document.getElementById('toggle-icon').textContent = dark ? '☀' : '☽';
+    document.getElementById('toggle-label').textContent = dark ? 'Switch to light' : 'Switch to dark';
+  }
+  pt.addEventListener('click', function(){
+    const next = ((document.documentElement.getAttribute('data-theme')||'dark')==='dark') ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('alter-theme', next); } catch(e){}
+    refreshTokens();
+  });
+  refreshTokens();
+</script>
+</body>
+</html>

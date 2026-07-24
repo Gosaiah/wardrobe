@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════════════════════════
+   ALTER — shared design system
+   ONE source of truth for the whole app: colour, type, buttons,
+   inputs, cards, popups, spacing tokens, splash — and light/dark.
+   Linked by every page AFTER its own <style>, so these rules win.
+
+   HOW TO THEME
+   • Change any token in :root (dark) or [data-theme="light"] and it
+     cascades everywhere.
+   • Light/dark is switched by setting  <html data-theme="light">.
+     The nav toggle + a tiny <head> script handle this automatically.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Structural (shared across themes) ── */
+  --font-ui:      'Helvetica Neue','Inter',Arial,sans-serif;
+  --font-display: 'Avenir Next','Avenir','Nunito Sans','Helvetica Neue',sans-serif;
+  --tracking:     0.14em;
+
+  --r-sm:  6px;  --r-md: 10px; --r-lg: 14px; --r-xl: 16px; --r-pill: 999px;
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
+  --tr: 0.18s ease;
+
+  /* ══ DARK THEME (default) ══ */
+  --ink:      #0a0a0b;                    /* true black */
+  --on-accent:#0a0a0b;                    /* text on accent fills */
+  --bg:       #0b0b0c;
+  --surface:  #161616;
+  --surface2: #1e1e1e;
+  --border:   #2a2a2a;
+  --text:     #e8e4df;
+  --muted:    #6b6b6b;
+  --white:    #f5f2ee;                    /* high-emphasis text */
+  --accent:   #e2d3b4;                    /* champagne — brand colour */
+  --accent2:  #c9b98f;
+  --accent-soft: rgba(226,211,180,0.10);
+  --card-grad: linear-gradient(160deg, #17171a, #101012);
+  --card-shadow: 0 14px 34px -20px rgba(0,0,0,0.75);
+  --splash-bg: radial-gradient(90% 60% at 50% 42%, #151414, #0a0a0b 75%);
+
+  /* semantic */
+  --success:        #2e7d32;
+  --green:          var(--success);
+  --danger:         #e07060;
+  --danger-strong:  #b05040;
+  --danger-tint:    rgba(176,80,64,0.09);
+  --danger-border:  rgba(176,80,64,0.30);
+  --passive:        #6b8c6b;
+  --passive-tint:   rgba(107,140,107,0.12);
+  --passive-border: rgba(107,140,107,0.25);
+  --active:         #6b7b8c;
+  --active-tint:    rgba(107,123,140,0.12);
+  --active-border:  rgba(107,123,140,0.25);
+
+  /* style-category palette (data viz) */
+  --cat-dark:     #4a4a5a;
+  --cat-tonal:    #7a6e62;
+  --cat-contrast: var(--accent);
+  --cat-night:    #c8b49e;
+}
+
+/* ══ LIGHT THEME ══ */
+:root[data-theme="light"] {
+  --ink:      #0a0a0b;
+  --on-accent:#fffdf8;                    /* light text on the darker light-mode accent */
+  --bg:       #f5f1e8;                    /* warm cream */
+  --surface:  #ffffff;
+  --surface2: #efe9dc;
+  --border:   #e3dccb;
+  --text:     #2a2620;
+  --muted:    #8d846f;
+  --white:    #17130d;                    /* high-emphasis text = near-black */
+  --accent:   #9c7b45;                    /* bronze — readable on cream, works as fill */
+  --accent2:  #b89a63;
+  --accent-soft: rgba(156,123,69,0.12);
+  --card-grad: linear-gradient(160deg, #ffffff, #f6f0e4);
+  --card-shadow: 0 12px 28px -20px rgba(90,70,35,0.28);
+  --splash-bg: radial-gradient(90% 60% at 50% 42%, #fbf8f1, #efe7d8 75%);
+
+  --success:        #2f7d33;
+  --danger:         #c0492f;
+  --danger-strong:  #a23c26;
+  --danger-tint:    rgba(192,73,47,0.10);
+  --danger-border:  rgba(192,73,47,0.30);
+  --passive:        #4f7a4f;
+  --passive-tint:   rgba(79,122,79,0.12);
+  --passive-border: rgba(79,122,79,0.28);
+  --active:         #4a6a86;
+  --active-tint:    rgba(74,106,134,0.12);
+  --active-border:  rgba(74,106,134,0.28);
+
+  --cat-dark:     #5a5a6e;
+  --cat-tonal:    #8a7c6a;
+  --cat-contrast: var(--accent);
+  --cat-night:    #b48f63;
+}
+
+/* stray hard-coded tints → token */
+.custom-badge       { background: var(--accent-soft) !important; border-color: var(--accent2) !important; }
+.filter-chip.active { background: var(--accent-soft) !important; }
+.move-type.ultimate { background: var(--accent-soft) !important; }
+
+/* ── Typography ── */
+html, body { font-family: var(--font-ui); }
+h1, h2, h3, .h2 { font-family: var(--font-display); }
+::selection { background: rgba(226,211,180,0.28); color: var(--white); }
+
+/* ── Buttons — one shared language ── */
+.picker-go-btn, .btn-add, .mgr-btn, .btn-cancel,
+.action-btn, .cal-nav-btn, .view-toggle-btn, .filter-chip, .picker-chip {
+  font-family: var(--font-ui) !important;
+  letter-spacing: var(--tracking);
+  transition: var(--tr) !important;
+  cursor: pointer;
+}
+.picker-go-btn, .btn-add, .mgr-btn.primary, .mgr-btn:not(.ghost):not(.mgr-btn-danger) {
+  background: var(--accent) !important;
+  color: var(--on-accent) !important;
+  border: none !important;
+  font-weight: 600 !important;
+  border-radius: var(--r-md) !important;
+}
+.picker-go-btn:hover, .btn-add:hover, .mgr-btn:not(.ghost):not(.mgr-btn-danger):hover { filter: brightness(1.06); }
+.btn-cancel, .action-btn, .cal-nav-btn, .view-toggle-btn {
+  background: none !important;
+  border: 1px solid var(--border) !important;
+  color: var(--muted) !important;
+}
+.btn-cancel:hover, .action-btn:hover, .cal-nav-btn:hover,
+.view-toggle-btn:hover { color: var(--text) !important; border-color: var(--accent2) !important; }
+.view-toggle-btn.active { color: var(--on-accent) !important; background: var(--accent) !important; }
+
+/* ── Inputs ── */
+input, textarea, select { font-family: var(--font-ui); }
+input:focus, textarea:focus, select:focus,
+.mgr-search:focus, .picker-textarea:focus { border-color: var(--accent) !important; outline: none; }
+
+/* ── Cards ── */
+.outfit-card, .builder-outfit-card, .picker-outfit-card, .mgr-item,
+.mgr-items.card-view .mgr-item, .history-card-item, .empty-card, .modal,
+.proposal-card, .proposal-card.card-view, .piece-card,
+.spec-card, .move-card, .chart-block, .numbers-cell,
+.persona-photo-wrap, .view-toggle { border-radius: var(--r-lg) !important; }
+
+.filter-chip, .builder-piece-row, .builder-outfit-piece-chip,
+.picker-piece-chip, .piece-row, .drop-zone, .picker-textarea,
+.modal input, .modal textarea, .mgr-search, .mgr-select,
+.mgr-field input, .mgr-field select, .picker-field select,
+.mgr-preview-img { border-radius: var(--r-md) !important; }
+
+.piece-thumb, .piece-img, .builder-piece-thumb, .builder-outfit-piece-img,
+.picker-piece-img, .history-card-item .hcv-thumb { border-radius: var(--r-sm) !important; }
+
+.piece-brand, .item-tag, .mgr-tag, .picker-cat-tag, .picker-best-badge,
+.best-badge, .session-badge, .proposal-cat, .custom-badge,
+.move-type { border-radius: var(--r-sm) !important; }
+
+.action-btn, .btn-cancel, .mgr-btn, .cal-nav-btn, .picker-chip,
+.view-toggle-btn { border-radius: var(--r-sm) !important; }
+.picker-go-btn { border-radius: var(--r-md) !important; }
+
+/* ── Popups, modals, overlay panels & lightboxes ── */
+.item-detail-panel, .preview-panel, .photo-lightbox-inner,
+.modal { border-radius: var(--r-xl) !important; }
+.generating-toast, .picker-error { border-radius: var(--r-md) !important; }
+.item-detail-close, .item-detail-outfit-chip, .item-detail-pairs-grid,
+.item-detail-outfit-photo, .outfit-photo-stats-overlay,
+.modal-footer { border-radius: var(--r-md) !important; }
+.item-detail-tag { border-radius: var(--r-sm) !important; }
+
+/* primary cards — themed gradient + depth */
+.outfit-card, .builder-outfit-card, .picker-outfit-card,
+.mgr-item, .proposal-card {
+  background: var(--card-grad) !important;
+  box-shadow: var(--card-shadow);
+}
+
+/* persona / profile — round & lift the large structural panels */
+.class-grid, .numbers-row, .persona {
+  border-radius: var(--r-lg) !important;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+.gallery-item, .persona-card {
+  border-radius: var(--r-md) !important;
+  overflow: hidden;
+}
+/* standalone panels get the same elevated surface as app cards */
+.spec-card, .chart-block {
+  background: var(--card-grad) !important;
+  box-shadow: var(--card-shadow);
+}
+/* light-mode fix for the one hard-coded dark gradient */
+:root[data-theme="light"] .move-card.ultimate {
+  background: linear-gradient(135deg, #f3ead6 0%, var(--surface) 60%) !important;
+}
+
+/* scrollbar */
+::-webkit-scrollbar-thumb { background: var(--border) !important; border-radius: var(--r-pill) !important; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2) !important; }
+
+/* ── Nav theme toggle (button injected by nav.js) ── */
+.nav-theme {
+  background: none; border: none; color: var(--muted); cursor: pointer;
+  font-size: 15px; line-height: 1; padding: 0 6px; margin-left: 14px;
+  display: flex; align-items: center; transition: color var(--tr);
+}
+.nav-theme:hover { color: var(--accent); }
+
+/* logo marks follow the accent token (overrides the inline SVG stroke) */
+.nav-mark, #alter-splash .asp-mark { stroke: var(--accent) !important; }
+
+/* data-viz (radar / spider charts) — theme-aware */
+.dv-axis  { stroke: var(--border) !important; }
+.dv-label { fill: var(--muted) !important; }
+.dv-dot   { fill: var(--accent) !important; }
+.dv-poly  { stroke: var(--accent) !important; }
+
+/* broken images degrade to a themed placeholder instead of a broken icon */
+img.img-ph { background: var(--surface2) !important; object-fit: contain; }
+
+/* ── Splash (markup injected by nav.js) — always the dark brand moment ── */
+#alter-splash {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--splash-bg);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--sp-5);
+  animation: alterSplashOut 0.55s ease 1.5s forwards;
+}
+#alter-splash .asp-mark { animation: alterMarkIn 0.85s cubic-bezier(.2,.7,.3,1) both; }
+#alter-splash .asp-wm {
+  font-family: var(--font-display); font-weight: 200;
+  font-size: 34px; letter-spacing: 0.44em; text-transform: uppercase;
+  color: var(--white); padding-left: 0.44em;
+  animation: alterFadeIn 0.7s ease 0.25s both;
+}
+#alter-splash .asp-tg {
+  font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--muted);
+  animation: alterFadeIn 0.7s ease 0.45s both;
+}
+@keyframes alterMarkIn { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes alterFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@keyframes alterSplashOut { to { opacity: 0; visibility: hidden; } }
