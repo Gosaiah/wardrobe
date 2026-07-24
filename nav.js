@@ -58,14 +58,16 @@
       margin-left: auto; display: flex; align-items: center;
     }
     @media (max-width: 768px) {
-      .app-nav { padding: 0 16px; }
-      .nav-tab { padding: 0 10px; font-size: 9px; }
-      .nav-link { padding: 0 10px; font-size: 9px; }
+      .app-nav { padding: 0 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 0; }
+      .app-nav::-webkit-scrollbar { display: none; }
+      .nav-tab { padding: 0 12px; font-size: 10px; flex-shrink: 0; }
+      .nav-link { padding: 0 12px; font-size: 10px; flex-shrink: 0; }
       .nav-stat { display: none; }
+      .nav-brand { flex-shrink: 0; }
     }
     @media (max-width: 480px) {
-      .nav-tab { padding: 0 8px; font-size: 8px; }
-      .nav-link { padding: 0 8px; font-size: 8px; }
+      .nav-tab { padding: 0 10px; font-size: 9px; }
+      .nav-link { padding: 0 10px; font-size: 9px; }
     }
   `;
   document.head.appendChild(style);

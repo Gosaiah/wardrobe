@@ -822,16 +822,19 @@
   ══════════════════════════════════════ */
   @media (max-width: 768px) {
     /* BOARD HEADER */
-    .board-header { padding: 10px 16px; flex-wrap: wrap; gap: 8px; }
-    .board-header div { flex-wrap: wrap; gap: 4px; }
-    .filter-btn { padding: 4px 8px; font-size: 9px; }
-    .btn-add, #btn-load-photos { padding: 5px 10px; font-size: 9px; }
+    .board-header { padding: 10px 16px; flex-direction: column; align-items: flex-start; gap: 6px; }
+    .filter-btn { padding: 6px 10px; font-size: 10px; }
+    .btn-add, #btn-load-photos { padding: 6px 12px; font-size: 10px; }
+
+    /* FILTER ROWS — scroll horizontally, no wrap */
+    .filter-row { flex-wrap: nowrap !important; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; margin-top: 0 !important; }
+    .filter-row::-webkit-scrollbar { display: none; }
 
     /* STAT FILTER ROW */
     .stat-filter-row { padding: 8px 16px; gap: 6px; overflow-x: auto; flex-wrap: nowrap; }
     .stat-range { width: 50px; }
 
-    /* SIDEBAR — hide on mobile, show toggle */
+    /* SIDEBAR — hide on mobile */
     .sidebar { display: none !important; }
 
     /* MAIN LAYOUT */
@@ -839,8 +842,8 @@
     .canvas-area { padding: 16px 12px 40px; }
     .canvas-top { margin-bottom: 12px; }
 
-    /* OUTFIT GRID — single column */
-    .outfits-grid { grid-template-columns: 1fr; gap: 14px; }
+    /* OUTFIT GRID — 2 columns on tablet */
+    .outfits-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
     /* OUTFIT CARD VERTICAL */
     .outfit-card.horizontal { flex-direction: column; height: auto; min-height: unset; }
@@ -869,6 +872,19 @@
     .mgr-item-img { height: 200px; }
     .mgr-form-panel { position: fixed; inset: 0; width: 100%; z-index: 500; border-radius: 0; }
 
+    /* BUILDER TAB — stack left panel above right */
+    .builder-layout { flex-direction: column; height: auto; min-height: unset; overflow: visible; }
+    #builder-suggest-view { flex-direction: column; overflow: visible; }
+    .builder-left { width: 100% !important; height: auto; max-height: 220px; border-right: none; border-bottom: 1px solid var(--border); overflow: hidden; }
+    .builder-piece-list { overflow-y: auto; }
+    .builder-right { height: auto; min-height: 50vh; overflow-y: auto; padding: 16px; }
+
+    /* CLOSET VIEW — stack left panel above right */
+    .closet-view { overflow: auto; }
+    .closet-layout { flex-direction: column; overflow: visible; }
+    .closet-left { width: 100% !important; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 20px; }
+    .closet-right { padding: 12px; }
+
     /* ITEM DETAIL MODAL */
     .item-detail-panel { width: 100%; max-height: 100vh; height: 100vh; border-radius: 0; flex-direction: column; }
     .item-detail-inner { flex-direction: column; overflow-y: auto; }
@@ -879,7 +895,6 @@
 
     /* PHOTO LIGHTBOX */
     .photo-lightbox { padding: 0; align-items: flex-start; }
-    /* merged into item-detail-* */
     .photo-lightbox img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
     .photo-lightbox-info { width: 100%; max-height: 45vh; overflow-y: auto; padding: 16px; background: var(--surface); }
     .photo-lightbox-close { top: 12px; right: 12px; }
@@ -893,6 +908,9 @@
     /* MODALS */
     .modal { width: 95vw; padding: 20px 16px; }
 
+    /* PREVIEW PANEL */
+    .preview-panel { flex-direction: column; max-width: 96vw; }
+    .preview-img-wrap { width: 100% !important; min-width: unset !important; height: 220px; }
 
     /* ── POPUP PANELS MOBILE ── */
     .item-detail-inner { flex-direction: column; }
@@ -910,10 +928,14 @@
   }
 
   @media (max-width: 480px) {
+    /* OUTFIT GRID — single column on phone */
+    .outfits-grid { grid-template-columns: 1fr; gap: 14px; }
     .mgr-items { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
     .h-piece-card { width: 100px; }
     .h-piece-img { width: 100px; height: 124px; }
     .h-piece-name { font-size: 9px; }
+    /* Builder — shorter piece list on phone */
+    .builder-left { max-height: 160px; }
   }
 
 
@@ -941,7 +963,7 @@
 <!-- ══ TAB: OUTFIT BOARD ══ -->
 <div class="tab-panel active" id="tab-board">
   <header class="board-header">
-    <div style="display:flex;gap:6px;flex-wrap:wrap">
+    <div class="filter-row" style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="dark">Dark / Minimal</button>
       <button class="filter-btn" data-filter="tonal">Tonal</button>
@@ -949,7 +971,7 @@
       <button class="filter-btn" data-filter="night">Night Out</button>
       <button class="filter-btn" data-filter="saved">&#9733; Saved</button>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+    <div class="filter-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
       <button class="filter-btn pf-btn active" data-pfilter="all">All Characters</button>
       <button class="filter-btn pf-btn" data-pfilter="overlord">Overlord</button>
       <button class="filter-btn pf-btn" data-pfilter="wanderer">Wanderer</button>
