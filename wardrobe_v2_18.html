@@ -1442,7 +1442,7 @@ const OUTFITS_DEFAULT = [
   {id:1,name:"All Black Structured",vibe:"Dark / Minimal",tags:["dark"],persona:"overlord",pieces:[{role:"Top",name:"Jesse Top with Scarf",brand:"ORTTU"},{role:"Bottom",name:"Reverse Edge Construct Jogger",brand:"MINOAR"},{role:"Outer",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
   {id:2,name:"Monochrome Grey",vibe:"Tonal",tags:["tonal"],persona:"wanderer",pieces:[{role:"Top",name:"Layered Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",name:"Roberto Jacket",brand:"ORTTU"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
   {id:3,name:"White / Off-White Contrast",vibe:"Contrast",tags:["contrast"],persona:"wanderer",pieces:[{role:"Top",name:"Division Cut Linear Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},{role:"Boots",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
-  {id:4,name:"Deconstructed Layers",vibe:"Dark / Minimal",tags:["dark"],persona:"overlord",pieces:[{role:"Top",name:"Elongated Trigon Shirt",brand:"MINOAR"},{role:"Bottom",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
+  {id:4,name:"Deconstructed Layers",vibe:"Dark / Minimal",tags:["dark"],persona:"wanderer",pieces:[{role:"Top",name:"Elongated Trigon Shirt",brand:"MINOAR"},{role:"Bottom",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
   {id:5,name:"Avant-Garde Casual",vibe:"Dark / Minimal",tags:["dark"],persona:"wanderer",pieces:[{role:"Top",name:"Christian Shirt",brand:"ORTTU"},{role:"Bottom",name:"Nuance Dyed Refract Segment Track Pants",brand:"MINOAR"},{role:"Outer",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"}]},
   {id:6,name:"Full Minoar Skirt Trouser",vibe:"Tonal",tags:["dark","tonal"],persona:"overlord",pieces:[{role:"Top",name:"Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR"},{role:"Boots",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
   {id:7,name:"Earth Tone Mix",vibe:"Tonal",tags:["tonal"],persona:"wanderer",pieces:[{role:"Top",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",name:"Trigon Layered Linen Trousers",brand:"MINOAR"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
@@ -1534,7 +1534,7 @@ const PIECE_STYLES = (() => {
 // whatever is cached in localStorage, so updates always show up without
 // needing to manually clear browser storage. Anything genuinely created
 // in-app (outfits/wears not present in the bundled defaults) is preserved.
-const DATA_VERSION = 16;
+const DATA_VERSION = 17;
 
 // Safe parse — never throws even if localStorage has "undefined" or malformed JSON
 function _safeParse(key, fallback) {
@@ -2068,11 +2068,11 @@ document.getElementById("photo-lightbox").addEventListener("click", function(e) 
 // PERSONA MATCHING
 // ═══════════════════════════════════════════════════
 const PERSONA_PROFILES = {
-  overlord:      {drama:4.5, structure:3.8, skin:1.5, edge:4.5, formality:3.2},
-  wanderer:      {drama:3.8, structure:3.2, skin:1.8, edge:3.5, formality:2.5},
-  "night-shift": {drama:3.8, structure:2.5, skin:2.2, edge:3.8, formality:3.2},
-  civilian:      {drama:2.0, structure:1.8, skin:1.5, edge:2.0, formality:1.5},
-  viceroy:       {drama:3.5, structure:3.5, skin:1.5, edge:3.3, formality:3.8},
+  overlord:      {drama:5.0, structure:4.5, skin:1.0, edge:5.0, formality:3.0},
+  wanderer:      {drama:4.0, structure:2.5, skin:1.5, edge:3.5, formality:2.0},
+  "night-shift": {drama:3.5, structure:2.0, skin:4.0, edge:4.0, formality:2.0},
+  civilian:      {drama:1.8, structure:2.0, skin:1.5, edge:1.8, formality:2.0},
+  viceroy:       {drama:3.0, structure:4.0, skin:1.5, edge:2.5, formality:4.5},
 };
 const PERSONA_LABELS = {overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy"};
 
