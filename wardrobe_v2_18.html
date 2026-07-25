@@ -1477,7 +1477,9 @@ const OUTFITS_DEFAULT = [
   {id:36,name:"Cardigan Work Day",vibe:"Dark / Minimal",tags:["dark"],persona:"overlord",pieces:[{role:"Top",name:"Layered Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Reverse Edge Construct Jogger",brand:"MINOAR"},{role:"Outer",name:"Alejandro Cardigan",brand:"ORTTU"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:37,name:"Porto Linen",vibe:"Tonal",tags:["tonal"],persona:"wanderer",pieces:[{role:"Top",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",name:"Trigon Layered Linen Trousers",brand:"MINOAR"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:38,name:"Brown Tonal Work",vibe:"Tonal",tags:["tonal"],persona:"civilian",pieces:[{role:"Top",name:"Oversized Drop Shoulder Tee Brown",brand:"AMAZON"},{role:"Bottom",name:"Nuance Dyed Refract Segment Track Pants",brand:"MINOAR"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
-  {id:39,name:"Open Vest Bar Night",vibe:"Dark / Minimal",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Outer",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",name:"External Cropped Loose Grey Trousers",brand:"MINOAR"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
+  {id:39,name:"Open Vest Bar Night",vibe:"Dark / Minimal",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Outer",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",name:"External Cropped Loose Grey Trousers",brand:"MINOAR"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
+  {id:40,name:"Smoke Column",vibe:"Dark / Minimal",tags:["dark"],persona:"wanderer",pieces:[{role:"Top",name:"Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Nuance Dyed Refract Segment Track Pants",brand:"MINOAR"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
+  {id:52,name:"Burgundy Cargo Tuck",vibe:"Contrast",tags:["contrast"],persona:"viceroy",pieces:[{role:"Top",name:"Cable Knit Sweater Vest Burgundy",brand:"AMAZON"},{role:"Bottom",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
 ];
 // Wear history — logged from confirmed photo uploads (chat-assisted detection pilot)
 // wearCounts are DERIVED from this array at runtime, not stored redundantly on items/outfits
@@ -1502,6 +1504,19 @@ const WORN_HISTORY_DEFAULT = [
     outfitSource: "detected",
     itemIds: ["z1","m17","pw1"],
     photo: "wear-photos/wear_2026-07-17.jpeg"
+  },
+  {
+    date: "2026-07-22",
+    outfitId: 40,
+    itemIds: ["m6","m20","pw2"],
+    photo: "wear-photos/wear_2026-07-22.jpg"
+  },
+  {
+    date: "2026-07-23",
+    outfitId: 52,
+    itemIds: ["am7","m18","pw1"],
+    photo: "wear-photos/wear_2026-07-23.jpg",
+    notes: "Wore with white sneakers instead of zipped tall boots"
   }
 ];
 function getWearCount(type, id) {
@@ -1534,7 +1549,7 @@ const PIECE_STYLES = (() => {
 // whatever is cached in localStorage, so updates always show up without
 // needing to manually clear browser storage. Anything genuinely created
 // in-app (outfits/wears not present in the bundled defaults) is preserved.
-const DATA_VERSION = 17;
+const DATA_VERSION = 18;
 
 // Safe parse — never throws even if localStorage has "undefined" or malformed JSON
 function _safeParse(key, fallback) {
@@ -1630,6 +1645,7 @@ const PROPOSAL_PHOTO_PATHS = {
   37: "outfits/outfit_37.jpg",
   38: "outfits/outfit_38.jpg",
   39: "outfits/outfit_39.jpg",
+  40: "outfits/outfit_40.jpg",
   42: "outfits/outfit_42.jpg",
   43: "outfits/outfit_43.jpg",
   44: "outfits/outfit_44.jpg",
@@ -2068,21 +2084,23 @@ document.getElementById("photo-lightbox").addEventListener("click", function(e) 
 // PERSONA MATCHING
 // ═══════════════════════════════════════════════════
 const PERSONA_PROFILES = {
-  overlord:      {drama:5.0, structure:4.5, skin:1.0, edge:5.0, formality:3.0},
-  wanderer:      {drama:4.0, structure:2.5, skin:1.5, edge:3.5, formality:2.0},
-  "night-shift": {drama:3.5, structure:2.0, skin:4.0, edge:4.0, formality:2.0},
-  civilian:      {drama:1.8, structure:2.0, skin:1.5, edge:1.8, formality:2.0},
-  viceroy:       {drama:3.0, structure:4.0, skin:1.5, edge:2.5, formality:4.5},
+  overlord:      {drama:5.0, structure:4.5, skin:1.0, edge:5.0, formality:3.0, mass:4.5, chroma:1.0},
+  wanderer:      {drama:4.0, structure:2.5, skin:1.5, edge:3.5, formality:2.0, mass:4.0, chroma:1.5},
+  "night-shift": {drama:3.5, structure:2.0, skin:4.0, edge:4.0, formality:2.0, mass:1.5, chroma:2.0},
+  civilian:      {drama:1.8, structure:2.0, skin:1.5, edge:1.8, formality:2.0, mass:2.5, chroma:2.0},
+  viceroy:       {drama:3.0, structure:4.0, skin:1.5, edge:2.5, formality:4.5, mass:3.0, chroma:4.0},
 };
 const PERSONA_LABELS = {overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy"};
 
 function getItemPersona(item) {
   const s = item.stats;
   if (!s) return null;
-  const keys = ["drama","structure","skin","edge","formality"];
+  // Only use keys the item actually has, so missing mass/chroma don't skew older items
+  const keys = ["drama","structure","skin","edge","formality","mass","chroma"].filter(k => s[k] != null);
+  if (!keys.length) return null;
   let best = null, bestDist = Infinity;
   Object.entries(PERSONA_PROFILES).forEach(([slug, ps]) => {
-    const dist = Math.sqrt(keys.reduce((sum, k) => sum + Math.pow((s[k]||0) - ps[k], 2), 0));
+    const dist = Math.sqrt(keys.reduce((sum, k) => sum + Math.pow((s[k]||0) - (ps[k]||0), 2), 0));
     if (dist < bestDist) { bestDist = dist; best = slug; }
   });
   return best;
