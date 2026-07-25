@@ -1483,7 +1483,10 @@ const OUTFITS_DEFAULT = [
   {id:46,name:"PU Tank Night",vibe:"Night Out",tags:["night"],persona:"night-shift",pieces:[{role:"Top",name:"PU Leather Crop Tank",brand:"AMAZON"},{role:"Bottom",name:"Tone Wave Wide Leg Pants",brand:"RYVK"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
   {id:49,name:"Warm Linen Editorial",vibe:"Tonal",tags:["tonal"],persona:"viceroy",pieces:[{role:"Vest",name:"Cable Knit Sweater Vest Apricot",brand:"AMAZON"},{role:"Bottom",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR"},{role:"Shoes",name:"Roman Fabric Boots",brand:"SASAIA"}]},
   {id:47,name:"Sequin After Dark",vibe:"Night Out",tags:["night"],persona:"night-shift",pieces:[{role:"Top",name:"Fever Arc Sequin Embroidery Vest",brand:"RYVK"},{role:"Bottom",name:"Addams Skirt",brand:"ORTTU"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
-  {id:50,name:"Walker Blue Contrast",vibe:"Contrast",tags:["contrast"],persona:"civilian",pieces:[{role:"Top",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Walker Denim Skirt",brand:"ORTTU"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
+  {id:50,name:"Walker Blue Contrast",vibe:"Contrast",tags:["contrast"],persona:"civilian",pieces:[{role:"Top",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},{role:"Bottom",name:"Walker Denim Skirt",brand:"ORTTU"},{role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
+  {id:42,name:"Fishnet Harness",vibe:"Night Out",tags:["night"],persona:"night-shift",pieces:[{role:"Top",name:"Fishnet Mock Neck Vest",brand:"AMAZON"},{role:"Harness",name:"Patent Leather Chest Harness",brand:"AMAZON"},{role:"Bottom",name:"PU Leather Shorts",brand:"AMAZON"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
+  {id:43,name:"Rhinestone Hexa",vibe:"Night Out",tags:["night"],persona:"overlord",pieces:[{role:"Top",name:"Rhinestone Mesh Crop Shirt",brand:"AMAZON"},{role:"Bottom",name:"25FW Layered Belt Apron Skirt",brand:"FRKM"},{role:"Outer",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]},
+  {id:45,name:"PU Harness Construct",vibe:"Night Out",tags:["night"],persona:"night-shift",pieces:[{role:"Top",name:"PU Leather Lace Up Crop Vest",brand:"AMAZON"},{role:"Harness",name:"Leather Body Chain Harness",brand:"AMAZON"},{role:"Bottom",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR"},{role:"Boots",name:"Zipped Tall Boots",brand:"YASAR"}]}
 ];
 // Wear history — logged from confirmed photo uploads (chat-assisted detection pilot)
 // wearCounts are DERIVED from this array at runtime, not stored redundantly on items/outfits
@@ -1553,7 +1556,7 @@ const PIECE_STYLES = (() => {
 // whatever is cached in localStorage, so updates always show up without
 // needing to manually clear browser storage. Anything genuinely created
 // in-app (outfits/wears not present in the bundled defaults) is preserved.
-const DATA_VERSION = 20;
+const DATA_VERSION = 21;
 
 // Safe parse — never throws even if localStorage has "undefined" or malformed JSON
 function _safeParse(key, fallback) {
