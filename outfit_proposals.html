@@ -209,6 +209,9 @@
 <script>
 // IMAGES + getImg are provided by shared data.js
 
+// If a proposal photo file doesn't exist yet, fall back to the "Photo pending" placeholder.
+function _photoFallback(img){ img.onerror=null; var d=document.createElement('div'); d.className='proposal-photo-empty'; d.innerHTML='<span>Photo pending</span>'; img.replaceWith(d); }
+
 function drawSpider(stats, size) {
   if (!stats) return "";
   const keys=["drama","edge","formality","structure","skin"];
@@ -236,453 +239,105 @@ function drawSpider(stats, size) {
 }
 
 // ── ALL PROPOSALS — append new sessions below ──
-const SESSIONS = [
+const SESSIONS_SRC = [
   {
-    id: "session-1",
-    label: "Session 1 · Jul 3",
-    event: "Proposed Outfits #22–29",
-    notes: "Mixed occasion proposals — dark editorial, contrast, tonal and night out.",
-    outfits: [
-      {
-        id:22, name:"Addams After Dark", category:"Dark / Minimal", vibe:"Dark / Minimal",
-        photo:"outfits/outfit_22.jpg",
-        pieces:[
-          {role:"Top",name:"Trigon Layered Sleeveless Shirt",brand:"Minoar",img:"https://media.minoar.com/2022/05/Trigon-Layered-Sleeveless-Shirt-Ghost.jpg"},
-          {role:"Bottom",name:"Addams Skirt",brand:"Orttu",img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/11_bfa063cd-f1ab-41e7-ba12-86ce49c76881.jpg?v=1682420753"},
-          {role:"Outer",name:"Hexa Long Layers Sleeveless Coat",brand:"Minoar",img:"https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg"},
-          {role:"Boots",name:"Zipped Tall Boots",brand:"Ya|Sar",img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats:{drama:4.8,edge:4.8,structure:4.3,skin:2.5,formality:3.8},
-        rationale:"The apron skirt's dramatic drop hem with the sleeveless coat creates maximum silhouette impact. All black structural layering at its peak."
-      },
-      {
-        id:23, name:"Couture Contrast", category:"Contrast", vibe:"Contrast",
-        photo:"outfits/outfit_23.jpg",
-        pieces:[
-          {role:"Top",name:"Star Neck Shirt Couture",brand:"Orttu",img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/star-neck-couture-shirt.jpg?v=1722959711"},
-          {role:"Bottom",name:"Addams Skirt",brand:"Orttu",img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/11_bfa063cd-f1ab-41e7-ba12-86ce49c76881.jpg?v=1682420753"},
-          {role:"Boots",name:"Side-Zip Goat Leather Boots",brand:"Ya|Sar",img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/side_zip_goat_leather_boots_1.jpg?v=1739387263"}
-        ],
-        stats:{drama:4.0,edge:3.5,structure:2.8,skin:2.3,formality:4.3},
-        rationale:"Beige couture shirt against black skirt — the star neck detail creates a focal point that elevates a simple two-piece into something editorial."
-      },
-      {
-        id:24, name:"White / Grey Columns", category:"Tonal", vibe:"Tonal",
-        photo:"outfits/outfit_24.jpg",
-        pieces:[
-          {role:"Top",name:"Elongated Trigon Shirt",brand:"Minoar",img:"https://media.minoar.com/2022/05/Minoar-Elongated-Trigon-Shirt-2.jpg"},
-          {role:"Bottom",name:"External Cropped Loose Grey Trousers",brand:"Minoar",img:"https://media.minoar.com/2021/08/External-Cropped-Loose-Grey-Trousers-2.jpg"},
-          {role:"Boots",name:"Side-Zip Goat Leather Boots",brand:"Ya|Sar",img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/side_zip_goat_leather_boots_1.jpg?v=1739387263"}
-        ],
-        stats:{drama:3.5,edge:3.5,structure:3.5,skin:1.5,formality:3.3},
-        rationale:"White and grey tonal Minoar — the elongated shirt cascades over loose trousers for a clean architectural column silhouette."
-      },
-      {
-        id:25, name:"Earth Cloak", category:"Tonal", vibe:"Tonal",
-        photo:"outfits/outfit_25.jpg",
-        pieces:[
-          {role:"Outer",name:"Protanopia Cloak Hoodie",brand:"Kids of Eden",img:"https://kidsofeden.earth/cdn/shop/products/KIDSOFEDENHEAVYWEIGHTHOODIEMEN_STAUPEFRONT-636740.jpg?v=1683087494"},
-          {role:"Bottom",name:"Trigon Layered Linen Trousers",brand:"Minoar",img:"https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Linen-Trousers-2.jpg"},
-          {role:"Boots",name:"Roman Fabric Boots",brand:"Sasaia",img:"https://cdn.shopify.com/s/files/1/1139/3234/files/marsell-musona-boots-black-0.jpg?v=1692351717"}
-        ],
-        stats:{drama:2.5,edge:2.8,structure:2.8,skin:1.3,formality:2.0},
-        rationale:"Brown cloak hoodie over linen trousers — earthy and relaxed but still intentional. A softer side of the wardrobe."
-      },
-      {
-        id:26, name:"Robe Statement", category:"Dark / Minimal", vibe:"Dark / Minimal",
-        photo:"outfits/outfit_26.jpg",
-        pieces:[
-          {role:"Outer",name:"Magi Sentient Robe",brand:"Arahant",img:"https://i.etsystatic.com/24446956/r/il/ada9fd/2891345427/il_1080xN.2891345427_ab5z.jpg"},
-          {role:"Top",name:"Sleeveless Collar Shirt",brand:"Minoar",img:"https://media.minoar.com/2018/05/sleeveless-raw-shirt-standing-collar-black-dark_1-1.jpg"},
-          {role:"Bottom",name:"Aspect Ripstop Alternated Trousers",brand:"Minoar",img:"https://media.minoar.com/2021/08/Aspect-Ripstop-Alternated-Trousers-4.jpg"},
-          {role:"Boots",name:"Zipped Tall Boots",brand:"Ya|Sar",img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats:{drama:5.0,edge:5.0,structure:3.8,skin:2.3,formality:4.0},
-        rationale:"The robe as the centrepiece — everything else recedes into black. Maximum drama, zero effort."
-      },
-      {
-        id:27, name:"Techwear Cross", category:"Dark / Minimal", vibe:"Dark / Minimal",
-        photo:"outfits/outfit_27.jpg",
-        pieces:[
-          {role:"Top",name:"Japanese Relaxed Standing Collar Techwear Shirt",brand:"Techwear Official",img:"https://cdn.shopify.com/s/files/1/0634/1335/4713/files/Yamamoto-Relaxed-Standing-Collar-Shirt_1.jpg?v=1689561834"},
-          {role:"Bottom",name:"Cargo Volume Transform Denim Skirt",brand:"Minoar",img:"https://media.minoar.com/2024/11/Cargo_Volume_Transform_Denim_Skirt_1.jpg"},
-          {role:"Outer",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"Minoar",img:"https://media.minoar.com/2024/11/Fiber_Bond_Magma_Tech_Hood_Cardigan_1.jpg"},
-          {role:"Boots",name:"Zipped Tall Boots",brand:"Ya|Sar",img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats:{drama:4.0,edge:4.5,structure:3.8,skin:1.0,formality:3.0},
-        rationale:"Techwear shirt bridges the gap between Minoar structural pieces and streetwear. The denim skirt keeps it dark; the tech cardigan adds edge."
-      },
-      {
-        id:28, name:"Night Tone Wave", category:"Night Out", vibe:"Night Out",
-        photo:"outfits/outfit_28.jpg",
-        pieces:[
-          {role:"Top",name:"Fever Arc Sequin Embroidery Vest",brand:"RYVK",img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/FeverArcSequinEmbroideryVest_1.jpg?v=1780040848"},
-          {role:"Bottom",name:"Tone Wave Wide Leg Pants",brand:"RYVK",img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/ToneWaveWideLegPants_1.jpg?v=1763970300"},
-          {role:"Shoes",name:"Pai-Weite High-Top Sneakers White",brand:"Jakcuz",img:"https://infinit.store/cdn/shop/files/Bai-wette_Sneakers_white_INFINIT_STORE.png?v=1746632258"}
-        ],
-        stats:{drama:4.5,edge:3.8,structure:2.0,skin:3.5,formality:3.5},
-        rationale:"Full RYVK night out — sequin vest with the tone wave pants keeps the energy high without going full costume. White sneakers ground it."
-      },
-      {
-        id:29, name:"RYVK Floral Night", category:"Night Out", vibe:"Night Out",
-        photo:"outfits/outfit_29.jpg",
-        pieces:[
-          {role:"Top",name:"Sheer Contrast Floral Print Shirts",brand:"RYVK",img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/SheerContrastFloralPrintShirts_1.jpg?v=1761904504"},
-          {role:"Bottom",name:"Tone Wave Wide Leg Pants",brand:"RYVK",img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/ToneWaveWideLegPants_1.jpg?v=1763970300"},
-          {role:"Boots",name:"Zipped Tall Boots",brand:"Ya|Sar",img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats:{drama:4.3,edge:3.5,structure:2.0,skin:3.0,formality:3.3},
-        rationale:"Sheer floral print over tone wave — RYVK print language in a two-piece. The boots anchor the drama without competing."
-      }
+    id:"session-1", label:"Session 1 · Jul 3", event:"Proposed Outfits #22–29", notes:"Mixed occasion proposals — dark editorial, contrast, tonal and night out.",
+    outfits:[
+      {id:22, rationale:"The apron skirt's dramatic drop hem with the sleeveless coat creates maximum silhouette impact. All black structural layering at its peak.", notes:[]},
+      {id:23, rationale:"Beige couture shirt against black skirt — the star neck detail creates a focal point that elevates a simple two-piece into something editorial.", notes:[]},
+      {id:24, rationale:"White and grey tonal Minoar — the elongated shirt cascades over loose trousers for a clean architectural column silhouette.", notes:[]},
+      {id:25, rationale:"Brown cloak hoodie over linen trousers — earthy and relaxed but still intentional. A softer side of the wardrobe.", notes:[]},
+      {id:26, rationale:"The robe as the centrepiece — everything else recedes into black. Maximum drama, zero effort.", notes:[]},
+      {id:27, rationale:"Techwear shirt bridges the gap between Minoar structural pieces and streetwear. The denim skirt keeps it dark; the tech cardigan adds edge.", notes:[]},
+      {id:28, rationale:"Full RYVK night out — sequin vest with the tone wave pants keeps the energy high without going full costume. White sneakers ground it.", notes:[]},
+      {id:29, rationale:"Sheer floral print over tone wave — RYVK print language in a two-piece. The boots anchor the drama without competing.", notes:[]}
     ]
-  }
-  ,
+  },
   {
-    id: "session-2",
-    label: "Session 2 · Jul 12",
-    event: "New proposals — Night Out, Tonal, Contrast x2",
-    notes: "Focus on unused pieces. 4 new outfits across 4 categories.",
-    outfits: [
-      {
-        id: 30,
-        name: "Blue Volume Night",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: "outfits/outfit_30.jpg",
-        pieces: [
-          {role:"Top", name:"Oversized Drop Shoulder Tee Blue", brand:"Amazon", img:"https://m.media-amazon.com/images/I/71uhe+XFmdL._AC_SY879_.jpg"},
-          {role:"Bottom", name:"Trigon Black Layers Volume Pants", brand:"Minoar", img:"https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Volume-Pants-1.jpg"},
-          {role:"Shoes", name:"Pai-Weite High-Top Sneakers Black", brand:"Jakcuz", img:"https://infinit.store/cdn/shop/files/Sc722121697bd443baaa11c7b80bf442fU.png?v=1746631777"}
-        ],
-        stats: {drama:3.5, edge:3.8, structure:3.5, skin:1.0, formality:2.0},
-        rationale: "Blue oversized tee with the most voluminous bottom in the wardrobe and black high-tops. Relaxed streetwear energy meets avant-garde silhouette — the sneakers keep it casual and grounded while the volume pants do the talking.",
-        notes: ["Let the tee hang fully untucked", "Keep accessories minimal — maybe just the Wheat Chain", "The blue against the black volume pants is the whole outfit"]
-      },
-      {
-        id: 31,
-        name: "Grey Column",
-        category: "Tonal",
-        vibe: "Tonal",
-        photo: "outfits/outfit_31.jpg",
-        pieces: [
-          {role:"Top", name:"Layered Sleeveless White Collar Shirt", brand:"Minoar", img:"https://media.minoar.com/2019/05/Layered-Sleeveless-White-Collar-Shirt-3-1.jpg"},
-          {role:"Bottom", name:"External Cropped Loose Grey Trousers", brand:"Minoar", img:"https://media.minoar.com/2021/08/External-Cropped-Loose-Grey-Trousers-2.jpg"},
-          {role:"Outer", name:"Reverse Edge Hood Buckle Cardigan", brand:"Minoar", img:"https://media.minoar.com/2024/11/Reverse_Edge_Hood_Buckle_Cardigan_MNR-11.jpg"},
-          {role:"Boots", name:"Side-Zip Goat Leather Boots", brand:"Ya|Sar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/side_zip_goat_leather_boots_1.jpg?v=1739387263"}
-        ],
-        stats: {drama:3.8, edge:4.3, structure:4.3, skin:3.0, formality:3.3},
-        rationale: "Full Minoar white-grey-black tonal stack. The sleeveless white collar shirt exposes the arms while the cropped grey trousers keep it grounded. The buckle cardigan adds structure and edge without breaking the tonal palette.",
-        notes: ["Wear the cardigan open", "Wheat Chain necklace in gold breaks the monochrome intentionally"]
-      },
-      {
-        id: 32,
-        name: "Black Lace Contrast",
-        category: "Contrast",
-        vibe: "Contrast",
-        photo: "outfits/outfit_32.jpg",
-        pieces: [
-          {role:"Top", name:"Star Neck Lace Shirt", brand:"Orttu", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/45-12_18fb5fe8-ccb5-4ac4-9b7d-89d779b5a41b.jpg?v=1722852795"},
-          {role:"Bottom", name:"Addams Skirt", brand:"Orttu", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/11_bfa063cd-f1ab-41e7-ba12-86ce49c76881.jpg?v=1682420753"},
-          {role:"Outer", name:"Hexa Long Layers Sleeveless Coat", brand:"Minoar", img:"https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg"},
-          {role:"Boots", name:"Zipped Tall Boots", brand:"Ya|Sar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:4.8, edge:4.3, structure:4.0, skin:2.3, formality:4.0},
-        rationale: "Off-white lace against the black Addams skirt is a sharp contrast — the star neck detail draws the eye up while the Hexa coat frames the whole silhouette with dramatic length. Editorial and refined.",
-        notes: ["Tuck the lace shirt slightly into the skirt waist", "Dagger Earrings add a sharp metallic accent"]
-      },
-      {
-        id: 33,
-        name: "Green Contrast",
-        category: "Contrast",
-        vibe: "Contrast",
-        photo: "outfits/outfit_33.jpg",
-        pieces: [
-          {role:"Top", name:"Oversized Drop Shoulder Tee Green", brand:"Amazon", img:"https://m.media-amazon.com/images/I/71HdB6EaoFL._AC_SY879_.jpg"},
-          {role:"Bottom", name:"Aspect Layered Construct Skirt Trousers", brand:"Minoar", img:"https://media.minoar.com/2021/08/Aspect-Layered-Construct-Skirt-Trousers-2.jpg"},
-          {role:"Outer", name:"Hexa Long Layers Sleeveless Coat", brand:"Minoar", img:"https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg"},
-          {role:"Boots", name:"Zipped Tall Boots", brand:"Ya|Sar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:4.8, edge:4.3, structure:4.3, skin:2.3, formality:3.5},
-        rationale: "Green oversized tee is the single color moment in an otherwise all-black outfit. The relaxed casual tee against the most structural bottom in the wardrobe creates an intentional high-low contrast. The Hexa coat frames everything with length.",
-        notes: ["Let the tee hang loose over the waistband", "The green is the only thing that isn't black — let it breathe", "Lapis Set necklace echoes the green"]
-      }
+    id:"session-2", label:"Session 2 · Jul 12", event:"New proposals — Night Out, Tonal, Contrast x2", notes:"Focus on unused pieces. 4 new outfits across 4 categories.",
+    outfits:[
+      {id:30, rationale:"Blue oversized tee with the most voluminous bottom in the wardrobe and black high-tops. Relaxed streetwear energy meets avant-garde silhouette — the sneakers keep it casual and grounded while the volume pants do the talking.", notes:["Let the tee hang fully untucked", "Keep accessories minimal — maybe just the Wheat Chain", "The blue against the black volume pants is the whole outfit"]},
+      {id:31, rationale:"Full Minoar white-grey-black tonal stack. The sleeveless white collar shirt exposes the arms while the cropped grey trousers keep it grounded. The buckle cardigan adds structure and edge without breaking the tonal palette.", notes:["Wear the cardigan open", "Wheat Chain necklace in gold breaks the monochrome intentionally"]},
+      {id:32, rationale:"Off-white lace against the black Addams skirt is a sharp contrast — the star neck detail draws the eye up while the Hexa coat frames the whole silhouette with dramatic length. Editorial and refined.", notes:["Tuck the lace shirt slightly into the skirt waist", "Dagger Earrings add a sharp metallic accent"]},
+      {id:33, rationale:"Green oversized tee is the single color moment in an otherwise all-black outfit. The relaxed casual tee against the most structural bottom in the wardrobe creates an intentional high-low contrast. The Hexa coat frames everything with length.", notes:["Let the tee hang loose over the waistband", "The green is the only thing that isn't black — let it breathe", "Lapis Set necklace echoes the green"]}
+    ]
+  },
+  {
+    id:"session-3", label:"Session 3 · Casual Work", event:"Casual work outfits — creative office energy", notes:"Similar mood to outfit #34. Dark/minimal, relaxed fit, sneakers or side-zip boots.",
+    outfits:[
+      {id:35, rationale:"Earthy brown oversized tee with grey-toned track pants and black high-tops. Relaxed and tonal — intentional without trying too hard. Easy for a creative work day.", notes:["Let the tee hang fully untucked", "Wheat Chain for a subtle gold accent", "Keep accessories minimal"]},
+      {id:36, rationale:"Sleeveless collar base under the open Alejandro cardigan — the cardigan does the covering while the sleeveless keeps it clean and shows the arms. All Minoar/Orttu, black on black, white sneakers as the only break.", notes:["Wear the cardigan open", "White sneakers anchor the look", "Arrow Pendant at the neck for a subtle detail"]},
+      {id:37, rationale:"Olive long shirt over grey linen trousers — earthy tonal with natural texture. White sneakers keep it casual and grounded, letting the shirt and trouser combo do the talking.", notes:["Leave the shirt unbuttoned at the top", "Svart Sten Braided Chain adds a dark pendant detail", "Works well in warmer weather"]}
+    ]
+  },
+  {
+    id:"session-4", label:"Session 4 · Amazon Edits", event:"New Amazon pieces — night out, club, and daily contrast looks", notes:"Built around the new Amazon haul: harnesses, PU leather, fishnet, rhinestone, and cable knit vests.",
+    outfits:[
+      {id:42, rationale:"Sheer fishnet base layered under the patent leather chest harness — the straps become the structure. PU shorts keep the skin-forward momentum going, and the tall boots pull everything into one vertical line.", notes:["Wear the harness tight over the fishnet", "Gold Dagger Earrings for a fine-edge contrast", "This is a night-out look — commit to it"]},
+      {id:43, rationale:"The rhinestone mesh top brings raw sparkle into a fully dark outfit. The FRKM apron skirt is the most architectural bottom in the wardrobe — it anchors the shimmer. The Hexa coat frames it all in extreme length without burying the top.", notes:["Coat open, not draped", "Lapis Set or Svart Sten chain at the neck", "The rhinestone and the FRKM structure are intentionally in contrast — let them fight"]},
+      {id:44, rationale:"Burgundy cable knit over the off-white Emanuel shirt — the color story is the whole look. Grey Roberto pants keep it clean underneath, Roman boots add the edge that stops it from going full old-money prep.", notes:["Let the Emanuel shirt collar sit over the vest neckline", "Arrow Pendant for a subtle gold detail at the collar", "Apricot vest version works too — same build, lighter mood"]},
+      {id:45, rationale:"Crop vest lace-up detail over the body chain harness — two different leather textures competing for attention. The Aspect skirt-trousers are the most structural bottom in the wardrobe and ground the chaos. All black, all edge.", notes:["Layer the harness over the vest's lace panels", "Dagger Earring for a single fine-gold detail", "The Hexa coat can go over this if the venue needs it"]}
+    ]
+  },
+  {
+    id:"session-5", label:"Session 5 · Underused Pieces", event:"Night out + casual looks built around least-used items", notes:"PU Crop Tank, Prism Flow Tulle, Walker Denim Skirt, Apricot Vest, Roberto set — all underused or zero use.",
+    outfits:[
+      {id:46, rationale:"The PU Crop Tank has never been worn — all-black sleek pairing with the Tone Wave wide legs. Clean and minimal Night Out energy without the harness complexity.", notes:["The crop tank's high-shine finish contrasts nicely with the matte wave fabric", "Add the Leather Body Chain Harness over the top for more drama if needed"]},
+      {id:47, rationale:"The original outfit 16 intent — sequin vest + tulle pants — but clean without a jacket competing. The tulle pants have been orphaned since the wardrobe overhaul and deserve a proper shot.", notes:["Both pieces BLACK — important, product images show white/cream", "The sheer tulle over black boots creates a grounded silhouette"]},
+      {id:48, rationale:"Different from outfit #1 (Jesse + Hexa Coat + Jogger). No coat here — the Jesse Top with Scarf gets to breathe. Wide crushed pants add volume below while the structured top holds the top half together.", notes:["Jesse Top currently only in one look — this gives it a more night-forward pairing", "The scarf detail on the Jesse Top should be styled forward, not tucked"]},
+      {id:49, rationale:"The only fully warm-toned look in the wardrobe — no black anywhere. Apricot cable knit vest on bare skin against natural linen cargo skirt-trousers. Soft prep texture vs structured editorial silhouette. Completely different color story from everything else.", notes:["Vest worn directly on bare skin", "Quark Linen is natural/cream — the warm palette runs through both pieces", "Very different from outfit #8 (Linen & Lace) which pairs the Quark Linen with a black lace shirt"]},
+      {id:50, rationale:"The Walker Denim Skirt is one of the few colored pieces in the wardrobe — blue is rare here. White top + blue denim + white sneakers is a clean casual contrast that doesn't need drama to land.", notes:["The blue denim skirt makes this stand out from every other look in the wardrobe", "Could swap white sneakers for Side-Zip Goat Leather Boots for a darker read"]},
+      {id:51, rationale:"Roberto Jacket + Roberto Pants as a matched grey tonal set — minimalist editorial. The pinstripe runs through both pieces creating a cohesive column. Roman boots keep it clean and slightly elevated.", notes:["The Roberto Jacket and Pants are sold separately but designed as a matching set", "Add a black base layer underneath the open jacket for contrast against the grey"]},
+      {id:52, rationale:"Burgundy cable knit sweater vest tucked into the waistband of the deconstructed black denim skirt — the warm color anchor against all the raw frayed black creates a sharp unexpected contrast. The skirt's volume and asymmetric drape do the drama; the vest keeps it grounded. Zipped tall boots underneath complete the dark silhouette.", notes:["Tuck the vest fully into the skirt waistband so the burgundy hits at the waist as a clean band of color", "The skirt's frayed raw edges and drawstring details read very editorial — keep everything else minimal"]}
+    ]
+  },
+  {
+    id:"session-6", label:"Session · Jul 27 · Off-Duty", event:"Off-Duty — Civilian day looks, Zara Tunic + Alo shorts (#53–#63)", notes:"Everyday-ease proposals built from existing pieces. Awaiting photos; promote to the main board once shot.",
+    outfits:[
+      {id:53, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:54, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:55, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:56, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:57, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:58, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:59, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:60, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:61, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:62, rationale:"Off-duty proposal — built from existing pieces.", notes:[]},
+      {id:63, rationale:"Off-duty proposal — built from existing pieces.", notes:[]}
     ]
   }
-  // ── NEW SESSIONS APPENDED HERE BY CLAUDE ──
-  ,{
-    id: "session-3",
-    label: "Session 3 · Casual Work",
-    event: "Casual work outfits — creative office energy",
-    notes: "Similar mood to outfit #34. Dark/minimal, relaxed fit, sneakers or side-zip boots.",
-    outfits: [
-      {
-        id: 35,
-        name: "Brown Tonal Work",
-        category: "Tonal",
-        vibe: "Tonal",
-        photo: "outfits/outfit_35.jpg",
-        pieces: [
-          {role:"Top", name:"Oversized Drop Shoulder Tee Brown", brand:"Amazon", img:"https://m.media-amazon.com/images/I/71QqCozGJML._AC_SY879_.jpg"},
-          {role:"Bottom", name:"Nuance Dyed Refract Segment Track Pants", brand:"Minoar", img:"https://media.minoar.com/2022/05/Nuance-Dyed-Refract-Segment-Track-Pants-1.jpg"},
-          {role:"Shoes", name:"Pai-Weite High-Top Sneakers Black", brand:"Jakcuz", img:"https://infinit.store/cdn/shop/files/Sc722121697bd443baaa11c7b80bf442fU.png?v=1746631777"}
-        ],
-        stats: {drama:2.5, edge:3.0, structure:2.3, skin:1.5, formality:1.5},
-        rationale: "Earthy brown oversized tee with grey-toned track pants and black high-tops. Relaxed and tonal — intentional without trying too hard. Easy for a creative work day.",
-        notes: ["Let the tee hang fully untucked", "Wheat Chain for a subtle gold accent", "Keep accessories minimal"]
-      },
-      {
-        id: 36,
-        name: "Cardigan Work Day",
-        category: "Dark / Minimal",
-        vibe: "Dark / Minimal",
-        photo: "outfits/outfit_36.jpg",
-        pieces: [
-          {role:"Top", name:"Layered Sleeveless Collar Shirt", brand:"Minoar", img:"https://media.minoar.com/2019/05/Layered-Sleeveless-Collar-Shirt-5-1.jpg"},
-          {role:"Bottom", name:"Reverse Edge Construct Jogger", brand:"Minoar", img:"https://media.minoar.com/2024/11/Minoar_Reverse_Edge_Construct_Jogger_MNR-5.jpg"},
-          {role:"Outer", name:"Alejandro Cardigan", brand:"Orttu", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/4_0dfb9b5b-8cde-4711-878c-b65738add53b.jpg?v=1671019814"},
-          {role:"Shoes", name:"Pai-Weite High-Top Sneakers White", brand:"Jakcuz", img:"https://infinit.store/cdn/shop/files/Bai-wette_Sneakers_white_INFINIT_STORE.png?v=1746632258"}
-        ],
-        stats: {drama:3.0, edge:3.5, structure:2.8, skin:3.0, formality:2.3},
-        rationale: "Sleeveless collar base under the open Alejandro cardigan — the cardigan does the covering while the sleeveless keeps it clean and shows the arms. All Minoar/Orttu, black on black, white sneakers as the only break.",
-        notes: ["Wear the cardigan open", "White sneakers anchor the look", "Arrow Pendant at the neck for a subtle detail"]
-      },
-      {
-        id: 37,
-        name: "Porto Linen",
-        category: "Tonal",
-        vibe: "Tonal",
-        photo: "outfits/outfit_37.jpg",
-        pieces: [
-          {role:"Top", name:"Porto Long Shirt", brand:"Orttu", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/18-7_c13b0692-4966-41f8-869a-bd225617e7cf.jpg?v=1689578387"},
-          {role:"Bottom", name:"Trigon Layered Linen Trousers", brand:"Minoar", img:"https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Linen-Trousers-2.jpg"},
-          {role:"Shoes", name:"Pai-Weite High-Top Sneakers White", brand:"Jakcuz", img:"https://infinit.store/cdn/shop/files/Bai-wette_Sneakers_white_INFINIT_STORE.png?v=1746632258"}
-        ],
-        stats: {drama:2.5, edge:2.5, structure:2.8, skin:1.5, formality:2.0},
-        rationale: "Olive long shirt over grey linen trousers — earthy tonal with natural texture. White sneakers keep it casual and grounded, letting the shirt and trouser combo do the talking.",
-        notes: ["Leave the shirt unbuttoned at the top", "Svart Sten Braided Chain adds a dark pendant detail", "Works well in warmer weather"]
-      }
-    ]
-  }
-  ,{
-    id: "session-4",
-    label: "Session 4 · Amazon Edits",
-    event: "New Amazon pieces — night out, club, and daily contrast looks",
-    notes: "Built around the new Amazon haul: harnesses, PU leather, fishnet, rhinestone, and cable knit vests.",
-    outfits: [
-      {
-        id: 42,
-        name: "Fishnet Harness",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: "outfits/outfit_42.jpg",
-        pieces: [
-          {role:"Top", name:"Fishnet Mock Neck Vest", brand:"Amazon", img:"https://m.media-amazon.com/images/I/81xNPWJRO0L._AC_SL1500_.jpg"},
-          {role:"Harness", name:"Patent Leather Chest Harness", brand:"Amazon", img:"https://m.media-amazon.com/images/I/71CxmcZHGAL._AC_SL1500_.jpg"},
-          {role:"Bottom", name:"PU Leather Shorts", brand:"Amazon", img:"https://m.media-amazon.com/images/I/61GoItpAX2L._AC_SY879_.jpg"},
-          {role:"Shoes", name:"Zipped Tall Boots", brand:"Yasar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:4.5, edge:5, structure:2, skin:4, formality:1},
-        rationale: "Sheer fishnet base layered under the patent leather chest harness — the straps become the structure. PU shorts keep the skin-forward momentum going, and the tall boots pull everything into one vertical line.",
-        notes: ["Wear the harness tight over the fishnet", "Gold Dagger Earrings for a fine-edge contrast", "This is a night-out look — commit to it"]
-      },
-      {
-        id: 43,
-        name: "Rhinestone Hexa",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: "outfits/outfit_43.jpg",
-        pieces: [
-          {role:"Top", name:"Rhinestone Mesh Crop Shirt", brand:"Amazon", img:"https://m.media-amazon.com/images/I/71i8XtZ83mL._AC_SL1500_.jpg"},
-          {role:"Bottom", name:"25FW Layered Belt Apron Skirt", brand:"FRKM", img:"https://cdn.shopify.com/s/files/1/0607/0494/8305/files/1_b1a049d4-0de0-4da2-a6dc-8ab4dfb1df49.jpg?v=1755683858"},
-          {role:"Outer", name:"Hexa Long Layers Sleeveless Coat", brand:"MINOAR", img:"https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg"},
-          {role:"Shoes", name:"Zipped Tall Boots", brand:"Yasar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:5, edge:5, structure:4, skin:3, formality:3},
-        rationale: "The rhinestone mesh top brings raw sparkle into a fully dark outfit. The FRKM apron skirt is the most architectural bottom in the wardrobe — it anchors the shimmer. The Hexa coat frames it all in extreme length without burying the top.",
-        notes: ["Coat open, not draped", "Lapis Set or Svart Sten chain at the neck", "The rhinestone and the FRKM structure are intentionally in contrast — let them fight"]
-      },
-      {
-        id: 44,
-        name: "Burgundy Prep",
-        category: "Contrast",
-        vibe: "Contrast",
-        photo: "outfits/outfit_44.jpg",
-        pieces: [
-          {role:"Vest", name:"Cable Knit Sweater Vest Burgundy", brand:"Amazon", img:"https://m.media-amazon.com/images/I/61U+1k4zyCL._AC_SL1500_.jpg"},
-          {role:"Under", name:"Emanuel Shirt", brand:"Orttu", img:"https://orttu.com/cdn/shop/files/Emanuel-shirt-w.jpg?v=1722521294"},
-          {role:"Bottom", name:"Roberto Pants", brand:"Orttu", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/22_1a50a9e6-0274-4348-8bc1-1a5a5dfd1b7e.jpg?v=1671137917"},
-          {role:"Shoes", name:"Roman Fabric Boots", brand:"Sasaia", img:"https://cdn.shopify.com/s/files/1/1139/3234/files/marsell-musona-boots-black-0.jpg?v=1692351717"}
-        ],
-        stats: {drama:2.5, edge:2, structure:3, skin:1, formality:3},
-        rationale: "Burgundy cable knit over the off-white Emanuel shirt — the color story is the whole look. Grey Roberto pants keep it clean underneath, Roman boots add the edge that stops it from going full old-money prep.",
-        notes: ["Let the Emanuel shirt collar sit over the vest neckline", "Arrow Pendant for a subtle gold detail at the collar", "Apricot vest version works too — same build, lighter mood"]
-      },
-      {
-        id: 45,
-        name: "PU Harness Construct",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: "outfits/outfit_45.jpg",
-        pieces: [
-          {role:"Top", name:"PU Leather Lace Up Crop Vest", brand:"Amazon", img:"https://m.media-amazon.com/images/I/81RAwBMki8L._AC_SL1500_.jpg"},
-          {role:"Harness", name:"Leather Body Chain Harness", brand:"Amazon", img:"https://m.media-amazon.com/images/I/51NzIqpl9oL._AC_SL1118_.jpg"},
-          {role:"Bottom", name:"Aspect Layered Construct Skirt Trousers", brand:"MINOAR", img:"https://media.minoar.com/2021/08/Aspect-Layered-Construct-Skirt-Trousers-2.jpg"},
-          {role:"Shoes", name:"Zipped Tall Boots", brand:"Yasar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:5, edge:5, structure:4, skin:3.5, formality:2},
-        rationale: "Crop vest lace-up detail over the body chain harness — two different leather textures competing for attention. The Aspect skirt-trousers are the most structural bottom in the wardrobe and ground the chaos. All black, all edge.",
-        notes: ["Layer the harness over the vest's lace panels", "Dagger Earring for a single fine-gold detail", "The Hexa coat can go over this if the venue needs it"]
-      }
-    ]
-  }
-  // ── SESSION 5 ──
-  ,{
-    id: "session-5",
-    label: "Session 5 · Underused Pieces",
-    event: "Night out + casual looks built around least-used items",
-    notes: "PU Crop Tank, Prism Flow Tulle, Walker Denim Skirt, Apricot Vest, Roberto set — all underused or zero use.",
-    outfits: [
-      {
-        id: 46,
-        name: "PU Tank Night",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: "outfits/outfit_46.jpg",
-        pieces: [
-          {role:"Top", name:"PU Leather Crop Tank", brand:"Amazon", img:"https://m.media-amazon.com/images/I/7121R43QB7L._AC_SL1500_.jpg"},
-          {role:"Bottom", name:"Tone Wave Wide Leg Pants", brand:"RYVK", img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/ToneWaveWideLegPants_1.jpg?v=1763970300"},
-          {role:"Boots", name:"Zipped Tall Boots", brand:"Yasar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:4, edge:4.5, structure:2, skin:3, formality:1},
-        rationale: "The PU Crop Tank has never been worn — all-black sleek pairing with the Tone Wave wide legs. Clean and minimal Night Out energy without the harness complexity.",
-        notes: ["The crop tank's high-shine finish contrasts nicely with the matte wave fabric", "Add the Leather Body Chain Harness over the top for more drama if needed"]
-      },
-      {
-        id: 47,
-        name: "Sequin Tulle Pure",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: "outfits/outfit_47.jpg",
-        pieces: [
-          {role:"Top", name:"Fever Arc Sequin Embroidery Vest", brand:"RYVK", img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/FeverArcSequinEmbroideryVest_1.jpg?v=1780040848"},
-          {role:"Bottom", name:"Prism Flow Tulle Wide Leg Pants", brand:"RYVK", img:"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/PrismFlowTulleWideLegPants_1.jpg?v=1780040845"},
-          {role:"Boots", name:"Zipped Tall Boots", brand:"Yasar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:5, edge:4, structure:2, skin:2, formality:3},
-        rationale: "The original outfit 16 intent — sequin vest + tulle pants — but clean without a jacket competing. The tulle pants have been orphaned since the wardrobe overhaul and deserve a proper shot.",
-        notes: ["Both pieces BLACK — important, product images show white/cream", "The sheer tulle over black boots creates a grounded silhouette"]
-      },
-      {
-        id: 48,
-        name: "Jesse Dark Night",
-        category: "Night Out",
-        vibe: "Night Out",
-        photo: null,
-        pieces: [
-          {role:"Top", name:"Jesse Top with Scarf", brand:"ORTTU", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/55-1_76076a1a-1fef-4bef-86c8-0dd59f36d277.jpg?v=1720214602"},
-          {role:"Bottom", name:"Wide Layered Crushed Cropped Pants", brand:"MINOAR", img:"https://media.minoar.com/2022/05/Minoar-Wide-Layered-Crushed-Cropped-Pants-1-1.jpg"},
-          {role:"Boots", name:"Zipped Tall Boots", brand:"Yasar", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:4, edge:4, structure:3.5, skin:2, formality:3},
-        rationale: "Different from outfit #1 (Jesse + Hexa Coat + Jogger). No coat here — the Jesse Top with Scarf gets to breathe. Wide crushed pants add volume below while the structured top holds the top half together.",
-        notes: ["Jesse Top currently only in one look — this gives it a more night-forward pairing", "The scarf detail on the Jesse Top should be styled forward, not tucked"]
-      },
-      {
-        id: 49,
-        name: "Warm Linen Editorial",
-        category: "Tonal",
-        vibe: "Tonal",
-        photo: "outfits/outfit_49.jpg",
-        pieces: [
-          {role:"Vest", name:"Cable Knit Sweater Vest Apricot", brand:"Amazon", img:"https://m.media-amazon.com/images/I/61ZYnlAAyjL._AC_SL1500_.jpg"},
-          {role:"Bottom", name:"Quark Linen Cargo Layered Skirt Trousers", brand:"MINOAR", img:"https://media.minoar.com/2020/07/Quark-Linen-Cargo-Layered-Skirt-Trousers-1-2.jpg"},
-          {role:"Shoes", name:"Roman Fabric Boots", brand:"Sasaia", img:"https://cdn.shopify.com/s/files/1/1139/3234/files/marsell-musona-boots-black-0.jpg?v=1692351717"}
-        ],
-        stats: {drama:3, edge:3, structure:3.5, skin:3, formality:3},
-        rationale: "The only fully warm-toned look in the wardrobe — no black anywhere. Apricot cable knit vest on bare skin against natural linen cargo skirt-trousers. Soft prep texture vs structured editorial silhouette. Completely different color story from everything else.",
-        notes: ["Vest worn directly on bare skin", "Quark Linen is natural/cream — the warm palette runs through both pieces", "Very different from outfit #8 (Linen & Lace) which pairs the Quark Linen with a black lace shirt"]
-      },
-      {
-        id: 50,
-        name: "Walker Blue Contrast",
-        category: "Contrast",
-        vibe: "Contrast",
-        photo: "outfits/outfit_50.jpg",
-        pieces: [
-          {role:"Top", name:"Layered Sleeveless White Collar Shirt", brand:"MINOAR", img:"https://media.minoar.com/2019/05/Layered-Sleeveless-White-Collar-Shirt-3-1.jpg"},
-          {role:"Bottom", name:"Walker Denim Skirt", brand:"ORTTU", img:"https://orttu.com/cdn/shop/files/denim-skirt.jpg?v=1721380712"},
-          {role:"Shoes", name:"Pai-Weite High-Top Sneakers White", brand:"Jakcuz", img:"https://infinit.store/cdn/shop/files/Bai-wette_Sneakers_white_INFINIT_STORE.png?v=1746632258"}
-        ],
-        stats: {drama:3, edge:3, structure:3, skin:3, formality:2},
-        rationale: "The Walker Denim Skirt is one of the few colored pieces in the wardrobe — blue is rare here. White top + blue denim + white sneakers is a clean casual contrast that doesn't need drama to land.",
-        notes: ["The blue denim skirt makes this stand out from every other look in the wardrobe", "Could swap white sneakers for Side-Zip Goat Leather Boots for a darker read"]
-      },
-      {
-        id: 51,
-        name: "Roberto Tonal Set",
-        category: "Tonal",
-        vibe: "Tonal",
-        photo: null,
-        pieces: [
-          {role:"Outer", name:"Roberto Jacket", brand:"ORTTU", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732"},
-          {role:"Bottom", name:"Roberto Pants", brand:"ORTTU", img:"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/22_1a50a9e6-0274-4348-8bc1-1a5a5dfd1b7e.jpg?v=1671137917"},
-          {role:"Shoes", name:"Roman Fabric Boots", brand:"Sasaia", img:"https://cdn.shopify.com/s/files/1/1139/3234/files/marsell-musona-boots-black-0.jpg?v=1692351717"}
-        ],
-        stats: {drama:3, edge:2, structure:3, skin:1, formality:3.5},
-        rationale: "Roberto Jacket + Roberto Pants as a matched grey tonal set — minimalist editorial. The pinstripe runs through both pieces creating a cohesive column. Roman boots keep it clean and slightly elevated.",
-        notes: ["The Roberto Jacket and Pants are sold separately but designed as a matching set", "Add a black base layer underneath the open jacket for contrast against the grey"]
-      },
-      {
-        id: 52,
-        name: "Burgundy Cargo Tuck",
-        category: "Contrast",
-        vibe: "Editorial",
-        photo: "outfits/outfit_52.jpg",
-        pieces: [
-          {role:"Vest", name:"Cable Knit Sweater Vest Burgundy", brand:"Amazon", img:"https://m.media-amazon.com/images/I/61U+1k4zyCL._AC_SL1500_.jpg"},
-          {role:"Bottom", name:"Cargo Volume Transform Denim Skirt", brand:"Minoar", img:"https://media.minoar.com/2024/11/Cargo_Volume_Transform_Denim_Skirt_1.jpg"},
-          {role:"Shoes", name:"Zipped Tall Boots", brand:"YASAR", img:"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468"}
-        ],
-        stats: {drama:4, edge:4, structure:3, skin:1, formality:2},
-        rationale: "Burgundy cable knit sweater vest tucked into the waistband of the deconstructed black denim skirt — the warm color anchor against all the raw frayed black creates a sharp unexpected contrast. The skirt's volume and asymmetric drape do the drama; the vest keeps it grounded. Zipped tall boots underneath complete the dark silhouette.",
-        notes: ["Tuck the vest fully into the skirt waistband so the burgundy hits at the waist as a clean band of color", "The skirt's frayed raw edges and drawstring details read very editorial — keep everything else minimal"]
-      }
-    ]
-  }
-
 ];
 
-// ── PENDING PROPOSALS — derived from shared OUTFITS_DEFAULT (single source of truth) ──
-// New outfits flagged source:"proposed" in data.js show here until photographed, then get promoted.
-(function(){
-  if (typeof OUTFITS_DEFAULT === "undefined") return;
-  var PLABEL={overlord:"Overlord",wanderer:"Wanderer","night-shift":"Night Shift",civilian:"Civilian",viceroy:"Viceroy"};
+// Hydrate compact session refs into full cards by resolving each outfit from the shared data.js
+// catalog (pieces, brand labels, images, computed stats). Single source of truth — no duplication.
+function hydrateSessions(SRC){
   var SK=["drama","structure","skin","edge","formality"];
-  var pend=OUTFITS_DEFAULT.filter(function(o){return o.source==="proposed";}).map(function(o){
-    var tot={drama:0,structure:0,skin:0,edge:0,formality:0},c=0;
-    o.pieces.forEach(function(p){var it=itemForPiece(p); if(it&&it.stats){SK.forEach(function(k){tot[k]+=it.stats[k]||0;}); c++;}});
-    var stats=c?{drama:+(tot.drama/c).toFixed(1),edge:+(tot.edge/c).toFixed(1),formality:+(tot.formality/c).toFixed(1),structure:+(tot.structure/c).toFixed(1),skin:+(tot.skin/c).toFixed(1)}:null;
-    return {
-      id:o.id, name:o.name, category:o.vibe, vibe:o.vibe, photo:"",
-      pieces:o.pieces.map(function(p){return {role:p.role, name:p.name, brand:(BRANDS[p.brand]&&BRANDS[p.brand].label)||p.brand, img:pieceImg(p)};}),
-      stats:stats,
-      rationale:(PLABEL[o.persona]||o.persona)+" proposal — built from existing pieces, awaiting photo."
+  var POOL=(typeof OUTFITS_DEFAULT!=="undefined")?OUTFITS_DEFAULT:[];
+  return SRC.map(function(s){
+    return { id:s.id, label:s.label, event:s.event, notes:s.notes,
+      outfits: s.outfits.map(function(ref){
+        var o=POOL.find(function(x){return x.id===ref.id;});
+        if(!o) return null;
+        var tot={drama:0,structure:0,skin:0,edge:0,formality:0}, c=0;
+        o.pieces.forEach(function(p){ var it=itemForPiece(p); if(it&&it.stats){ SK.forEach(function(k){ tot[k]+=it.stats[k]||0; }); c++; } });
+        var stats=c?{drama:+(tot.drama/c).toFixed(1),edge:+(tot.edge/c).toFixed(1),structure:+(tot.structure/c).toFixed(1),skin:+(tot.skin/c).toFixed(1),formality:+(tot.formality/c).toFixed(1)}:null;
+        return { id:o.id, name:o.name, vibe:o.vibe, category:o.vibe,
+          photo:"outfits/outfit_"+o.id+".jpg",
+          pieces:o.pieces.map(function(p){ return {role:p.role, name:p.name, brand:(BRANDS[p.brand]&&BRANDS[p.brand].label)||p.brand, img:pieceImg(p)}; }),
+          stats:stats, rationale:ref.rationale||"", notes:ref.notes||[] };
+      }).filter(Boolean)
     };
   });
-  if(pend.length){
-    SESSIONS.push({
-      id:"session-pending",
-      label:"Session \u00b7 Jul 27 \u00b7 Off-Duty",
-      event:"Off-Duty \u2014 Civilian day looks, Zara Tunic + new Alo shorts (#"+pend[0].id+"\u2013#"+pend[pend.length-1].id+")",
-      notes:"Everyday-ease proposals built from existing pieces \u2014 relaxed tees, shorts, and low-key layers. Awaiting photos; promote to the main board once shot.",
-      outfits:pend
-    });
-  }
-})();
+}
+const SESSIONS = hydrateSessions(SESSIONS_SRC);
+
+
 
 // ── FILTER STATE ──
 let activeSession = "all";
-const WARDROBE_IDS = new Set([22,23,24,25,26,27,28,29,30,31,32,33,35,36,37,40,42,43,45,46,47,49,50,52]);
+// "Added" badge = outfit is live on the main board (not a pending proposal). Derived from shared data.
+const WARDROBE_IDS = new Set((typeof OUTFITS_DEFAULT !== "undefined" ? OUTFITS_DEFAULT : []).filter(function(o){ return o.source !== "proposed"; }).map(function(o){ return o.id; }));
 let activeCat = "all";
 
 function buildSessionChips() {
@@ -743,7 +398,7 @@ function renderAll() {
   list.innerHTML = SESSIONS.flatMap(session =>
     session.outfits.map((outfit, i) => {
       const photoHtml = outfit.photo
-        ? "<img src='" + outfit.photo + "' alt='" + outfit.name + "' loading='lazy'>"
+        ? "<img src='" + outfit.photo + "' alt='" + outfit.name + "' loading='lazy' onerror='_photoFallback(this)'>"
         : "<div class='proposal-photo-empty'><span>Photo pending</span></div>";
 
       const piecesHtml = outfit.pieces.map(p => {
