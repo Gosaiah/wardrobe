@@ -205,83 +205,9 @@
   <div class="proposals-list" id="proposals-list"></div>
 </main>
 
+<script src="data.js"></script>
 <script>
-const IMAGES = {
-  "New York Jersey Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/1-7_9a8eeee2-36e9-43e7-a575-16eb717b1b05.jpg?v=1729253591",
-  "Brunello Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/41-17.jpg?v=1769083175",
-  "Roberto Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/roberto-pants.jpg?v=1760091639",
-  "Roberto Jacket":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/4_5c82320f-0c8d-4573-a034-19d4ad935d1b.jpg?v=1761151834",
-  "Porto Long Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/18-7_c13b0692-4966-41f8-869a-bd225617e7cf.jpg?v=1689578387",
-  "Raphael Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732",
-  "Raphael Jacket":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732",
-  "Addams Skirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/11_bfa063cd-f1ab-41e7-ba12-86ce49c76881.jpg?v=1682420753",
-  "Emanuel Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/Emanuel-shirt-w.jpg?v=1722521294",
-  "Star Neck Lace Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/45-12_18fb5fe8-ccb5-4ac4-9b7d-89d779b5a41b.jpg?v=1722852795",
-  "Walker Denim Skirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/denim-skirt.jpg?v=1721380712",
-  "Jesse Top with Scarf":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/55-1_76076a1a-1fef-4bef-86c8-0dd59f36d277.jpg?v=1720214602",
-  "Christian Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/Subject-photo45.jpg?v=1666769684",
-  "Cambridge Skirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/73Subject-photo-2.jpg?v=1671135726",
-  "Alejandro Cardigan":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/4_0dfb9b5b-8cde-4711-878c-b65738add53b.jpg?v=1671019814",
-  "Star Neck Shirt Couture":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/star-neck-couture-shirt.jpg?v=1722959711",
-  "Garson Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/4-12_d70ee4dd-0b4b-4db4-9182-8378a8d108f5.jpg?v=1760093094",
-  "Star Neck Cardigan Sleeveless":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/5-1_cfb37352-e520-4985-8fcf-b64477076e02.jpg?v=1765790387",
-  "Aspect Layered Construct Skirt Trousers":"https://media.minoar.com/2021/08/Aspect-Layered-Construct-Skirt-Trousers-2.jpg",
-  "Quark Linen Cargo Layered Skirt Trousers":"https://media.minoar.com/2020/07/Quark-Linen-Cargo-Layered-Skirt-Trousers-1-2.jpg",
-  "Aspect Ripstop Alternated Trousers":"https://media.minoar.com/2021/08/Aspect-Ripstop-Alternated-Trousers-4.jpg",
-  "Layered Sleeveless Collar Shirt":"https://media.minoar.com/2019/05/Layered-Sleeveless-Collar-Shirt-5-1.jpg",
-  "Layered Sleeveless White Collar Shirt":"https://media.minoar.com/2019/05/Layered-Sleeveless-White-Collar-Shirt-3-1.jpg",
-  "Sleeveless Collar Shirt":"https://media.minoar.com/2018/05/sleeveless-raw-shirt-standing-collar-black-dark_1-1.jpg",
-  "Elongated Trigon Shirt":"https://media.minoar.com/2022/05/Minoar-Elongated-Trigon-Shirt-2.jpg",
-  "Trigon Layered Sleeveless Shirt":"https://media.minoar.com/2022/05/Trigon-Layered-Sleeveless-Shirt-Ghost.jpg",
-  "Trigon Black Layers Volume Pants":"https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Volume-Pants-1.jpg",
-  "Trigon Layered Linen Trousers":"https://media.minoar.com/2022/05/Minoar-Trigon-Layered-Linen-Trousers-2.jpg",
-  "Wide Layered Crushed Cropped Pants":"https://media.minoar.com/2022/05/Minoar-Wide-Layered-Crushed-Cropped-Pants-1-1.jpg",
-  "Graphite External Bias Cargo Trousers":"https://media.minoar.com/2022/05/Minoar-Graphite-External-Bias-Cargo-Trousers-1.jpg",
-  "Division Cut Linear Collar Shirt":"https://media.minoar.com/2022/06/Division-Cut-Linear-Collar-Shirt-2.jpg",
-  "Fiber Bond Magma Tech Hood Cardigan":"https://media.minoar.com/2024/11/Fiber_Bond_Magma_Tech_Hood_Cardigan_1.jpg",
-  "Reverse Edge Construct Jogger":"https://media.minoar.com/2024/11/Minoar_Reverse_Edge_Construct_Jogger_MNR-5.jpg",
-  "Hexa Long Layers Sleeveless Coat":"https://media.minoar.com/2023/12/Minoar-BLACK-LONG-DENIM-HEXA-COAT-1-1.jpg",
-  "External Cropped Loose Grey Trousers":"https://media.minoar.com/2021/08/External-Cropped-Loose-Grey-Trousers-2.jpg",
-  "Cargo Volume Transform Denim Skirt":"https://media.minoar.com/2024/11/Cargo_Volume_Transform_Denim_Skirt_1.jpg",
-  "Reverse Edge Hood Buckle Cardigan":"https://media.minoar.com/2024/11/Reverse_Edge_Hood_Buckle_Cardigan_MNR-11.jpg",
-  "Nuance Dyed Refract Segment Track Pants":"https://media.minoar.com/2022/05/Nuance-Dyed-Refract-Segment-Track-Pants-1.jpg",
-  "Sheer Contrast Floral Print Shirts":"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/SheerContrastFloralPrintShirts_1.jpg?v=1761904504",
-  "Fever Arc Sequin Embroidery Vest":"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/FeverArcSequinEmbroideryVest_1.jpg?v=1780040848",
-  "Synth Flare Long Sleeve Sequin Jacket":"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/SynthFlareLongSleeveSequinJacket_1.jpg?v=1780040838",
-  "Prism Flow Tulle Wide Leg Pants":"https://cdn.shopify.com/s/files/1/0714/6848/2717/files/PrismFlowTulleWideLegPants_1.jpg?v=1780040845",
-  "25FW Layered Belt Apron Skirt":"https://cdn.shopify.com/s/files/1/0607/0494/8305/files/1_b1a049d4-0de0-4da2-a6dc-8ab4dfb1df49.jpg?v=1755683858",
-  "Zipped Tall Boots":"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/boots-2-1.jpg?v=1735836468",
-  "Side-Zip Goat Leather Boots":"https://cdn.shopify.com/s/files/1/0653/3683/6274/files/side_zip_goat_leather_boots_1.jpg?v=1739387263",
-  "Magi Sentient Robe":"https://i.etsystatic.com/24446956/r/il/ada9fd/2891345427/il_1080xN.2891345427_ab5z.jpg",
-  "Japanese Relaxed Standing Collar Techwear Shirt":"https://cdn.shopify.com/s/files/1/0634/1335/4713/files/Yamamoto-Relaxed-Standing-Collar-Shirt_1.jpg?v=1689561834",
-  "Rope Wrap Ring":"https://cdn.shopify.com/s/files/1/2219/3483/files/2024-07-02_12-09-44_B_R8_S4__2Kx2K.jpg",
-  "Matte Onyx Stone Bracelet":"https://cdn.shopify.com/s/files/1/2219/3483/products/MatteOnyx_Gold_Angle1.png",
-  "Double Belcher Bracelet":"https://cdn.shopify.com/s/files/1/2219/3483/files/2024-07-2510-59-00_B_R8_S4__2Kx2K.jpg",
-  "Rope + Cuban Bracelet Set":"https://cdn.shopify.com/s/files/1/0099/3325/8848/files/3mmr-4mmc-g.jpg?v=1726316558",
-  "Lapis Set":"https://cdn.shopify.com/s/files/1/0099/3325/8848/files/voidlaset-g_aec7c70e-e657-4edc-808c-4b0ba3e7318c.jpg?v=1764242884",
-  "Antique Ring":"https://cdn.shopify.com/s/files/1/2219/3483/files/Antique-ring-gold.jpg?v=1742477115",
-  "Arrow Pendant":"https://cdn.shopify.com/s/files/1/2219/3483/files/arrow-pendant-gold.png?v=1747719903",
-  "Wing Pendant":"https://cdn.shopify.com/s/files/1/2219/3483/files/wing-pendant-gold.png?v=1747720159",
-  "Onyx Clover Stone Bracelet":"https://cdn.shopify.com/s/files/1/2219/3483/files/clover-gold-bracelet.jpg?v=1757071656",
-  "Dagger Earring":"https://cdn.shopify.com/s/files/1/2219/3483/products/daggergoldduo.jpg?v=1620673184",
-  "Crown Ring":"https://cdn.shopify.com/s/files/1/2219/3483/files/crown-ring-gold.jpg?v=1742477125",
-  "Svart Sten Braided Chain":"https://cdn.shopify.com/s/files/1/0781/7265/1853/files/braided-chain-with-black-white-stone-pendant.jpg?v=1752528283",
-  "Gold Body Chain and Necklace Set":"https://cdn.shopify.com/s/files/1/0781/7265/1853/files/Gold_Body_Chain_and_Necklace_Set.jpg?v=1747353395",
-  "Havana Ring":"https://cdn.shopify.com/s/files/1/0099/3325/8848/files/havana-g_956f17b2-0e68-41c8-ab0d-e3b20eb9430b.jpg?v=1705616046",
-  "Oversized Drop Shoulder Tee Brown":"https://m.media-amazon.com/images/I/71QqCozGJML._AC_SY879_.jpg",
-  "Oversized Drop Shoulder Tee Blue":"https://m.media-amazon.com/images/I/71uhe+XFmdL._AC_SY879_.jpg",
-  "Oversized Drop Shoulder Tee Green":"https://m.media-amazon.com/images/I/71HdB6EaoFL._AC_SY879_.jpg",
-  "Pai-Weite High-Top Sneakers White":"https://infinit.store/cdn/shop/files/Bai-wette_Sneakers_white_INFINIT_STORE.png?v=1746632258",
-  "Pai-Weite High-Top Sneakers Black":"https://infinit.store/cdn/shop/files/Sc722121697bd443baaa11c7b80bf442fU.png?v=1746631777",
-};
-
-function getImg(name, fallback) {
-  if (!name) return fallback||"";
-  if (IMAGES[name]) return IMAGES[name];
-  const lower = name.toLowerCase();
-  const key = Object.keys(IMAGES).find(k => k.toLowerCase()===lower || k.toLowerCase().includes(lower) || lower.includes(k.toLowerCase()));
-  return key ? IMAGES[key] : (fallback||"");
-}
+// IMAGES + getImg are provided by shared data.js
 
 function drawSpider(stats, size) {
   if (!stats) return "";
@@ -725,6 +651,34 @@ const SESSIONS = [
   }
 
 ];
+
+// ── PENDING PROPOSALS — derived from shared OUTFITS_DEFAULT (single source of truth) ──
+// New outfits flagged source:"proposed" in data.js show here until photographed, then get promoted.
+(function(){
+  if (typeof OUTFITS_DEFAULT === "undefined") return;
+  var PLABEL={overlord:"Overlord",wanderer:"Wanderer","night-shift":"Night Shift",civilian:"Civilian",viceroy:"Viceroy"};
+  var SK=["drama","structure","skin","edge","formality"];
+  var pend=OUTFITS_DEFAULT.filter(function(o){return o.source==="proposed";}).map(function(o){
+    var tot={drama:0,structure:0,skin:0,edge:0,formality:0},c=0;
+    o.pieces.forEach(function(p){var it=itemForPiece(p); if(it&&it.stats){SK.forEach(function(k){tot[k]+=it.stats[k]||0;}); c++;}});
+    var stats=c?{drama:+(tot.drama/c).toFixed(1),edge:+(tot.edge/c).toFixed(1),formality:+(tot.formality/c).toFixed(1),structure:+(tot.structure/c).toFixed(1),skin:+(tot.skin/c).toFixed(1)}:null;
+    return {
+      id:o.id, name:o.name, category:o.vibe, vibe:o.vibe, photo:"",
+      pieces:o.pieces.map(function(p){return {role:p.role, name:p.name, brand:(BRANDS[p.brand]&&BRANDS[p.brand].label)||p.brand, img:pieceImg(p)};}),
+      stats:stats,
+      rationale:(PLABEL[o.persona]||o.persona)+" proposal — built from existing pieces, awaiting photo."
+    };
+  });
+  if(pend.length){
+    SESSIONS.push({
+      id:"session-pending",
+      label:"Session \u00b7 Jul 27 \u00b7 Off-Duty",
+      event:"Off-Duty \u2014 Civilian day looks, Zara Tunic + new Alo shorts (#"+pend[0].id+"\u2013#"+pend[pend.length-1].id+")",
+      notes:"Everyday-ease proposals built from existing pieces \u2014 relaxed tees, shorts, and low-key layers. Awaiting photos; promote to the main board once shot.",
+      outfits:pend
+    });
+  }
+})();
 
 // ── FILTER STATE ──
 let activeSession = "all";
