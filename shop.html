@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<title>Alter · Shop</title>
+<style>
+  body { background: var(--bg); color: var(--text); font-family: var(--font-ui); margin: 0; }
+  .shop-wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 80px; }
+  .shop-head { margin-bottom: 8px; font-size: 20px; font-weight: 600; letter-spacing: .01em; }
+  .shop-sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+
+  .shop-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 7px 14px; border-radius: var(--r-pill); cursor: pointer; transition: all var(--tr); }
+  .filter-btn:hover { color: var(--text); border-color: var(--muted); }
+  .filter-btn.active { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 700; }
+
+  .shop-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 22px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .shop-legend .pri { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.list { background: var(--accent); }
+  .dot.high { background: #d9a066; }
+  .dot.medium { background: #7d8ca3; }
+  .dot.low { background: var(--border); }
+
+  .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .shop-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; display: flex; flex-direction: column; }
+  .shop-photo { aspect-ratio: 3/4; background: var(--surface2); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .shop-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .shop-noimg { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+  .shop-noimg :first-child { font-size: 26px; opacity: .4; }
+  .shop-tier { position: absolute; top: 10px; left: 10px; font-size: 8px; letter-spacing: .12em; text-transform: uppercase; padding: 3px 8px; border-radius: var(--r-pill); font-weight: 700; }
+  .tier-owned { background: var(--accent); color: var(--on-accent); }
+  .tier-discussed { background: rgba(226,211,180,.16); color: var(--accent); border: 1px solid var(--accent2); }
+  .tier-new { background: rgba(0,0,0,.5); color: var(--muted); border: 1px solid var(--border); }
+  .shop-prio { position: absolute; top: 10px; right: 10px; font-size: 8px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border-radius: var(--r-pill); font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
+  .prio-list { background: var(--accent); color: var(--on-accent); }
+  .prio-high { background: rgba(217,160,102,.16); color: #d9a066; border: 1px solid rgba(217,160,102,.4); }
+  .prio-medium { background: rgba(125,140,163,.14); color: #9aa8bd; border: 1px solid rgba(125,140,163,.35); }
+  .prio-low { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+  .shop-body { padding: 12px 14px 4px; flex: 1; }
+  .shop-brand { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .shop-name { font-size: 13px; color: var(--white); margin: 3px 0 2px; line-height: 1.3; }
+  .shop-price { font-size: 11px; color: var(--accent); margin-bottom: 6px; }
+  .shop-spider { display: flex; justify-content: center; margin: 4px 0 8px; }
+  .shop-fill { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
+  .persona-chip { font-size: 8px; letter-spacing: .1em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); font-weight: 700; padding: 2px 7px; border-radius: var(--r-sm); }
+  .fills-chip { font-size: 8px; letter-spacing: .08em; text-transform: uppercase; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); padding: 2px 7px; border-radius: var(--r-sm); }
+  .shop-why { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 0 0 12px; }
+  .shop-view { display: block; text-align: center; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--border); padding: 10px; text-decoration: none; transition: color var(--tr); }
+  .shop-view:hover { color: var(--accent); }
+  .shop-empty { color: var(--muted); font-size: 13px; padding: 30px 0; }
+  .shop-summary { margin: 0 0 20px; font-size: 12px; color: var(--muted); }
+  .shop-summary b { color: var(--accent); font-weight: 600; }
+  .shop-foot { display: flex; border-top: 1px solid var(--border); }
+  .list-btn { flex: 1; background: none; border: none; border-right: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 10px; cursor: pointer; transition: all var(--tr); }
+  .list-btn:hover { color: var(--text); }
+  .list-btn.on { color: var(--on-accent); background: var(--accent); font-weight: 700; }
+  .shop-foot .shop-view { flex: 1; border-top: none; }
+</style>
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<script src="nav.js"></script>
+<script src="data.js"></script>
+
+<main class="shop-wrap">
+  <div class="shop-head">Shop</div>
+  <div class="shop-sub">Pieces chosen for <strong>versatility</strong> &mdash; each one should unlock several different outfits when layered or paired with what you already own. Filter by character; sorted by priority. Photos where the site allows; otherwise open the product link.</div>
+  <div class="shop-filters" id="shop-filters"></div>
+  <div class="shop-legend">
+    <span class="pri"><span class="dot high"></span>Priority</span>
+    <span class="pri"><span class="dot medium"></span>Consider</span>
+    <span class="pri"><span class="dot low"></span>Maybe</span>
+    <span class="pri">&#9733; = on your shopping list</span>
+  </div>
+  <div class="shop-summary" id="shop-summary"></div>
+  <div class="shop-grid" id="shop-root"></div>
+</main>
+
+<script>
+function drawSpider(stats, size) {
+  if (!stats) return "";
+  const keys=["drama","edge","formality","structure","skin"];
+  const labels=["Drama","Edge","Form.","Struct.","Skin"];
+  const pad=size*.22, W=size+pad*2, cx=W/2, cy=W/2, r=size*.28, labelR=size*.38, n=keys.length;
+  const ang=i=>(Math.PI*2/n)*i-Math.PI/2;
+  const px=(i,rr)=>(cx+rr*Math.cos(ang(i))).toFixed(1);
+  const py=(i,rr)=>(cy+rr*Math.sin(ang(i))).toFixed(1);
+  let rings="";
+  for(let ring=1;ring<=5;ring++){const pts=keys.map((_,i)=>px(i,r*(ring/5))+","+py(i,r*(ring/5))).join(" ");rings+='<polygon points="'+pts+'" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';}
+  const axes=keys.map((_,i)=>'<line x1="'+cx+'" y1="'+cy+'" x2="'+px(i,r)+'" y2="'+py(i,r)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
+  const dataPts=keys.map((k,i)=>{const v=stats[k]||0;return px(i,r*(v/5))+","+py(i,r*(v/5));}).join(" ");
+  const poly='<polygon points="'+dataPts+'" fill="#e2d3b4" fill-opacity="0.25" stroke="#e2d3b4" stroke-width="1.5"/>';
+  const dots=keys.map((k,i)=>{const v=stats[k]||0;return'<circle cx="'+px(i,r*(v/5))+'" cy="'+py(i,r*(v/5))+'" r="2" fill="#e2d3b4"/>';}).join("");
+  const fs=(W*.058).toFixed(1);
+  const lbls=labels.map((lbl,i)=>{
+    const lx=(cx+labelR*Math.cos(ang(i))).toFixed(1),ly=(cy+labelR*Math.sin(ang(i))).toFixed(1);
+    const c=Math.cos(ang(i)),s=Math.sin(ang(i));
+    const anchor=c>.3?"start":c<-.3?"end":"middle";
+    const dy=s>.3?"0.8em":s<-.3?"0em":"0.35em";
+    return'<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="rgba(255,255,255,0.45)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif">'+lbl+'</text>';
+  }).join("");
+  const ws=W.toFixed(0);
+  return'<svg width="'+ws+'" height="'+ws+'" viewBox="0 0 '+ws+' '+ws+'" xmlns="http://www.w3.org/2000/svg">'+rings+axes+poly+dots+lbls+'</svg>';
+}
+
+const PLAB = { overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy" };
+const PRIO = { list:{label:"On List",rank:0}, high:{label:"Priority",rank:1}, medium:{label:"Consider",rank:2}, low:{label:"Maybe",rank:3} };
+const TIERLAB = { owned:"Own Brand", discussed:"Discussed", new:"New" };
+const PFILTERS = ["all","list","overlord","wanderer","night-shift","viceroy","civilian"];
+let currentFilter = "all";
+
+// ── Shopping list (localStorage) ──
+function getList(){ try { return JSON.parse(localStorage.getItem("shopList") || "[]"); } catch(e){ return []; } }
+function setList(a){ localStorage.setItem("shopList", JSON.stringify(a)); }
+function onList(id){ return getList().indexOf(id) >= 0; }
+function toggleList(id){ const a = getList(); const i = a.indexOf(id); if (i >= 0) a.splice(i,1); else a.push(id); setList(a); }
+function priceNum(p){ const m = (p||"").replace(/,/g,"").match(/(\d+(\.\d+)?)/); return m ? parseFloat(m[1]) : 0; }
+
+function cardHtml(it) {
+  const img = it.img
+    ? '<img src="' + it.img + '" alt="' + it.name + '" loading="lazy">'
+    : '<div class="shop-noimg"><span>&#9672;</span><span>' + it.brand + '</span></div>';
+  const pr = PRIO[it.priority] || PRIO.medium;
+  return '<article class="shop-card" data-persona="' + it.persona + '">' +
+    '<div class="shop-photo"><span class="shop-tier tier-' + it.tier + '">' + (TIERLAB[it.tier] || it.tier) + '</span>' +
+      '<span class="shop-prio prio-' + it.priority + '"><span class="dot ' + it.priority + '"></span>' + pr.label + '</span>' + img + '</div>' +
+    '<div class="shop-body">' +
+      '<div class="shop-brand">' + it.brand + '</div>' +
+      '<div class="shop-name">' + it.name + '</div>' +
+      '<div class="shop-price">' + it.price + '</div>' +
+      '<div class="shop-spider">' + drawSpider(it.stats, 84) + '</div>' +
+      '<div class="shop-fill"><span class="persona-chip">' + (PLAB[it.persona]||it.persona) + '</span><span class="fills-chip">' + it.fills + '</span></div>' +
+      '<p class="shop-why">' + it.why + '</p>' +
+    '</div>' +
+    '<div class="shop-foot">' +
+      '<button class="list-btn' + (onList(it.id) ? ' on' : '') + '" data-id="' + it.id + '">' + (onList(it.id) ? '★ On List' : '☆ Add to List') + '</button>' +
+      '<a class="shop-view" href="' + it.url + '" target="_blank" rel="noopener">View &rarr;</a>' +
+    '</div>' +
+  '</article>';
+}
+
+function updateSummary() {
+  const listed = ((typeof SHOP !== "undefined") ? SHOP : []).filter(s => onList(s.id));
+  const total = listed.reduce((sum, s) => sum + priceNum(s.price), 0);
+  const el = document.getElementById("shop-summary");
+  el.innerHTML = listed.length
+    ? 'Shopping list: <b>' + listed.length + ' item' + (listed.length !== 1 ? 's' : '') + '</b> &middot; estimated <b>~$' + total.toLocaleString() + '</b>'
+    : 'Shopping list is empty &mdash; tap &#9734; on any piece to add it.';
+}
+
+function renderShop() {
+  const SRC = ((typeof SHOP !== "undefined") ? SHOP : []).slice()
+    .sort((a,b) => (PRIO[a.priority]?.rank ?? 9) - (PRIO[b.priority]?.rank ?? 9));
+  let list;
+  if (currentFilter === "list") list = SRC.filter(s => onList(s.id));
+  else if (currentFilter === "all") list = SRC;
+  else list = SRC.filter(s => s.persona === currentFilter);
+  const root = document.getElementById("shop-root");
+  const empty = currentFilter === "list" ? "Your shopping list is empty. Tap ☆ on any piece to add it." : "No candidates for this character yet.";
+  root.innerHTML = list.length ? list.map(cardHtml).join("") : '<div class="shop-empty">' + empty + '</div>';
+  root.querySelectorAll(".list-btn").forEach(btn => {
+    btn.addEventListener("click", () => { toggleList(btn.dataset.id); renderShop(); buildFilters(); });
+  });
+  updateSummary();
+}
+
+function buildFilters() {
+  const bar = document.getElementById("shop-filters");
+  const listCount = ((typeof SHOP !== "undefined") ? SHOP : []).filter(s => onList(s.id)).length;
+  bar.innerHTML = PFILTERS.map(f => {
+    const label = (f === "all") ? "All" : (f === "list") ? ("★ List (" + listCount + ")") : PLAB[f];
+    return '<button class="filter-btn' + (f === currentFilter ? ' active' : '') + '" data-f="' + f + '">' + label + '</button>';
+  }).join("");
+  bar.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentFilter = btn.dataset.f;
+      bar.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.f === currentFilter));
+      renderShop();
+    });
+  });
+}
+
+buildFilters();
+renderShop();
+</script>
+</body>
+</html>

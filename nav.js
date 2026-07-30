@@ -76,6 +76,7 @@
   const page = location.pathname.split('/').pop() || 'wardrobe_v2_18.html';
   const isWardrobe  = page === 'wardrobe_v2_18.html';
   const isProposals = page === 'outfit_proposals.html';
+  const isShop      = page === 'shop.html';
   const isProfile   = page === 'profile.html';
 
   // On wardrobe page: real buttons (existing JS handles tab switching).
@@ -105,6 +106,7 @@
     ${tabsHtml}
     <div class="nav-divider"></div>
     <a href="outfit_proposals.html" class="nav-link${isProposals ? ' active' : ''}">Proposals</a>
+    <a href="shop.html" class="nav-link${isShop ? ' active' : ''}">Shop</a>
     <a href="profile.html" class="nav-link${isProfile ? ' active' : ''}">Profile</a>
     <span class="nav-stat" id="nav-stat"></span>
     <button class="nav-theme" id="nav-theme" type="button" aria-label="Toggle light or dark theme"></button>
