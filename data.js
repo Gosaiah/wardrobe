@@ -120,8 +120,10 @@ const IMAGES = {
   "Pai-Weite High-Top Sneakers White":"https://infinit.store/cdn/shop/files/Bai-wette_Sneakers_white_INFINIT_STORE.png?v=1746632258",
   "Pai-Weite High-Top Sneakers Black":"https://infinit.store/cdn/shop/files/Sc722121697bd443baaa11c7b80bf442fU.png?v=1746631777",
   "Roman Fabric Boots":"https://cdn-images.farfetch-contents.com/15/55/89/60/15558960_29784883_1000.jpg",
-  "AJ1131 Chelsea Boots":"https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_706,q_75,w_470/c_scale,h_480/v4/262688M223003_1.jpg",
-  "DMXL Zip Leather Chelsea Boots":"https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_706,q_75,w_470/c_scale,h_480/v4/261399M223001_1.jpg",
+  "AJ1131 Chelsea Boots":"https://img.ssensemedia.com/images/f_auto,w_auto/262688M223003_4/toga-virilis-ssense-exclusive-black-aj1131-chelsea-boots.jpg",
+  "DMXL Zip Leather Chelsea Boots":"https://cdn.media.amplience.net/i/drmartens/41070001.84?$smart1024$&fmt=auto",
+  "Cargo Asymmetric Skirt":"https://media.minoar.com/2018/05/CARGO-ASYMMETRIC-SKIRT-8.jpg",
+  "Relaxed Fit Interlock T-Shirt":"https://static.zara.net/assets/public/f1fd/2f5f/59814389b5cb/675c65b1adc8/05584431507-e1/05584431507-e1.jpg?ts=1783939045384&w=2240",
   "Double Take Short Black":"https://www.aloyoga.com/cdn/shop/files/M6143R_01_b1_s1_a2_1_m214_1024x1024.jpg?v=1756316493",
   "Double Take Short Espresso":"https://www.aloyoga.com/cdn/shop/files/M6143R_04064_b1_s1_a2_1_m214_1024x1024.jpg?v=1746630413",
   "Raye Print Round Neck T-shirt":"https://img.staticdj.com/65ce5223c257a259fed9300c9018178f.jpeg",
@@ -197,6 +199,7 @@ const WARDROBE_DATA = [
   {id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt",type:"bottom",style:"Dark / Minimal",stats:{drama:4,structure:4,skin:2,edge:4,formality:3}},
   {id:"m19",name:"Reverse Edge Hood Buckle Cardigan",brand:"MINOAR",color:"Black",size:"L",cat:"Cardigan",type:"outer",style:"Contrast",stats:{drama:4,structure:4,skin:1,edge:5,formality:2.5}},
   {id:"m20",name:"Nuance Dyed Refract Segment Track Pants",brand:"MINOAR",color:"Grey",size:"L",cat:"Pants",type:"bottom",style:"Dark / Minimal",stats:{drama:3,structure:3,skin:1,edge:3,formality:2}},
+  {id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt",type:"bottom",style:"Dark / Minimal",url:"https://www.minoar.com/product/cargo-men-skirt/",stats:{drama:3.5,structure:3,skin:1,edge:3.5,formality:2.5}},
   // ── RYVK Studio ────────────────────────────────────────────────────────────
   {id:"r1",name:"Sheer Contrast Floral Print Shirts",brand:"RYVK",color:"Multi",size:"2XL",cat:"Shirt",type:"top",style:"Contrast",stats:{drama:4,structure:2,skin:3,edge:3,formality:2}},
   {id:"r2",name:"Fever Arc Sequin Embroidery Vest",brand:"RYVK",color:"Black",size:"XL",cat:"Vest",type:"top",style:"Night Out",stats:{drama:5,structure:2,skin:4,edge:4,formality:2}},
@@ -220,6 +223,7 @@ const WARDROBE_DATA = [
   // ── Tops — Techwear Official ───────────────────────────────────────────────
   {id:"tw1",name:"Japanese Relaxed Standing Collar Techwear Shirt",brand:"TECHWEAR",color:"Black",size:"OS",cat:"Shirt",type:"top",style:"Dark / Minimal",url:"https://techwearofficial.com/products/japanese-relaxed-standing-collar-techwear-shirt",stats:{drama:3,structure:3,skin:1,edge:4,formality:3}},
   {id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA",color:"Black",size:"M (worn as men's)",cat:"Vest",type:"outer",style:"Dark / Minimal",url:"https://poshmark.com/listing/Zara-Woman-Womens-Tunic-ButtonUp-Collared-Sleeveless-Black-Polyester-Size-M-6a39a0ec4ba08a69d71db0a4",stats:{drama:4,structure:2,skin:2,edge:3,formality:1}},
+  {id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",color:"Khaki",size:"M",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.zara.com/us/en/relaxed-fit-interlock-t-shirt--04-p05584471.html",stats:{drama:2,structure:1.5,skin:1,edge:2,formality:2}},
   // ── Kids of Eden ───────────────────────────────────────────────────────────
   {id:"koe1",name:"Protanopia Cloak Hoodie",brand:"KOE",color:"Brown",size:"L",cat:"Hoodie",type:"outer",style:"Tonal",img:"https://cdn.shopify.com/s/files/1/0620/3880/2614/products/KIDSOFEDENHEAVYWEIGHTHOODIEMEN_STAUPEFRONT-636740.jpg?v=1683087494",url:"https://kidsofeden.earth/products/protanopia-cloak-hoodie-dust",stats:{drama:2,structure:2,skin:1,edge:2,formality:1}},
   // ── Shoes — Infinitys-Store ────────────────────────────────────────────────
@@ -337,7 +341,9 @@ const OUTFITS_DEFAULT = [
   {id:60,name:"Open Collar",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"wanderer",pieces:[{role:"Outer",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"r5",name:"Tone Wave Wide Leg Pants",brand:"RYVK"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:61,name:"Open Collar Day",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Outer",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"m17",name:"External Cropped Loose Grey Trousers",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:62,name:"Raye Print Lounge",vibe:"Tonal",tags:["tonal"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"al1",name:"Double Take Short Black",brand:"ALO"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
-  {id:63,name:"Photo Tee Espresso",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF"},{role:"Bottom",id:"al2",name:"Double Take Short Espresso",brand:"ALO"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
+  {id:63,name:"Photo Tee Espresso",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF"},{role:"Bottom",id:"al2",name:"Double Take Short Espresso",brand:"ALO"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
+  {id:64,name:"Olive Tee + Pinstripe Tailoring",vibe:"Tonal",tags:["tonal"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
+  {id:65,name:"Longline Shirt + Cargo Skirt",vibe:"Layered",tags:["tonal"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o5",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
 ];
 
 
@@ -397,7 +403,7 @@ const SHOP = [
     why:"A flowing black cape \u2014 the lightweight, movement-forward third layer for warm-weather nights. Exactly the cape silhouette the whole wardrobe is built around." },
 ];
 
-const DATA_VERSION = 67;
+const DATA_VERSION = 70;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),

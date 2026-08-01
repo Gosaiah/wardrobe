@@ -1240,6 +1240,20 @@ const WORN_HISTORY_DEFAULT = [
     itemIds: ["am7","m18","pw1"],
     photo: "wear-photos/wear_2026-07-23.jpg",
     notes: "Wore with white sneakers instead of zipped tall boots"
+  },
+  {
+    date: "2026-07-28",
+    outfitId: 64,
+    outfitSource: "detected",
+    itemIds: ["z2","o3","pw2"],
+    photo: "wear-photos/wear_2026-07-28.jpeg"
+  },
+  {
+    date: "2026-07-30",
+    outfitId: 65,
+    outfitSource: "detected",
+    itemIds: ["o5","m21","pw1"],
+    photo: "wear-photos/wear_2026-07-30.jpeg"
   }
 ];
 function getWearCount(type, id) {
@@ -1379,6 +1393,8 @@ const PROPOSAL_PHOTO_PATHS = {
   49: "outfits/outfit_49.jpg",
   50: "outfits/outfit_50.jpg",
   52: "outfits/outfit_52.jpg",
+  64: "outfits/outfit_64.jpg",
+  65: "outfits/outfit_65.jpg",
 };
 // Pre-populate OUTFIT_PHOTOS with proposal paths (relative to HTML file)
 Object.entries(PROPOSAL_PHOTO_PATHS).forEach(([id, path]) => {
