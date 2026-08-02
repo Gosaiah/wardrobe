@@ -66,17 +66,37 @@ How much bare skin the piece shows, including sheerness.
 
 Goth, punk, fetish, dystopian aggression — the "hard" attitude of the piece.
 
-- Up: black leather, studs, hardware, buckles, straps, zippers, distressing, bondage/fetish references, dystopian styling.
-- Down: soft colors, classic/preppy, romantic/gentle.
+- Up: leather, studs, hardware, buckles, straps, zippers, distressing, bondage/fetish references, dystopian/techwear aggression, spikes, chains.
+- Down: soft/romantic detailing, classic/preppy cut.
+- **Color is neutral.** Black does *not* add edge on its own — this wardrobe is mostly black, so black is the baseline. A plain black basic is 0; edge is earned only by hard details and attitude.
 - Not the same as drama: a small studded band = high edge, low drama; a pastel sequin gown = low edge, high drama.
 
 **Anchors**
-- **0** — soft/classic: pastel knit, plain dress shirt, delicate chain
-- **1** — slight bite: dark tailoring, matte-black basics
-- **2** — clearly dark: all-black styling, boots, subtle hardware
-- **3** — hard: leather accents, straps, zips, studs, distressing
-- **4** — aggressive: harnesses, heavy hardware, fetish/bondage detail, spikes
+- **0** — no hard detail (any color): plain tee, plain trousers, plain shirt, delicate chain
+- **1** — slight bite: a little hardware, subtle zip/utility detail, minimal techwear
+- **2** — clearly hard: leather accents, visible hardware/zips, combat/utility boots, studs
+- **3** — hard: substantial leather, straps, distressing, aggressive techwear/deconstruction
+- **4** — aggressive: harnesses, heavy hardware, fetish/bondage detail, spikes, platforms
 - **5** — extreme: full bondage/armor, mask, maximal dystopian
+
+---
+
+## Styling layer (planned — base stats → effective stats)
+
+Base stats above are the garment "on the rack." A separate **styling layer** captures *how a piece is worn* and produces **effective stats** on top:
+
+```
+effective = base
+          + Σ single-attribute modifiers   (e.g. high-waist → +0.5 drama)
+          + Σ combo bonuses                (e.g. high-waist + tucked → +0.5 more drama)
+   (clamped 0–5)
+```
+
+- **Styling attributes** are metadata tags, not stats: high-waist, tucked, worn-open/layered, sleeves-rolled, cropped-ankle, belted, etc.
+- **Combos** may fire within one item (sleeveless + cropped) or across an outfit (high-waist bottom + tucked top) — so an outfit can score higher than the sum of its pieces.
+- **Base stays pure.** Styling bumps live in the modifier tables, never baked into base. (The high-waist +0.5 currently in 11 bottoms' base drama is to be moved into a `high-waist` modifier.)
+
+Not built yet — see TODO.md.
 
 ---
 
