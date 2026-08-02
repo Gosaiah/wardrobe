@@ -94,9 +94,11 @@ effective = base
 
 - **Styling attributes** are metadata tags, not stats: high-waist, tucked, worn-open/layered, sleeves-rolled, cropped-ankle, belted, etc.
 - **Combos** may fire within one item (sleeveless + cropped) or across an outfit (high-waist bottom + tucked top) — so an outfit can score higher than the sum of its pieces.
-- **Base stays pure.** Styling bumps live in the modifier tables, never baked into base. (The high-waist +0.5 currently in 11 bottoms' base drama is to be moved into a `high-waist` modifier.)
+- **Base stays pure.** Styling bumps live in the modifier tables, never baked into base.
 
-Not built yet — see TODO.md.
+**Built (data.js).** `STYLE_MODIFIERS` (singles), `STYLE_COMBOS` (monochrome-dark computed from colors, high-waist+tucked, worn-open+bare-torso), and `effectiveOutfitStats()`. Singles apply per-item (diluted when averaged across an outfit); combos apply at outfit level (full strength). Outfit stats use effective; item cards + persona matching stay on base. high-waist and flowy are backed out of base and reapplied as modifiers.
+
+Vocabulary so far — singles: high-waist, low-rise, tucked, half-tucked, worn-open, belted, sleeves-rolled, cropped-ankle, oversized, layered, flowy. Contextual flag: bare-torso. Combos: monochrome-dark, high-waist+tucked, worn-open+bare-torso.
 
 ---
 

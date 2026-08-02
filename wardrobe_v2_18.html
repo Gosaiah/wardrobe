@@ -1711,6 +1711,7 @@ function openOutfitDetail(outfitId) {
     "</div>" +
     outfitWearHtml +
     (outfitStats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(outfitStats) + "</div>" : "") +
+    outfitStylingHtml(outfit) +
     "<div class='item-detail-section-title'>Pieces</div>" +
     outfit.pieces.map(function(p) {
       var img = pieceImg(p);
@@ -1792,6 +1793,7 @@ function openLightbox(outfitId) {
     "</div>" +
     lbWearHtml +
     (lbStats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(lbStats) + "</div>" : "") +
+    outfitStylingHtml(outfit) +
     "<div class='lb-pieces-title'>Pieces</div>" + piecesHtml;
   document.getElementById("photo-lightbox").style.display = "flex";
   // Wire last worn link in lightbox
@@ -2373,15 +2375,15 @@ function renderPickerResult(data, eventText) {
 
 
 function getOutfitStats(outfit) {
+  // Effective stats (base + styling modifiers + combos). Engine lives in data.js.
+  if (typeof effectiveOutfitStats === "function") return effectiveOutfitStats(outfit);
   const STAT_KEYS = ["drama","structure","skin","edge","formality"];
   const totals = {drama:0,structure:0,skin:0,edge:0,formality:0};
   let count = 0;
   outfit.pieces.forEach(p => {
     const item = itemForPiece(p);
-    if (!item) return;
-    const s = item.stats;
-    if (!s) return;
-    STAT_KEYS.forEach(k => { totals[k] += s[k]; });
+    if (!item || !item.stats) return;
+    STAT_KEYS.forEach(k => { totals[k] += item.stats[k]; });
     count++;
   });
   if (!count) return null;
@@ -2459,6 +2461,25 @@ function outfitStatPillsHtml(stats) {
   return "<div style=\"display:flex;align-items:center;gap:12px;padding:14px 22px;border-top:1px solid var(--border)\">" +
     drawSpider(stats, 80, "#e2d3b4", "card") +
     "<div>" + bars + "</div>" +
+  "</div>";
+}
+
+// ── STYLING CHIPS (which combos are firing + active attributes) ──
+function outfitStylingHtml(outfit){
+  if (typeof outfitCombosFired !== "function") return "";
+  var combos = outfitCombosFired(outfit);
+  var attrs = (typeof outfitAttrs === "function") ? Array.from(outfitAttrs(outfit)) : [];
+  if (!combos.length && !attrs.length) return "";
+  var comboChips = combos.map(function(c){
+    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#111;font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + c.label + " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + boostText(c.boost) + "</span></span>";
+  }).join("");
+  var attrChips = attrs.map(function(a){
+    return "<span style=\"background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;padding:3px 7px;border-radius:6px\">" + a + "</span>";
+  }).join("");
+  return "<div style=\"margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px\">" +
+    "<div style=\"font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px\">Styling</div>" +
+    (combos.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:6px" + (attrs.length ? ";margin-bottom:8px" : "") + "\">" + comboChips + "</div>" : "") +
+    (attrs.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:5px\">" + attrChips + "</div>" : "") +
   "</div>";
 }
 

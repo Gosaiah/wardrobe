@@ -20,9 +20,14 @@ Last updated: 2026-07-28 · data.js at DATA_VERSION 67
 - [ ] NOT CONVENTIONAL linen×cotton kimono gown (~$297) — long draped goth statement. (Note: site currently suspends Japan→US shipping.)
 - [ ] kuhakutoyume kimono-remake pieces — good fit but one-of-a-kind / often sold out; opportunistic only.
 
-## Next up (after stat calibration)
+## Next up
 
-- [ ] **Styling modifier layer (base stats → effective stats).** Add a styling-attribute vocabulary (high-waist, tucked, worn-open/layered, sleeves-rolled, cropped-ankle, belted, …) tracked separately from base stats. Effective stat = base + Σ single-attribute modifiers + Σ combo bonuses, clamped 0–5. Combos fire within an item (sleeveless + cropped) or across an outfit (high-waist bottom + tucked top), so an outfit's vibe exceeds the sum of its pieces. Cleanup: back the high-waist +0.5 we hardcoded into 11 bottoms' base drama OUT of base and into a `high-waist` modifier so it stops double-counting. Wire effective stats into spiders + persona matching. Spec lives in STATS.md.
+- [x] **Styling modifier layer — engine built (data.js v95).** STYLE_MODIFIERS + STYLE_COMBOS + effectiveOutfitStats; getOutfitStats now uses effective. high-waist/flowy backed out of base. Verified on #1/#60/#64/#39.
+- [ ] **Styling layer — remaining polish:**
+  - Surface it in the UI: show which combos are firing on an outfit (e.g. a "Monochrome command" chip), and optionally base-vs-effective toggle on the outfit detail.
+  - Tag more items/outfits with real styling attributes (only a few tagged so far as demos).
+  - Expand combos as ideas come (layered synergies, etc.).
+  - Consider an editor to set per-outfit styling from the UI instead of hand-editing data.js.
 
 ## Tech debt
 

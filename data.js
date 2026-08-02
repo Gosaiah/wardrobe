@@ -194,7 +194,7 @@ const WARDROBE_DATA = [
   {id:"m13",name:"Division Cut Linear Collar Shirt",brand:"MINOAR",color:"White",size:"L",cat:"Shirt",type:"top",style:"Contrast",url:"https://www.minoar.com/product/division-cut-linear-collar-shirt-2/",stats:{drama:3,structure:3,skin:1,edge:2,formality:3}},
   {id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR",color:"Black",size:"L",cat:"Cardigan",type:"outer",style:"Dark / Minimal",stats:{drama:3,structure:3,skin:0,edge:3,formality:2.5}},
   {id:"m15",name:"Reverse Edge Construct Jogger",brand:"MINOAR",color:"Black",size:"L",cat:"Pants",type:"bottom",style:"Dark / Minimal",stats:{drama:2,structure:2,skin:0,edge:3,formality:1.5}},
-  {id:"m16",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",stats:{drama:4.5,structure:4,skin:2,edge:2,formality:3.5}},
+  {id:"m16",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",stats:{drama:4,structure:4,skin:2,edge:2,formality:3.5},styling:["flowy"]},
   {id:"m17",name:"External Cropped Loose Grey Trousers",brand:"MINOAR",color:"Grey",size:"L",cat:"Trousers",type:"bottom",style:"Tonal",stats:{drama:2,structure:2,skin:0,edge:1,formality:3},styling:["high-waist"]},
   {id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt",type:"bottom",style:"Dark / Minimal",stats:{drama:3,structure:3,skin:1,edge:2,formality:2},styling:["high-waist"]},
   {id:"m19",name:"Reverse Edge Hood Buckle Cardigan",brand:"MINOAR",color:"Black",size:"L",cat:"Cardigan",type:"outer",style:"Contrast",stats:{drama:3,structure:3,skin:0,edge:4,formality:2}},
@@ -203,16 +203,16 @@ const WARDROBE_DATA = [
   // ── RYVK Studio ────────────────────────────────────────────────────────────
   {id:"r1",name:"Sheer Contrast Floral Print Shirts",brand:"RYVK",color:"Multi",size:"2XL",cat:"Shirt",type:"top",style:"Contrast",stats:{drama:3,structure:1,skin:3,edge:0,formality:1}},
   {id:"r2",name:"Fever Arc Sequin Embroidery Vest",brand:"RYVK",color:"Black",size:"XL",cat:"Vest",type:"top",style:"Night Out",stats:{drama:4,structure:2,skin:4,edge:1,formality:1}},
-  {id:"r3",name:"Obscure Cloak Fringe Crop Top",brand:"RYVK",color:"Black/Gold",size:"OS",cat:"Crop Top",type:"top",style:"Night Out",url:"https://ryvkstudio.com/products/obscure-cloak-fringe-crop-top",stats:{drama:4.5,structure:2,skin:5,edge:3,formality:0}},
-  {id:"r4",name:"Prism Flow Tulle Wide Leg Pants",brand:"RYVK",color:"Black",size:"XL",cat:"Pants",type:"bottom",style:"Night Out",stats:{drama:3.5,structure:1,skin:3,edge:0,formality:3},styling:["high-waist"]},
-  {id:"r5",name:"Tone Wave Wide Leg Pants",brand:"RYVK",color:"Black",size:"M",cat:"Pants",type:"bottom",style:"Night Out",url:"https://ryvkstudio.com/products/tone-wave-wide-leg-pants",stats:{drama:3,structure:1,skin:0,edge:0,formality:3},styling:["high-waist"]},
+  {id:"r3",name:"Obscure Cloak Fringe Crop Top",brand:"RYVK",color:"Black/Gold",size:"OS",cat:"Crop Top",type:"top",style:"Night Out",url:"https://ryvkstudio.com/products/obscure-cloak-fringe-crop-top",stats:{drama:4,structure:2,skin:5,edge:3,formality:0},styling:["flowy"]},
+  {id:"r4",name:"Prism Flow Tulle Wide Leg Pants",brand:"RYVK",color:"Black",size:"XL",cat:"Pants",type:"bottom",style:"Night Out",stats:{drama:3,structure:1,skin:3,edge:0,formality:3},styling:["high-waist","flowy"]},
+  {id:"r5",name:"Tone Wave Wide Leg Pants",brand:"RYVK",color:"Black",size:"M",cat:"Pants",type:"bottom",style:"Night Out",url:"https://ryvkstudio.com/products/tone-wave-wide-leg-pants",stats:{drama:2.5,structure:1,skin:0,edge:0,formality:3},styling:["high-waist","flowy"]},
   // ── FRKM SCD ───────────────────────────────────────────────────────────────
   {id:"f1",name:"25FW Layered Belt Apron Skirt",brand:"FRKM",color:"Black",size:"OS",cat:"Skirt",type:"bottom",style:"Dark / Minimal",stats:{drama:4.5,structure:3,skin:2,edge:3,formality:1}},
   // ── YA|SAR ─────────────────────────────────────────────────────────────────
   {id:"y1",name:"Zipped Tall Boots",brand:"YASAR",color:"Black",size:"45",cat:"Boots",type:"shoes",style:"Dark / Minimal",stats:{drama:4,structure:4,skin:0,edge:4,formality:3}},
   {id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR",color:"Black",size:"45",cat:"Boots",type:"shoes",style:"Dark / Minimal",stats:{drama:3,structure:4,skin:0,edge:3,formality:3}},
   // ── ARAHANT ────────────────────────────────────────────────────────────────
-  {id:"a1",name:"Magi Sentient Robe",brand:"ARAHANT",color:"Black",size:"OS",cat:"Robe",type:"outer",style:"Dark / Minimal",stats:{drama:4,structure:1,skin:2,edge:1,formality:3}},
+  {id:"a1",name:"Magi Sentient Robe",brand:"ARAHANT",color:"Black",size:"OS",cat:"Robe",type:"outer",style:"Dark / Minimal",stats:{drama:3.5,structure:1,skin:2,edge:1,formality:3},styling:["flowy"]},
   // ── Jewelry — CRAFTD London ────────────────────────────────────────────────
   {id:"c1",name:"Rope Wrap Ring",brand:"CRAFTD",color:"Gold",size:"L",cat:"Ring",type:"accessory",style:"Contrast",url:"https://craftdlondon.com/products/rope-wrap-ring-gold",versatile:true,stats:{drama:0,structure:0,skin:0,edge:0,formality:2}},
   {id:"c2",name:"Matte Onyx Stone Bracelet",brand:"CRAFTD",color:"Gold",size:"22cm",cat:"Bracelet",type:"accessory",style:"Contrast",url:"https://craftdlondon.com/products/matte-onyx-stone-bracelet-gold",versatile:true,stats:{drama:0,structure:0,skin:0,edge:0,formality:2}},
@@ -338,11 +338,11 @@ const OUTFITS_DEFAULT = [
   {id:57,name:"Crushed Casual",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"am1",name:"Oversized Drop Shoulder Tee Brown",brand:"AMAZON"},{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:58,name:"Linen Cargo Easy",vibe:"Tonal",tags:["tonal"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"am3",name:"Oversized Drop Shoulder Tee Green",brand:"AMAZON"},{role:"Bottom",id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:59,name:"Grey Print Jogger",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz2",name:"Kanye West Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"m15",name:"Reverse Edge Construct Jogger",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
-  {id:60,name:"Open Collar",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"wanderer",pieces:[{role:"Top",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"r5",name:"Tone Wave Wide Leg Pants",brand:"RYVK"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
+  {id:60,name:"Open Collar",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"wanderer",pieces:[{role:"Top",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA",styling:["worn-open","bare-torso"]},{role:"Bottom",id:"r5",name:"Tone Wave Wide Leg Pants",brand:"RYVK"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:61,name:"Open Collar Day",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"m17",name:"External Cropped Loose Grey Trousers",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:62,name:"Raye Print Lounge",vibe:"Tonal",tags:["tonal"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"al1",name:"Double Take Short Black",brand:"ALO"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:63,name:"Photo Tee Espresso",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF"},{role:"Bottom",id:"al2",name:"Double Take Short Espresso",brand:"ALO"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
-  {id:64,name:"Olive Tee + Pinstripe Tailoring",vibe:"Tonal",tags:["tonal"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
+  {id:64,name:"Olive Tee + Pinstripe Tailoring",vibe:"Tonal",tags:["tonal"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",styling:["tucked"]},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:65,name:"Longline Shirt + Cargo Skirt",vibe:"Layered",tags:["tonal"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o5",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
 ];
 
@@ -403,7 +403,7 @@ const SHOP = [
     why:"A flowing black cape \u2014 the lightweight, movement-forward third layer for warm-weather nights. Exactly the cape silhouette the whole wardrobe is built around." },
 ];
 
-const DATA_VERSION = 93;
+const DATA_VERSION = 96;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -420,4 +420,113 @@ function itemForPiece(p){
 function pieceImg(p){
   const it = itemForPiece(p);
   return (it && (IMAGES[it.name] || it.img)) || (p ? (IMAGES[p.name] || getImg(p.name)) : "") || "";
+}
+
+/* ── STYLING LAYER ──────────────────────────────────────────────────────────
+   Base stats (item.stats) are the garment "on the rack". Styling attributes
+   describe how a piece is worn and produce EFFECTIVE stats on top:
+     effective = base + Σ single-attribute modifiers + Σ combo bonuses  (clamp 0–5)
+   Attributes live on items (intrinsic, e.g. high-waist) and/or on outfit pieces
+   (contextual, e.g. tucked). Singles apply per-item (so they dilute when averaged
+   across an outfit); combos apply at the outfit level (full strength) — that's why
+   a combination can exceed the sum of its pieces. See STATS.md. */
+const STAT_KEYS5 = ["drama","structure","skin","edge","formality"];
+
+// single attribute → stat deltas
+const STYLE_MODIFIERS = {
+  "high-waist":    { drama: 0.5 },
+  "low-rise":      { skin: 0.5 },
+  "tucked":        { drama: 0.5, formality: 0.5 },
+  "half-tucked":   { drama: 0.5 },
+  "worn-open":     { drama: 0.5 },
+  "belted":        { structure: 0.5 },
+  "sleeves-rolled":{ skin: 0.5 },
+  "cropped-ankle": { skin: 0.5 },
+  "oversized":     { drama: 0.5, structure: -0.5 },
+  "layered":       { drama: 0.5 },
+  "flowy":         { drama: 0.5 },
+};
+
+// combos fire at the outfit level (full strength). `needs` = attrs that must all be
+// present; `test` = computed predicate over the outfit.
+const STYLE_COMBOS = [
+  { id:"monochrome-dark", label:"Monochrome command", test: o => isMonochromeDark(o), boost:{ drama:0.5, edge:0.5 } },
+  { id:"high-waist+tucked", label:"Defined waist", needs:["high-waist","tucked"], boost:{ drama:0.5 } },
+  { id:"worn-open+bare-torso", label:"Open on skin", needs:["worn-open","bare-torso"], boost:{ skin:0.5 } },
+];
+
+const DARK_RE = /(black|graphite|onyx|charcoal|espresso|coal|jet|ink)/i;
+function isDark(color){ return !!color && DARK_RE.test(color); }
+function clamp05(v){ return Math.max(0, Math.min(5, v)); }
+
+// monochrome-dark: ≥80% of the GARMENT pieces (top/bottom/outer/shoes; jewelry ignored) are dark
+function isMonochromeDark(outfit){
+  if (!outfit || !outfit.pieces) return false;
+  const garments = outfit.pieces.map(itemForPiece).filter(it => it && ["top","bottom","outer","shoes"].includes(it.type));
+  if (garments.length < 2) return false;
+  const dark = garments.filter(it => isDark(it.color)).length;
+  return dark / garments.length >= 0.8;
+}
+
+function applyModifiers(stats, attrs){
+  const out = Object.assign({}, stats);
+  (attrs || []).forEach(a => {
+    const m = STYLE_MODIFIERS[a]; if (!m) return;
+    STAT_KEYS5.forEach(k => { if (m[k] != null) out[k] = (out[k] || 0) + m[k]; });
+  });
+  return out;
+}
+
+// effective stats for a single item, incl. its intrinsic styling + any contextual attrs
+function itemEffectiveStats(item, extraAttrs){
+  if (!item || !item.stats) return null;
+  const attrs = (item.styling || []).concat(extraAttrs || []);
+  const s = applyModifiers(item.stats, attrs);
+  STAT_KEYS5.forEach(k => { s[k] = clamp05(s[k]); });
+  return s;
+}
+
+// all styling attrs present in an outfit (outfit-level + item-intrinsic + per-piece)
+function outfitAttrs(outfit){
+  const s = new Set();
+  (outfit.styling || []).forEach(a => s.add(a));
+  (outfit.pieces || []).forEach(p => {
+    const it = itemForPiece(p);
+    ((it && it.styling) || []).forEach(a => s.add(a));
+    (p.styling || []).forEach(a => s.add(a));
+  });
+  return s;
+}
+
+// which combos currently fire on an outfit (returns the combo objects)
+function outfitCombosFired(outfit){
+  if (!outfit || !outfit.pieces) return [];
+  const attrs = outfitAttrs(outfit);
+  return STYLE_COMBOS.filter(c => c.test ? c.test(outfit) : (c.needs || []).every(a => attrs.has(a)));
+}
+// human-readable boost summary, e.g. "drama +0.5 · edge +0.5"
+function boostText(boost){
+  return STAT_KEYS5.filter(k => boost[k] != null).map(k => k + " " + (boost[k] > 0 ? "+" : "") + boost[k]).join(" · ");
+}
+
+// EFFECTIVE outfit stats: per-item singles averaged, then outfit-level combos added full-strength
+function effectiveOutfitStats(outfit){
+  if (!outfit || !outfit.pieces) return null;
+  const totals = { drama:0, structure:0, skin:0, edge:0, formality:0 };
+  let n = 0;
+  outfit.pieces.forEach(p => {
+    const it = itemForPiece(p); if (!it || !it.stats) return;
+    const eff = itemEffectiveStats(it, p.styling || []);
+    STAT_KEYS5.forEach(k => { totals[k] += eff[k]; });
+    n++;
+  });
+  if (!n) return null;
+  const avg = {}; STAT_KEYS5.forEach(k => { avg[k] = totals[k] / n; });
+  const attrs = outfitAttrs(outfit);
+  STYLE_COMBOS.forEach(c => {
+    const fires = c.test ? c.test(outfit) : (c.needs || []).every(a => attrs.has(a));
+    if (fires) STAT_KEYS5.forEach(k => { if (c.boost[k] != null) avg[k] += c.boost[k]; });
+  });
+  STAT_KEYS5.forEach(k => { avg[k] = Math.round(clamp05(avg[k]) * 10) / 10; });
+  return avg;
 }
