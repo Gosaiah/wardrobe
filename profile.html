@@ -252,6 +252,7 @@
 
 </div><!-- /page-content -->
 
+<script src="data.js"></script>
 <script>
 // ── Spider chart ──
 function drawSpider(stats, size, fillColor) {
@@ -272,17 +273,26 @@ function drawSpider(stats, size, fillColor) {
 }
 
 // ── Data ──
-const WARDROBE_STATS = {drama:3.18, structure:2.45, skin:1.66, edge:3.10, formality:2.82};
+// Wardrobe average computed live from data.js (auto-reflects stat changes)
+const WARDROBE_STATS = (function(){
+  const K=["drama","structure","skin","edge","formality"];
+  const t={drama:0,structure:0,skin:0,edge:0,formality:0}; let n=0;
+  (typeof WARDROBE_DATA!=='undefined'?WARDROBE_DATA:[]).forEach(i=>{
+    if(i&&i.stats){ K.forEach(k=>t[k]+=(i.stats[k]||0)); n++; }
+  });
+  const a={}; K.forEach(k=>a[k]= n? Math.round(t[k]/n*100)/100 : 0); return a;
+})();
 
+// Persona target profiles — kept in sync with persona.html / the matcher (0-based scale)
 const PERSONA_STATS = {
-  p1: {drama:4.5, structure:3.8, skin:1.5, edge:4.5, formality:3.2},  // Overlord
-  p2: {drama:3.8, structure:3.2, skin:1.8, edge:3.5, formality:2.5},  // The Wanderer
-  p3: {drama:3.8, structure:2.5, skin:2.2, edge:3.8, formality:3.2},  // Night Shift
-  p4: {drama:2.0, structure:1.8, skin:1.5, edge:2.0, formality:1.5},  // Civilian
-  p5: {drama:3.5, structure:3.5, skin:1.5, edge:3.3, formality:3.8},  // Viceroy
+  p1: {drama:4.0, structure:3.5, skin:1.0, edge:3.5, formality:2.0},  // Overlord
+  p2: {drama:2.5, structure:2.0, skin:1.0, edge:2.0, formality:2.5},  // The Wanderer
+  p3: {drama:3.0, structure:1.5, skin:3.5, edge:2.5, formality:1.5},  // Night Shift
+  p4: {drama:1.0, structure:1.0, skin:0.5, edge:0.5, formality:1.5},  // Civilian
+  p5: {drama:2.5, structure:3.0, skin:1.0, edge:1.5, formality:3.5},  // Viceroy
 };
 
-const BRANDS = [
+const BRAND_BARS = [
   {name:"MINOAR", count:20, max:20},
   {name:"ORTTU",  count:18, max:20},
   {name:"CRAFTD", count:12, max:20},
@@ -323,7 +333,7 @@ Object.entries(WARDROBE_STATS).forEach(([k,v]) => {
 
 // ── Brand chart ──
 const brandEl = document.getElementById("brand-chart");
-BRANDS.forEach(b => {
+BRAND_BARS.forEach(b => {
   brandEl.innerHTML += `<div class="brand-row">
     <span class="brand-name">${b.name}</span>
     <div class="brand-bar-track"><div class="brand-bar-fill" style="width:${(b.count/b.max)*100}%"></div></div>
