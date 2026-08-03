@@ -10,6 +10,8 @@
 
 Other four stats (structure, skin, edge, formality) are **unchanged**. Net: 5 stats → **8 stats**, 8-spoke spider.
 
+_Scope: only Drama is split. Structure, edge, and formality are coherent single axes. Skin has a mild sheerness-vs-exposure sub-distinction but it was evaluated and deliberately left single (lower stakes, and 8 spokes is already near the readability ceiling). Not revisiting._
+
 ---
 
 ## Decisions to lock at the start

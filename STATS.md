@@ -6,22 +6,37 @@ Status: **drama** item values are fully re-anchored to this scale (data.js v72+)
 
 ---
 
-## DRAMA — visual statement / attention
+## DRAMA — four facets (Presence / Silhouette / Movement / Ornament)
 
-How much the piece commands attention as a statement: theatrical impact, boldness of silhouette, surface, or scale.
-**Test:** walking into a room, how much does this piece make people look?
+"Drama" (visual statement / attention) is **not one axis** — it's four independent facets. Each is scored 0–5 on the same 0-based rules. The old single `drama` is now a **computed roll-up: `drama = max(presence, silhouette, movement, ornament)`** — the loudest facet defines overall drama. Facets are independent: a piece can be high in one and zero in the others.
 
-- Up: exaggerated volume/proportion (capes, balloon, elongated, platform, **flowing or hanging panels, draped layers**), sculptural or deconstructed construction, bold surface (sequin, fringe, sheer mesh, large print), costume-like presence.
-- Down: familiar everyday form, plain surface, conventional proportion.
-- Not the same as edge (attitude), structure (rigidity), or skin (revealing). A pastel sequin gown = high drama, low edge.
+### PRESENCE — gravitas / command / weight
+How much the piece *imposes* — authority, severity, heaviness, the "makes the room recalibrate" quality.
+- Up: darkness/severity, length (long coats), heaviness, monolithic minimalism, armor, a commanding foundation (tall/heavy boots).
+- Down: light, playful, small, casual.
+- Not structure (physical rigidity) or edge (hardness): a plain floor-length black coat is soft and un-studded but pure Presence.
+- **0** plain tee · **1** dark matte basics · **2** structured dark jacket, boots · **3** long dark coat, harness, tall boots · **4** full monolithic black, heavy armor · **5** floor-length severe command
 
-**Anchors**
-- **0** — invisible: plain tee, basic trousers, simple chain
-- **1** — one small flourish: graphic tee, knit texture, character ring
-- **2** — noticeable but familiar: tailored jacket, longline shirt, standard skirt, Chelsea boot
-- **3** — clear statement: deconstructed/sculptural pieces, draped/layered trousers, tunics, cuffs, sculptural boots
-- **4** — bold showpiece: harness, leather crop, sequin, mesh, tall boots
-- **5** — showstopper: platform boots, mask, apron skirt, fringe cloak, long sculptural robe
+### SILHOUETTE — proportion / volume / scale of the shape
+How much the *shape itself* is the statement, regardless of whether it's stiff or soft.
+- Up: exaggerated volume (wide-leg, balloon, oversized), dramatic proportion (high-waist, elongated, cropped-for-proportion), capes, voluminous skirts/robes, architectural cut.
+- Down: standard/fitted proportion, regular cut.
+- Not structure: a flowy wide-leg has big Silhouette, low structure.
+- **0** straight trousers, regular tee · **1** high-waist, slight crop, relaxed · **2** wide-leg, oversized tee, longline · **3** volume pants, apron skirt, cape, robe · **4** extreme wide/voluminous layered · **5** sculptural, maximal exaggeration
+
+### MOVEMENT — kinetic quality
+How the piece behaves in motion — flow, drape, swing.
+- Up: flow (tulle, silk, loose drape), fringe, tassels, long flowing panels, billowing capes, hardware that swings.
+- Down: stiff, fitted, static.
+- Not Silhouette: Silhouette is the shape at rest; Movement is what it does when you walk. A stiff wide-leg has Silhouette but no Movement; a flowy robe has both.
+- **0** tee, jeans, boots · **1** soft drape, light linen · **2** flowy fabric, loose swaying layers · **3** tulle, fringe, long flowing coat/robe · **4** heavy fringe, billowing cape · **5** maximal fringe/flow, "the outfit as an event"
+
+### ORNAMENT — surface interest
+Decoration on the surface — sequin, print, sheen, embellishment.
+- Up: sequins, prints/graphics, floral, sheen/shine, metallic, rhinestones, beading, decorative hardware, bold surface texture.
+- Down: plain matte surface, solid colour.
+- Not edge: edge hardware is *toughness* (studs/zips read hard); Ornament is *decoration* (rhinestone/shine reads pretty). Route decorative-vs-tough by intent.
+- **0** solid tee, plain trousers · **1** small logo/graphic, pinstripe, tonal texture · **2** print, sheen, gold accents · **3** bold print, metallic, lace, embellishment · **4** sequins, rhinestones, heavy embellishment · **5** all-over sequin/dazzle
 
 ---
 
