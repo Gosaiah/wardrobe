@@ -31,6 +31,12 @@ Last updated: 2026-07-28 · data.js at DATA_VERSION 67
   - Expand combos as ideas come (layered synergies, etc.).
   - Consider an editor to set per-outfit styling from the UI instead of hand-editing data.js.
 
+## Link rot / durability (product pages & images decay over time)
+
+- [ ] **Localize product images** (highest priority — biggest visible failure). Most shop + wardrobe items hotlink brand CDNs (etsystatic, shopify, minoar) that rotate/404 when a listing is pulled → broken `<img>`. Download into the repo and point `img` at the local copy, like the HEIC pieces already are.
+- [ ] **Add `status` field to items** (`active` / `sold-out` / `dead`). Keep gone items for their stats/history but render greyed-out with the View link disabled instead of silently rotting.
+- [ ] **On-demand link checker.** Small script: HEAD-request every `url` + `img`, flag non-200s so decayed entries surface for a status bump.
+
 ## Tech debt
 
 - [ ] **Unify persona target profiles into data.js.** The 5-stat persona profiles are hardcoded in three places — persona.html, profile.html (`PERSONA_STATS`), and the 7-key matcher in wardrobe_v2_18.html (`PERSONA_PROFILES`). They drifted during stat calibration and had to be updated by hand in each. Move the display profiles into data.js as one exported constant and reference everywhere so they can't fall out of sync again.

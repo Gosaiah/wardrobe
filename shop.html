@@ -185,6 +185,18 @@ function buildFilters() {
   });
 }
 
+// Seed any data-flagged (priority:"list") items onto the localStorage list ONCE each,
+// so curated "add to my shopping list" items appear without losing user toggle control.
+(function seedList(){
+  const SEED_KEY = "shopListSeeded";
+  let seeded; try { seeded = JSON.parse(localStorage.getItem(SEED_KEY) || "[]"); } catch(e){ seeded = []; }
+  const flagged = ((typeof SHOP !== "undefined") ? SHOP : []).filter(s => s.priority === "list").map(s => s.id);
+  const cur = getList(); let listChanged = false, seedChanged = false;
+  flagged.forEach(id => { if (seeded.indexOf(id) < 0) { if (cur.indexOf(id) < 0) { cur.push(id); listChanged = true; } seeded.push(id); seedChanged = true; } });
+  if (listChanged) setList(cur);
+  if (seedChanged) localStorage.setItem(SEED_KEY, JSON.stringify(seeded));
+})();
+
 buildFilters();
 renderShop();
 </script>

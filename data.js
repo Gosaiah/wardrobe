@@ -6,6 +6,8 @@
 const BRANDS = {
   ORTTU:{label:"Orttu",dot:"dot-orttu",tag:"tag-orttu"},
   RUNDHOLZ:{label:"Rundholz",dot:"dot-yasar",tag:"tag-yasar"},
+  MDNT45:{label:"MDNT45",dot:"dot-yasar",tag:"tag-yasar"},
+  PUNKRAVE:{label:"Punk Rave",dot:"dot-ryvk",tag:"tag-ryvk"},
   RICKOWENS:{label:"Rick Owens",dot:"dot-yasar",tag:"tag-yasar"},
   MINOAR:{label:"Minoar",dot:"dot-minoar",tag:"tag-minoar"},
   RYVK:{label:"RYVK",dot:"dot-ryvk",tag:"tag-ryvk"},
@@ -61,7 +63,7 @@ const IMAGES = {
   "Raphael Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732",
   "Raphael Jacket":"https://cdn.shopify.com/s/files/1/0033/3676/5493/products/7_5a1decb4-ffa7-4f32-b51a-3d865a54cccf.jpg?v=1663012732",
   "Emanuel Shirt":"https://orttu.com/cdn/shop/files/Emanuel-shirt-w.jpg?v=1722521294",
-  "Star Neck Lace Shirt":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/Orttu2_b63b6182-fdd3-425d-a0a2-0989b488717e.jpg?v=1722860216",
+  "Star Neck Lace Shirt":"https://orttu.com/cdn/shop/files/Orttu1_c053d045-81b5-4d2d-bf62-354d37b22a2d.jpg?v=1722852755&width=700",
   "Walker Denim Skirt":"https://orttu.com/cdn/shop/files/denim-skirt.jpg?v=1721380712",
   "Star Neck Shirt Couture":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/star-neck-couture-shirt.jpg?v=1722959711",
   "Garson Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/4-15_4699ff2b-ac46-4bfb-a691-cf1f50ff863c.jpg?v=1760093103",
@@ -275,6 +277,10 @@ const WARDROBE_DATA = [
   {id:"mz2",name:"Kanye West Print Round Neck T-shirt",brand:"MUAZOE",color:"Grey",size:"L",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.muazoe.com/products/kanye-west-print-round-neck-t-shirt-20",stats:{drama:1.5,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:1.5}},
   {id:"u1",name:"Gold Dragon Cuff",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Cuff",type:"accessory",style:"Contrast",versatile:true,url:"https://www.ebay.com/itm/317008146557",stats:{drama:2.5,structure:1,skin:0,edge:3,formality:2,presence:0,silhouette:0,movement:0,ornament:2.5}},
   {id:"dr1",name:"Gold Dragon Scale Armor Body Chain",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Harness",type:"accessory",style:"Statement",url:"https://www.etsy.com/listing/4541198370/gothic-dragon-scale-shoulder-chain",img:"gold-dragon-armor.jpg",stats:{drama:5,structure:3,skin:4,edge:3,formality:0,presence:3,silhouette:2,movement:1.5,ornament:5}},
+  {id:"md1",name:"Hooded Cotton Jersey Cardigan",brand:"MDNT45",color:"Black",size:"M",cat:"Cardigan",type:"outer",style:"Dark / Minimal",url:"https://www.mdnt45.com/products/hooded-cotton-jersey-cardigan-black-1",img:"https://www.mdnt45.com/cdn/shop/files/mdnt45-hooded-cotton-jersey-cardigan-33102855241925.webp",stats:{drama:3,structure:1,skin:2,edge:2.5,formality:2,presence:3,silhouette:2.5,movement:4,ornament:0.5}},
+  {id:"pr1",name:"Punk Plaid Skirt",brand:"PUNKRAVE",color:"Red/White",size:"S-M",cat:"Skirt",type:"bottom",style:"Contrast",url:"https://punkrave.co.za/product/punk-plaid-skirt/",img:"https://punkrave.co.za/wp-content/uploads/2026/05/WQ-975BQM-RD-WH-6.jpg",stats:{drama:3,structure:2.5,skin:2,edge:3.5,formality:1,presence:2,silhouette:2.5,movement:3,ornament:3.5}},
+  {id:"cp1",name:"Earth Plaid Blanket Cape",brand:"UNBRANDED",color:"Burgundy/Grey",size:"OS",cat:"Cape",type:"outer",style:"Tonal",img:"earth-plaid-cape.jpg",stats:{drama:3.5,structure:1,skin:0,edge:0.5,formality:1.5,presence:2,silhouette:3.5,movement:3.5,ornament:2.5}},
+  {id:"md2",name:"Hogo Coat",brand:"MDNT45",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",url:"https://www.mdnt45.com/products/hogo-coat",img:"https://www.mdnt45.com/cdn/shop/products/mdnt45-hogo-coat-29765240848581.jpg",stats:{drama:4,structure:4,skin:0,edge:3,formality:3,presence:4,silhouette:3,movement:1.5,ornament:0.5}},
   {id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA",color:"Black",size:"EU 44",cat:"Boots",type:"shoes",style:"Dark / Minimal",url:"https://demoniacult.com/products/neptune-210bvl",stats:{drama:4.5,structure:5,skin:0,edge:4.5,formality:1,presence:4.5,silhouette:0,movement:0,ornament:0}},
 ];
 
@@ -414,9 +420,17 @@ const SHOP = [
     price:"$557", url:"https://www.demobaza.com/collections/jackets-demoman/products/rain-cape-onyx-1", img:"https://www.demobaza.com/cdn/shop/files/RAIN-CAPE-ONYX-5_2cdba4c1-1ffb-4ecc-8b03-d503053ea316.jpg?v=1773144891",
     stats:{drama:4,structure:2,skin:1,edge:4,formality:2},
     why:"A flowing black cape \u2014 the lightweight, movement-forward third layer for warm-weather nights. Exactly the cape silhouette the whole wardrobe is built around." },
+  { id:"sh_ls1", name:"Dragon Scalemail Pauldron with Cape", brand:"LissaraStudio", tier:"new", cat:"Harness", persona:"night-shift", fills:"Gold armored statement + cape", priority:"list",
+    price:"$250 (with cape)", url:"https://www.etsy.com/listing/4506395473/dragon-scalemail-pauldron-with-cape", img:"https://i.etsystatic.com/66004412/r/il/5533d6/8137526317/il_1080xN.8137526317_7gas.jpg",
+    stats:{drama:5,structure:3,skin:1,edge:3,formality:0},
+    why:"Anodized gold dragon-scalemail shoulder pauldron on a faux-leather harness with an optional teal satin cape \u2014 the matching statement to your gold dragon body chain, with a cape flourish for movement. Pure Night Shift armor-glam." },
+  { id:"sh_da1", name:"Gold Armor Corset (Sculptural Chest Piece)", brand:"DarbagUA", tier:"new", cat:"Corset", persona:"overlord", fills:"Sculptural armor torso", priority:"list",
+    price:"$218 (sale)", url:"https://www.etsy.com/listing/4503299336/mens-gold-armor-corset-sculptural-luxury", img:"https://i.etsystatic.com/47566345/r/il/6530f5/8056407735/il_1080xN.8056407735_smgr.jpg",
+    stats:{drama:5,structure:4,skin:2,edge:3,formality:0},
+    why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 110;
+const DATA_VERSION = 117;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
