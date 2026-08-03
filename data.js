@@ -238,7 +238,7 @@ const WARDROBE_DATA = [
   {id:"g6",name:"Havana Ring",brand:"GASPER",color:"Gold",size:"8",cat:"Ring",type:"accessory",style:"Contrast",url:"https://gasper.co/products/havana",versatile:true,stats:{drama:0,structure:0,skin:0,edge:0,formality:2,presence:0,silhouette:0,movement:0,ornament:0}},
   // ── Jewelry — Dernholt Stockholm ──────────────────────────────────────────
   {id:"d1",name:"Svart Sten Braided Chain",brand:"DERNHOLT",color:"Black/Gold",size:"OS",cat:"Necklace",type:"accessory",style:"Contrast",url:"https://dernholt.com",versatile:true,stats:{drama:1.5,structure:0,skin:0,edge:1,formality:2,presence:0.5,silhouette:0,movement:1.5,ornament:0}},
-  {id:"d2",name:"Battle Rope Bracelet",brand:"DERNHOLT",color:"Gold/Silver",size:"OS",cat:"Bracelet",type:"accessory",style:"Contrast",url:"https://dernholt.com",versatile:true,stats:{drama:0,structure:0,skin:0,edge:1,formality:2,presence:0,silhouette:0,movement:0,ornament:0}},
+  {id:"d2",name:"Battle Rope Bracelet",brand:"DERNHOLT",color:"Gold/Silver",size:"OS",cat:"Bracelet",type:"accessory",style:"Contrast",url:"https://dernholt.com",img:"battle-rope-bracelet.jpg",versatile:true,stats:{drama:0,structure:0,skin:0,edge:1,formality:2,presence:0,silhouette:0,movement:0,ornament:0}},
   // ── Shoes — SASAIA ─────────────────────────────────────────────────────────
   {id:"s1",name:"Roman Fabric Boots",brand:"SASAIA",color:"Black",size:"44",cat:"Boots",type:"shoes",style:"Dark / Minimal",url:"https://sasaia.com",stats:{drama:2.5,structure:3,skin:0,edge:2,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
   {id:"tv1",name:"AJ1131 Chelsea Boots",brand:"TOGAVIRILIS",color:"Black",size:"IT 44",cat:"Boots",type:"shoes",style:"Dark / Minimal",url:"https://www.ssense.com/en-us/men",stats:{drama:3,structure:4,skin:0,edge:3,formality:4,presence:3,silhouette:0,movement:0,ornament:0}},
@@ -277,6 +277,8 @@ const WARDROBE_DATA = [
   {id:"mz2",name:"Kanye West Print Round Neck T-shirt",brand:"MUAZOE",color:"Grey",size:"L",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.muazoe.com/products/kanye-west-print-round-neck-t-shirt-20",stats:{drama:1.5,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:1.5}},
   {id:"u1",name:"Gold Dragon Cuff",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Cuff",type:"accessory",style:"Contrast",versatile:true,url:"https://www.ebay.com/itm/317008146557",stats:{drama:2.5,structure:1,skin:0,edge:3,formality:2,presence:0,silhouette:0,movement:0,ornament:2.5}},
   {id:"dr1",name:"Gold Dragon Scale Armor Body Chain",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Harness",type:"accessory",style:"Statement",url:"https://www.etsy.com/listing/4541198370/gothic-dragon-scale-shoulder-chain",img:"gold-dragon-armor.jpg",stats:{drama:5,structure:3,skin:4,edge:3,formality:0,presence:3,silhouette:2,movement:1.5,ornament:5}},
+  {id:"dr2",name:"Gold Dragon Head Ring",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Ring",type:"accessory",style:"Statement",img:"gold-dragon-ring.jpg",versatile:true,stats:{drama:3,structure:0.5,skin:0,edge:1.5,formality:1,presence:1,silhouette:0,movement:0,ornament:3}},
+  {id:"gc1",name:"Layered Gold Chain Necklace",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Necklace",type:"accessory",style:"Statement",img:"gold-layered-chains.jpg",versatile:true,stats:{drama:3,structure:0.5,skin:0,edge:1,formality:1,presence:2,silhouette:1,movement:2,ornament:3}},
   {id:"md1",name:"Hooded Cotton Jersey Cardigan",brand:"MDNT45",color:"Black",size:"M",cat:"Cardigan",type:"outer",style:"Dark / Minimal",url:"https://www.mdnt45.com/products/hooded-cotton-jersey-cardigan-black-1",img:"https://www.mdnt45.com/cdn/shop/files/mdnt45-hooded-cotton-jersey-cardigan-33102855241925.webp",stats:{drama:3,structure:1,skin:2,edge:2.5,formality:2,presence:3,silhouette:2.5,movement:4,ornament:0.5}},
   {id:"pr1",name:"Punk Plaid Skirt",brand:"PUNKRAVE",color:"Red/White",size:"S-M",cat:"Skirt",type:"bottom",style:"Contrast",url:"https://punkrave.co.za/product/punk-plaid-skirt/",img:"https://punkrave.co.za/wp-content/uploads/2026/05/WQ-975BQM-RD-WH-6.jpg",stats:{drama:3,structure:2.5,skin:2,edge:3.5,formality:1,presence:2,silhouette:2.5,movement:3,ornament:3.5}},
   {id:"cp1",name:"Earth Plaid Blanket Cape",brand:"UNBRANDED",color:"Burgundy/Grey",size:"OS",cat:"Cape",type:"outer",style:"Tonal",img:"earth-plaid-cape.jpg",stats:{drama:3.5,structure:1,skin:0,edge:0.5,formality:1.5,presence:2,silhouette:3.5,movement:3.5,ornament:2.5}},
@@ -430,7 +432,7 @@ const SHOP = [
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 117;
+const DATA_VERSION = 118;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
