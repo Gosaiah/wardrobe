@@ -212,31 +212,7 @@
 // If a proposal photo file doesn't exist yet, fall back to the "Photo pending" placeholder.
 function _photoFallback(img){ img.onerror=null; var d=document.createElement('div'); d.className='proposal-photo-empty'; d.innerHTML='<span>Photo pending</span>'; img.replaceWith(d); }
 
-function drawSpider(stats, size) {
-  if (!stats) return "";
-  const keys=["drama","edge","formality","structure","skin"];
-  const labels=["Drama","Edge","Form.","Struct.","Skin"];
-  const pad=size*.22, W=size+pad*2, cx=W/2, cy=W/2, r=size*.28, labelR=size*.38, n=keys.length;
-  const ang=i=>(Math.PI*2/n)*i-Math.PI/2;
-  const px=(i,rr)=>(cx+rr*Math.cos(ang(i))).toFixed(1);
-  const py=(i,rr)=>(cy+rr*Math.sin(ang(i))).toFixed(1);
-  let rings="";
-  for(let ring=1;ring<=5;ring++){const pts=keys.map((_,i)=>px(i,r*(ring/5))+","+py(i,r*(ring/5))).join(" ");rings+='<polygon points="'+pts+'" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';}
-  const axes=keys.map((_,i)=>'<line x1="'+cx+'" y1="'+cy+'" x2="'+px(i,r)+'" y2="'+py(i,r)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
-  const dataPts=keys.map((k,i)=>{const v=stats[k]||0;return px(i,r*(v/5))+","+py(i,r*(v/5));}).join(" ");
-  const poly='<polygon points="'+dataPts+'" fill="#e2d3b4" fill-opacity="0.25" stroke="#e2d3b4" stroke-width="1.5"/>';
-  const dots=keys.map((k,i)=>{const v=stats[k]||0;return'<circle cx="'+px(i,r*(v/5))+'" cy="'+py(i,r*(v/5))+'" r="2" fill="#e2d3b4"/>';}).join("");
-  const fs=(W*.062).toFixed(1);
-  const lbls=labels.map((lbl,i)=>{
-    const lx=(cx+labelR*Math.cos(ang(i))).toFixed(1),ly=(cy+labelR*Math.sin(ang(i))).toFixed(1);
-    const c=Math.cos(ang(i)),s=Math.sin(ang(i));
-    const anchor=c>.3?"start":c<-.3?"end":"middle";
-    const dy=s>.3?"0.8em":s<-.3?"0em":"0.35em";
-    return'<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="rgba(255,255,255,0.45)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif">'+lbl+'</text>';
-  }).join("");
-  const ws=W.toFixed(0);
-  return'<svg width="'+ws+'" height="'+ws+'" viewBox="0 0 '+ws+' '+ws+'" xmlns="http://www.w3.org/2000/svg">'+rings+axes+poly+dots+lbls+'</svg>';
-}
+// drawSpider() consolidated into data.js — shared 8-spoke renderer
 
 // ── ALL PROPOSALS — append new sessions below ──
 const SESSIONS_SRC = [
@@ -312,16 +288,14 @@ const SESSIONS_SRC = [
 // Hydrate compact session refs into full cards by resolving each outfit from the shared data.js
 // catalog (pieces, brand labels, images, computed stats). Single source of truth — no duplication.
 function hydrateSessions(SRC){
-  var SK=["drama","structure","skin","edge","formality"];
   var POOL=(typeof OUTFITS_DEFAULT!=="undefined")?OUTFITS_DEFAULT:[];
   return SRC.map(function(s){
     return { id:s.id, label:s.label, event:s.event, notes:s.notes,
       outfits: s.outfits.map(function(ref){
         var o=POOL.find(function(x){return x.id===ref.id;});
         if(!o) return null;
-        var tot={drama:0,structure:0,skin:0,edge:0,formality:0}, c=0;
-        o.pieces.forEach(function(p){ var it=itemForPiece(p); if(it&&it.stats){ SK.forEach(function(k){ tot[k]+=it.stats[k]||0; }); c++; } });
-        var stats=c?{drama:+(tot.drama/c).toFixed(1),edge:+(tot.edge/c).toFixed(1),structure:+(tot.structure/c).toFixed(1),skin:+(tot.skin/c).toFixed(1),formality:+(tot.formality/c).toFixed(1)}:null;
+        // Shared effective-stats aggregator (8 facets + base + combos) — no local duplication.
+        var stats=(typeof effectiveOutfitStats==="function")?effectiveOutfitStats(o):null;
         return { id:o.id, name:o.name, vibe:o.vibe, category:o.vibe,
           photo:"outfits/outfit_"+o.id+".jpg",
           pieces:o.pieces.map(function(p){ return {role:p.role, name:p.name, brand:(BRANDS[p.brand]&&BRANDS[p.brand].label)||p.brand, img:pieceImg(p)}; }),

@@ -255,41 +255,27 @@
 <script src="data.js"></script>
 <script>
 // ── Spider chart ──
-function drawSpider(stats, size, fillColor) {
-  const KEYS = ["drama","structure","skin","edge","formality"];
-  const LBLS = {drama:"Drama",structure:"Structure",skin:"Skin",edge:"Edge",formality:"Formality"};
-  const cx = size/2, cy = size/2, R = size*0.34, N = KEYS.length;
-  const ang = i => (Math.PI*2*i/N) - Math.PI/2;
-  let rings='', axes='';
-  for (let r=1;r<=5;r++){
-    const pts = KEYS.map((_,i)=>{const a=ang(i),rr=(r/5)*R;return`${cx+rr*Math.cos(a)},${cy+rr*Math.sin(a)}`;}).join(' ');
-    rings+=`<polygon points="${pts}" class="dv-axis" fill="none" stroke-width="0.5"/>`;
-  }
-  KEYS.forEach((_,i)=>{ const a=ang(i); axes+=`<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}" class="dv-axis" stroke-width="0.5"/>`; });
-  const poly_pts = KEYS.map((k,i)=>{const v=(stats[k]||0)/5,a=ang(i);return`${cx+R*v*Math.cos(a)},${cy+R*v*Math.sin(a)}`;}).join(' ');
-  const dots = KEYS.map((k,i)=>{const v=(stats[k]||0)/5,a=ang(i);return`<circle cx="${cx+R*v*Math.cos(a)}" cy="${cy+R*v*Math.sin(a)}" r="2.5" class="dv-dot"/>`;}).join('');
-  const lbls = KEYS.map((k,i)=>{const a=ang(i),lr=R*1.38,lx=cx+lr*Math.cos(a),ly=cy+lr*Math.sin(a),anc=lx<cx-3?'end':lx>cx+3?'start':'middle';return`<text x="${lx}" y="${ly}" text-anchor="${anc}" dominant-baseline="middle" font-size="7.5" class="dv-label" font-family="-apple-system,sans-serif" letter-spacing="0.08em">${LBLS[k].toUpperCase()}</text>`;}).join('');
-  return`<svg width="${size}" height="${size}" viewBox="-40 -40 ${size+80} ${size+80}">${rings}${axes}<polygon points="${poly_pts}" class="dv-poly" fill="${fillColor}" stroke-width="1.2"/>${dots}${lbls}</svg>`;
-}
+// drawSpider() consolidated into data.js — shared 8-spoke renderer
 
 // ── Data ──
 // Wardrobe average computed live from data.js (auto-reflects stat changes)
 const WARDROBE_STATS = (function(){
-  const K=["drama","structure","skin","edge","formality"];
-  const t={drama:0,structure:0,skin:0,edge:0,formality:0}; let n=0;
+  const K = (typeof SPIDER_KEYS!=='undefined') ? SPIDER_KEYS
+          : ["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
+  const t={}; K.forEach(k=>t[k]=0); let n=0;
   (typeof WARDROBE_DATA!=='undefined'?WARDROBE_DATA:[]).forEach(i=>{
     if(i&&i.stats){ K.forEach(k=>t[k]+=(i.stats[k]||0)); n++; }
   });
   const a={}; K.forEach(k=>a[k]= n? Math.round(t[k]/n*100)/100 : 0); return a;
 })();
 
-// Persona target profiles — kept in sync with persona.html / the matcher (0-based scale)
+// Persona target profiles now live in data.js (PERSONA_TARGETS) — single source, 8-key facets.
 const PERSONA_STATS = {
-  p1: {drama:4.0, structure:3.5, skin:1.0, edge:3.5, formality:2.0},  // Overlord
-  p2: {drama:2.5, structure:2.0, skin:1.0, edge:2.0, formality:2.5},  // The Wanderer
-  p3: {drama:3.0, structure:1.5, skin:3.5, edge:2.5, formality:1.5},  // Night Shift
-  p4: {drama:1.0, structure:1.0, skin:0.5, edge:0.5, formality:1.5},  // Civilian
-  p5: {drama:2.5, structure:3.0, skin:1.0, edge:1.5, formality:3.5},  // Viceroy
+  p1: PERSONA_TARGETS.overlord,
+  p2: PERSONA_TARGETS.wanderer,
+  p3: PERSONA_TARGETS["night-shift"],
+  p4: PERSONA_TARGETS.civilian,
+  p5: PERSONA_TARGETS.viceroy,
 };
 
 const BRAND_BARS = [
@@ -313,16 +299,16 @@ const VIBES = [
 const TOTAL_OUTFITS = 38;
 
 // ── Render main spider ──
-document.getElementById("spider-main").innerHTML = drawSpider(WARDROBE_STATS, 200, "rgba(226, 211, 180,0.18)");
+document.getElementById("spider-main").innerHTML = drawSpider(WARDROBE_STATS, 200, "#e2d3b4");
 
 // ── Render persona spiders ──
 ['p1','p2','p3','p4','p5'].forEach(id => {
-  document.getElementById("spider-"+id).innerHTML = drawSpider(PERSONA_STATS[id], 210, "rgba(226, 211, 180,0.22)");
+  document.getElementById("spider-"+id).innerHTML = drawSpider(PERSONA_STATS[id], 210, "#e2d3b4");
 });
 
 // ── Stat pills ──
 const pillsEl = document.getElementById("stat-pills-main");
-const STAT_LABELS = {drama:"Drama",structure:"Structure",skin:"Skin",edge:"Edge",formality:"Formality"};
+const STAT_LABELS = {formality:"Formality",structure:"Structure",presence:"Presence",edge:"Edge",skin:"Skin",ornament:"Ornament",movement:"Movement",silhouette:"Silhouette",drama:"Drama"};
 Object.entries(WARDROBE_STATS).forEach(([k,v]) => {
   pillsEl.innerHTML += `<div class="stat-pill">
     <span class="stat-pill-label">${STAT_LABELS[k]}</span>

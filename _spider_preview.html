@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>8-Spoke Spider Preview</title>
+<style>
+  body{background:#111;color:#e8e4da;font-family:"Helvetica Neue",Arial,sans-serif;margin:0;padding:28px 32px 60px}
+  h1{font-size:18px;font-weight:600;letter-spacing:.02em}
+  h2{font-size:13px;font-weight:600;color:#b7ad93;margin:34px 0 12px;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #2a2a2a;padding-bottom:6px}
+  .sub{color:#8c8c8c;font-size:12.5px;line-height:1.5;max-width:720px}
+  .row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start}
+  .cell{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .cap{font-size:10.5px;color:#9a9a9a;max-width:120px;text-align:center;line-height:1.25}
+  .grid84{display:flex;flex-wrap:wrap;gap:14px}
+  .c84{width:120px;display:flex;flex-direction:column;align-items:center;gap:2px;background:#181818;border:1px solid #262626;border-radius:8px;padding:8px 4px}
+  .note{color:#6f6f6f;font-size:11px;margin-top:4px}
+</style>
+</head>
+<body>
+<h1>8-spoke spider — readability preview</h1>
+<p class="sub">Spokes: <b>Presence · Silhouette · Movement · Ornament</b> (the four drama facets, grouped), then <b>Structure · Skin · Edge · Formality</b>. Items below are auto-picked from the real catalog to push each spoke to its max, plus a near-quiet piece. Judge whether labels collide and whether the shapes read at a glance. Nothing production is touched yet.</p>
+
+<h2>A · Card size (84px) — shape only, no labels</h2>
+<p class="note">This is how it renders on wardrobe/shop cards. Labels are dropped here; the silhouette of the shape is the at-a-glance signal.</p>
+<div class="grid84" id="row84"></div>
+
+<h2>B · Detail size (200px) — full labels</h2>
+<p class="note">Outfit / item detail view. Full words — watch the four diagonal labels (Silhouette, Ornament, Skin, Presence-adjacent) for crowding.</p>
+<div class="row" id="rowFull"></div>
+
+<h2>C · Detail size (200px) — abbreviated labels</h2>
+<p class="note">Same items, shortened labels (Pres · Silh · Move · Orn · Str · Skin · Edge · Form) — compare legibility vs full words.</p>
+<div class="row" id="rowAbbr"></div>
+
+<h2>D · Outfits (200px) — base aggregate, full labels</h2>
+<p class="note">Auto-picked outfits stressing each facet. Stats = mean of each look's pieces across all 8 keys (base only — styling combos like monochrome-command / fringe&amp;movement come in Phase 6). Shapes are muted vs single items because averaging pulls toward the middle.</p>
+<div class="row" id="rowOutfits"></div>
+
+<script src="data.js"></script>
+<script>
+const KEYS8=["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
+const FULL={presence:"Presence",silhouette:"Silhouette",movement:"Movement",ornament:"Ornament",structure:"Structure",skin:"Skin",edge:"Edge",formality:"Formality"};
+const ABBR={presence:"Pres",silhouette:"Silh",movement:"Move",ornament:"Orn",structure:"Str",skin:"Skin",edge:"Edge",formality:"Form"};
+
+function drawSpider8(stats, size, mode){ // mode: "none" | "full" | "abbr"
+  if(!stats) return "";
+  const keys=KEYS8, n=keys.length;
+  const labels=keys.map(k=> mode==="abbr"?ABBR[k]: FULL[k]);
+  const pad = mode==="none" ? size*.10 : size*.30;
+  const W=size+pad*2, cx=W/2, cy=W/2, r=size*.30, labelR=size*.40;
+  const ang=i=>(Math.PI*2/n)*i-Math.PI/2;
+  const px=(i,rr)=>(cx+rr*Math.cos(ang(i))).toFixed(1);
+  const py=(i,rr)=>(cy+rr*Math.sin(ang(i))).toFixed(1);
+  let rings="";
+  for(let ring=1;ring<=5;ring++){const pts=keys.map((_,i)=>px(i,r*(ring/5))+","+py(i,r*(ring/5))).join(" ");rings+='<polygon points="'+pts+'" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';}
+  const axes=keys.map((_,i)=>'<line x1="'+cx+'" y1="'+cy+'" x2="'+px(i,r)+'" y2="'+py(i,r)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
+  const dataPts=keys.map((k,i)=>{const v=stats[k]||0;return px(i,r*(v/5))+","+py(i,r*(v/5));}).join(" ");
+  const poly='<polygon points="'+dataPts+'" fill="#e2d3b4" fill-opacity="0.25" stroke="#e2d3b4" stroke-width="1.5"/>';
+  const dots=keys.map((k,i)=>{const v=stats[k]||0;return'<circle cx="'+px(i,r*(v/5))+'" cy="'+py(i,r*(v/5))+'" r="'+(size>120?2:1.6)+'" fill="#e2d3b4"/>';}).join("");
+  let lbls="";
+  if(mode!=="none"){
+    const fs=(size*.072).toFixed(1);
+    lbls=labels.map((lbl,i)=>{
+      const lx=(cx+labelR*Math.cos(ang(i))).toFixed(1),ly=(cy+labelR*Math.sin(ang(i))).toFixed(1);
+      const c=Math.cos(ang(i)),s=Math.sin(ang(i));
+      const anchor=c>.3?"start":c<-.3?"end":"middle";
+      const dy=s>.3?"0.8em":s<-.3?"0em":"0.35em";
+      return'<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="rgba(255,255,255,0.5)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif">'+lbl+'</text>';
+    }).join("");
+  }
+  const ws=W.toFixed(0);
+  return'<svg width="'+ws+'" height="'+ws+'" viewBox="0 0 '+ws+' '+ws+'" xmlns="http://www.w3.org/2000/svg">'+rings+axes+poly+dots+lbls+'</svg>';
+}
+
+// Auto-pick exemplars that stress each spoke, from the real catalog.
+const items = (typeof WARDROBE_DATA!=="undefined")?WARDROBE_DATA:[];
+function maxBy(k){ return items.reduce((b,it)=> (it.stats&&(it.stats[k]||0) > ((b&&b.stats[k])||0))? it : b, null); }
+const picks=[];
+const seen=new Set();
+function add(it,why){ if(it&&!seen.has(it.id)){ seen.add(it.id); picks.push({it,why}); } }
+add(maxBy("presence"),"max Presence");
+add(maxBy("silhouette"),"max Silhouette");
+add(maxBy("movement"),"max Movement");
+add(maxBy("ornament"),"max Ornament");
+add(maxBy("structure"),"max Structure");
+add(maxBy("skin"),"max Skin");
+add(maxBy("edge"),"max Edge");
+add(maxBy("formality"),"max Formality");
+// a near-quiet piece (lowest sum)
+const quiet = items.filter(it=>it.stats).reduce((b,it)=>{
+  const s=KEYS8.reduce((a,k)=>a+(it.stats[k]||0),0);
+  return (b===null||s<b.s)?{it,s}:b;
+},null);
+if(quiet) add(quiet.it,"near-quiet");
+
+const row84=document.getElementById("row84");
+const rowFull=document.getElementById("rowFull");
+const rowAbbr=document.getElementById("rowAbbr");
+picks.forEach(({it,why})=>{
+  const d=document.createElement("div"); d.className="c84";
+  d.innerHTML=drawSpider8(it.stats,84,"none")+'<div class="cap">'+it.name+'<br><span style="color:#6f6f6f">'+why+'</span></div>';
+  row84.appendChild(d);
+
+  const f=document.createElement("div"); f.className="cell";
+  f.innerHTML=drawSpider8(it.stats,200,"full")+'<div class="cap">'+it.name+'</div>';
+  rowFull.appendChild(f);
+
+  const a=document.createElement("div"); a.className="cell";
+  a.innerHTML=drawSpider8(it.stats,200,"abbr")+'<div class="cap">'+it.name+'</div>';
+  rowAbbr.appendChild(a);
+});
+
+// ── Section D: outfits (base aggregate across pieces) ──
+const outfits=(typeof OUTFITS_DEFAULT!=="undefined")?OUTFITS_DEFAULT:[];
+function outfitAgg(o){
+  const t={}; KEYS8.forEach(k=>t[k]=0); let n=0;
+  (o.pieces||[]).forEach(p=>{ const it=(typeof itemForPiece==="function")?itemForPiece(p):null; if(!it||!it.stats)return; KEYS8.forEach(k=>t[k]+=(it.stats[k]||0)); n++; });
+  if(!n)return null; const a={}; KEYS8.forEach(k=>a[k]=Math.round(t[k]/n*10)/10); return a;
+}
+const oscored=outfits.map(o=>({o,a:outfitAgg(o)})).filter(x=>x.a);
+function oMax(k){ return oscored.reduce((b,x)=>(x.a[k] > ((b&&b.a[k])||-1))?x:b,null); }
+const oseen=new Set(), opicks=[];
+["silhouette","movement","ornament","presence","skin","edge","formality"].forEach(k=>{ const x=oMax(k); if(x&&!oseen.has(x.o.id)){oseen.add(x.o.id);opicks.push(x);} });
+const rowOutfits=document.getElementById("rowOutfits");
+opicks.forEach(({o,a})=>{
+  const d=document.createElement("div"); d.className="cell";
+  d.innerHTML=drawSpider8(a,200,"full")+'<div class="cap">#'+o.id+' '+o.name+'</div>';
+  rowOutfits.appendChild(d);
+});
+</script>
+</body>
+</html>

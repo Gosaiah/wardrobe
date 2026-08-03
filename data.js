@@ -225,7 +225,7 @@ const WARDROBE_DATA = [
   // ── Tops — Techwear Official ───────────────────────────────────────────────
   {id:"tw1",name:"Japanese Relaxed Standing Collar Techwear Shirt",brand:"TECHWEAR",color:"Black",size:"OS",cat:"Shirt",type:"top",style:"Dark / Minimal",url:"https://techwearofficial.com/products/japanese-relaxed-standing-collar-techwear-shirt",stats:{drama:1.5,structure:2,skin:0,edge:3,formality:3,presence:1.5,silhouette:0,movement:0,ornament:0}},
   {id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA",color:"Black",size:"M (worn as men's)",cat:"Top",type:"top",style:"Dark / Minimal",url:"https://poshmark.com/listing/Zara-Woman-Womens-Tunic-ButtonUp-Collared-Sleeveless-Black-Polyester-Size-M-6a39a0ec4ba08a69d71db0a4",stats:{drama:3,structure:2,skin:2,edge:0,formality:1,presence:1.5,silhouette:0,movement:3,ornament:0}},
-  {id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",color:"Khaki",size:"M",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.zara.com/us/en/relaxed-fit-interlock-t-shirt--04-p05584471.html",stats:{drama:0,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:0}},
+  {id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",color:"Khaki",size:"M",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.zara.com/us/en/relaxed-fit-interlock-t-shirt--04-p05584471.html",stats:{drama:0,structure:0.5,skin:1,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:0}},
   // ── Kids of Eden ───────────────────────────────────────────────────────────
   {id:"koe1",name:"Protanopia Cloak Hoodie",brand:"KOE",color:"Brown",size:"L",cat:"Hoodie",type:"outer",style:"Tonal",img:"https://cdn.shopify.com/s/files/1/0620/3880/2614/products/KIDSOFEDENHEAVYWEIGHTHOODIEMEN_STAUPEFRONT-636740.jpg?v=1683087494",url:"https://kidsofeden.earth/products/protanopia-cloak-hoodie-dust",stats:{drama:2,structure:1,skin:0,edge:1,formality:1,presence:0,silhouette:0,movement:2,ornament:0}},
   // ── Shoes — Infinitys-Store ────────────────────────────────────────────────
@@ -255,10 +255,10 @@ const WARDROBE_DATA = [
   {id:"c7",name:"Onyx Clover Stone Bracelet",brand:"CRAFTD",color:"Gold",size:"8.5in",cat:"Bracelet",type:"accessory",style:"Contrast",url:"https://craftdlondon.com/products/onyx-clover-stone-bracelet-gold",versatile:true,stats:{drama:0,structure:0,skin:0,edge:0,formality:2,presence:0,silhouette:0,movement:0,ornament:0}},
 
   // Tops — Oversized Drop Shoulder Tee (Amazon) x3
-  {id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF",color:"Black",size:"L",cat:"T-Shirt",type:"top",url:"https://shop.hilaryduff.com/products/mature-photo-tee",stats:{drama:2.5,structure:0,skin:0,edge:0,formality:1,presence:0.5,silhouette:0,movement:0,ornament:2.5}},
-  {id:"am1",name:"Oversized Drop Shoulder Tee Brown",brand:"AMAZON",color:"Brown",size:"L",cat:"T-Shirt",type:"top",url:"https://www.amazon.com/dp/B0GXDQ1J8N",stats:{drama:2,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:2,movement:0,ornament:0}},
-  {id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON",color:"Blue",size:"L",cat:"T-Shirt",type:"top",url:"https://www.amazon.com/dp/B0GXDQ1J8N",stats:{drama:2,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:2,movement:0,ornament:0}},
-  {id:"am3",name:"Oversized Drop Shoulder Tee Green",brand:"AMAZON",color:"Green",size:"L",cat:"T-Shirt",type:"top",url:"https://www.amazon.com/dp/B0GXDQ1J8N",stats:{drama:2,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:2,movement:0,ornament:0}},
+  {id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF",color:"Black",size:"L",cat:"T-Shirt",type:"top",url:"https://shop.hilaryduff.com/products/mature-photo-tee",stats:{drama:2.5,structure:0,skin:1,edge:0,formality:1,presence:0.5,silhouette:0,movement:0,ornament:2.5}},
+  {id:"am1",name:"Oversized Drop Shoulder Tee Brown",brand:"AMAZON",color:"Brown",size:"L",cat:"T-Shirt",type:"top",url:"https://www.amazon.com/dp/B0GXDQ1J8N",stats:{drama:2,structure:0,skin:1,edge:0,formality:1,presence:0,silhouette:2,movement:0,ornament:0}},
+  {id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON",color:"Blue",size:"L",cat:"T-Shirt",type:"top",url:"https://www.amazon.com/dp/B0GXDQ1J8N",stats:{drama:2,structure:0,skin:1,edge:0,formality:1,presence:0,silhouette:2,movement:0,ornament:0}},
+  {id:"am3",name:"Oversized Drop Shoulder Tee Green",brand:"AMAZON",color:"Green",size:"L",cat:"T-Shirt",type:"top",url:"https://www.amazon.com/dp/B0GXDQ1J8N",stats:{drama:2,structure:0,skin:1,edge:0,formality:1,presence:0,silhouette:2,movement:0,ornament:0}},
   {id:"am4",name:"Rhinestone Mesh Crop Shirt",brand:"AMAZON",color:"Black",size:"L",cat:"Shirt",type:"top",url:"https://www.amazon.com/dp/B0CDG4DY4H",stats:{drama:4.5,structure:0,skin:5,edge:2,formality:0,presence:0.5,silhouette:0,movement:0,ornament:4.5}},
   {id:"am5",name:"Leather Body Chain Harness",brand:"AMAZON",color:"Black",size:"OS",cat:"Harness",type:"acc",url:"https://www.amazon.com/dp/B0BXT7V1SN",stats:{drama:4,structure:3,skin:5,edge:5,formality:0,presence:4,silhouette:0,movement:1.5,ornament:0}},
   {id:"am6",name:"Patent Leather Chest Harness",brand:"AMAZON",color:"Black",size:"OS",cat:"Harness",type:"acc",url:"https://www.amazon.com/dp/B0CRP7D3B7",stats:{drama:4,structure:3,skin:5,edge:5,formality:0,presence:4,silhouette:0,movement:0,ornament:0}},
@@ -273,8 +273,8 @@ const WARDROBE_DATA = [
   {id:"al1",name:"Double Take Short Black",brand:"ALO",color:"Black",size:"M",cat:"Shorts",type:"bottom",style:"Dark / Minimal",url:"https://www.aloyoga.com/products/m6143r-7-double-take-short-black",stats:{drama:1,structure:1,skin:2,edge:0,formality:1,presence:1,silhouette:0,movement:0,ornament:0}},
   {id:"al2",name:"Double Take Short Espresso",brand:"ALO",color:"Espresso",size:"M",cat:"Shorts",type:"bottom",style:"Tonal",url:"https://www.aloyoga.com/products/m6143r-7-double-take-short-espresso",stats:{drama:1,structure:1,skin:2,edge:0,formality:1,presence:1,silhouette:0,movement:0,ornament:0}},
   // ── MUAZOE ───────────────────────────────────────────────────────────────────
-  {id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE",color:"Brown",size:"L",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.muazoe.com/products/raye-print-round-neck-t-shirt-15",stats:{drama:2,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:2}},
-  {id:"mz2",name:"Kanye West Print Round Neck T-shirt",brand:"MUAZOE",color:"Grey",size:"L",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.muazoe.com/products/kanye-west-print-round-neck-t-shirt-20",stats:{drama:1.5,structure:0,skin:0,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:1.5}},
+  {id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE",color:"Brown",size:"L",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.muazoe.com/products/raye-print-round-neck-t-shirt-15",stats:{drama:2,structure:0,skin:1,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:2}},
+  {id:"mz2",name:"Kanye West Print Round Neck T-shirt",brand:"MUAZOE",color:"Grey",size:"L",cat:"T-Shirt",type:"top",style:"Tonal",url:"https://www.muazoe.com/products/kanye-west-print-round-neck-t-shirt-20",stats:{drama:1.5,structure:0,skin:1,edge:0,formality:1,presence:0,silhouette:0,movement:0,ornament:1.5}},
   {id:"u1",name:"Gold Dragon Cuff",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Cuff",type:"accessory",style:"Contrast",versatile:true,url:"https://www.ebay.com/itm/317008146557",stats:{drama:2.5,structure:1,skin:0,edge:3,formality:2,presence:0,silhouette:0,movement:0,ornament:2.5}},
   {id:"dr1",name:"Gold Dragon Scale Armor Body Chain",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Harness",type:"accessory",style:"Statement",url:"https://www.etsy.com/listing/4541198370/gothic-dragon-scale-shoulder-chain",img:"gold-dragon-armor.jpg",stats:{drama:5,structure:3,skin:4,edge:3,formality:0,presence:3,silhouette:2,movement:1.5,ornament:5}},
   {id:"dr2",name:"Gold Dragon Head Ring",brand:"UNBRANDED",color:"Gold",size:"OS",cat:"Ring",type:"accessory",style:"Statement",img:"gold-dragon-ring.jpg",versatile:true,stats:{drama:3,structure:0.5,skin:0,edge:1.5,formality:1,presence:1,silhouette:0,movement:0,ornament:3}},
@@ -384,55 +384,55 @@ const SIGNATURES = {
 const SHOP = [
   { id:"sh_db1", name:"Jacket Neck Rebel", brand:"Demobaza", tier:"discussed", cat:"Jacket", persona:"overlord", fills:"Overlord statement outer", priority:"medium",
     price:"$1,067", url:"https://www.demobaza.com/collections/jackets-demoman/products/jacket-neck-rebel-1", img:"https://www.demobaza.com/cdn/shop/files/JACKET-NECK-REBEL-1_3ee8add4-7638-4426-8dba-30410e41361b.jpg?v=1772693363",
-    stats:{drama:4,structure:4,skin:1,edge:4.5,formality:3},
+    stats:{drama:3.5,structure:4,skin:1,edge:4.5,formality:3,presence:3.5,silhouette:2,movement:1,ornament:0.5},
     why:"Architectural high-collar jacket in Demobaza's dystopian cut \u2014 the armored statement outer Overlord is built for. You already love the one Demobaza piece you own." },
   { id:"sh_de1", name:"Boxer-13 Platform Boot", brand:"DEMONIA", tier:"new", cat:"Boots", persona:"overlord", fills:"Aggressive club platform", priority:"high",
     price:"$122", url:"https://demoniacult.com/collections/boots/products/boxer-13bvl", img:"https://cdn.shopify.com/s/files/1/0045/9558/1041/products/boxer-13-bvl.jpg?v=1582157220",
-    stats:{drama:4,structure:4.5,skin:1,edge:4.5,formality:1.5},
+    stats:{drama:3,structure:4.5,skin:1,edge:4.5,formality:1.5,presence:3,silhouette:1.5,movement:0,ornament:1},
     why:"A 4-inch strapped platform bootie \u2014 the going-out weapon that grounds the harnesses, crushed pants and layered skirts with real weight. Same extreme energy as your Neptunes, for $122." },
   { id:"sh_mn1", name:"Fiber Bond Magma Layered Skirt", brand:"MINOAR", tier:"owned", cat:"Skirt", persona:"wanderer", fills:"Textured deconstructed drape", priority:"high",
     price:"$421", url:"https://www.minoar.com/product/fiber-bond-magma-layered-skirt/", img:"https://media.minoar.com/2024/11/Fiber_Bond_Magma_Layered_Skirt_1.jpg",
-    stats:{drama:4,structure:3,skin:1.5,edge:4,formality:2},
+    stats:{drama:3.5,structure:3,skin:1.5,edge:4,formality:2,presence:2,silhouette:3.5,movement:3,ornament:3},
     why:"Deconstructed black-and-red fiber-bond drape from your own Minoar \u2014 layers over the volume pants or under a crop jacket. Textured drama nothing else in the closet has." },
   { id:"sh_ro1", name:"Temple Low Factory Pull-On Boots", brand:"RICKOWENS", tier:"new", cat:"Boots", persona:"night-shift", fills:"Sleek going-out shoe (real gap)", priority:"medium",
     price:"$1,956 (sale)", url:"https://www.ssense.com/en-us/men/product/rick-owens/black-temple-low-factory-pull-on-boots/18659221", img:"https://img.ssensemedia.com/images/f_auto,c_limit,w_1600/261232M223006_1/rick-owens-black-temple-low-factory-pull-on-boots.jpg",
-    stats:{drama:4,structure:3.5,skin:1,edge:4.5,formality:2.5},
+    stats:{drama:2.5,structure:3.5,skin:1,edge:4.5,formality:2.5,presence:2.5,silhouette:1.5,movement:1,ornament:1},
     why:"The dystopian pull-on you flagged \u2014 elongated and sleeker than the platforms, it is exactly the going-out shoe Night Shift is missing. Dream-tier, but it is THE gap-filler. (paste an image link and I will embed it.)" },
   { id:"sh_mn3", name:"Coeus Dark Hooded Cardigan", brand:"MINOAR", tier:"owned", cat:"Cardigan", persona:"wanderer", fills:"Dark hooded outer (thin category)", priority:"high",
     price:"$381", url:"https://www.minoar.com/product/coeus-dark-hooded-cardigan-m/", img:"https://media.minoar.com/2026/07/Coeus-Dark-Hooded-Cardigan-M-2.jpg",
-    stats:{drama:3.5,structure:2.5,skin:1,edge:3.5,formality:2},
+    stats:{drama:3,structure:2.5,skin:1,edge:3.5,formality:2,presence:2,silhouette:3,movement:3,ornament:1},
     why:"A loose hooded Fiber-Bond cardigan from your Minoar \u2014 the dark layering outer that hoods over the sleeveless collar shirts or the harnesses. Real outerwear where you own almost none." },
   { id:"sh_mn4", name:"Titan Leather Shoulders", brand:"MINOAR", tier:"owned", cat:"Harness", persona:"overlord", fills:"Armored statement layer", priority:"high",
     price:"$547", url:"https://www.minoar.com/product/titan-leather-shoulders-m/", img:"https://media.minoar.com/2026/07/Titan-Leather-Shoulder-Plates-M-4.jpg",
-    stats:{drama:4.5,structure:4,skin:1,edge:4.5,formality:2},
+    stats:{drama:4,structure:4,skin:1,edge:4.5,formality:2,presence:4,silhouette:2,movement:0.5,ornament:1.5},
     why:"Leather shoulder plates with cargo pockets and YKK zips \u2014 pure armored statement in the family of the 2 harnesses you already reach for. Layers over any top to instantly weaponize a look." },
   { id:"sh_mn5", name:"Atlas Denim Jumpsuit", brand:"MINOAR", tier:"owned", cat:"Jumpsuit", persona:"wanderer", fills:"Full-look statement (0 owned)", priority:"medium",
     price:"$438", url:"https://www.minoar.com/product/atlas-denim-jumpsuit-m/", img:"https://media.minoar.com/2026/07/Atlas-Denim-Jumpsuit-M-2.jpg",
-    stats:{drama:4,structure:3,skin:1,edge:4,formality:2},
+    stats:{drama:3.5,structure:3,skin:1,edge:4,formality:2,presence:3,silhouette:3.5,movement:2,ornament:2},
     why:"An overlapping-denim Fiber-Bond jumpsuit with steel hardware \u2014 a full-look statement in a silhouette you own zero of. Wear alone, or open with a tee underneath." },
   { id:"sh_or4", name:"Zander Mesh Harness Top", brand:"ORTTU", tier:"owned", cat:"Shirt", persona:"night-shift", fills:"Going-out mesh statement", priority:"high",
     price:"$79", url:"https://orttu.com/products/zander-top", img:"https://orttu.com/cdn/shop/files/Orttu_3_905bf3b3-1f22-48db-820e-ca8c68dccdca.jpg?v=1781024679",
-    stats:{drama:4,structure:2.5,skin:4,edge:4.5,formality:1.5},
+    stats:{drama:2.5,structure:2.5,skin:4,edge:4.5,formality:1.5,presence:2,silhouette:1.5,movement:1.5,ornament:2.5},
     why:"Sheer black mesh with a sharp collar and grommet harness-trim tracing the placket and shoulders \u2014 a Night Shift take on your Minoar collar shirts crossed with a harness. Layers under the cape or a jacket." },
   { id:"sh_or5", name:"Vander Lace-Up Sheer Top", brand:"ORTTU", tier:"owned", cat:"Top", persona:"night-shift", fills:"High-skin nights-out top", priority:"medium",
     price:"$79", url:"https://orttu.com/products/vander-top", img:"https://orttu.com/cdn/shop/files/Orttu_1_d9162dfc-6fbc-4efc-9436-0f215be41907.jpg?v=1781024575",
-    stats:{drama:4,structure:2,skin:4.5,edge:4,formality:1.5},
+    stats:{drama:2,structure:2,skin:4.5,edge:4,formality:1.5,presence:1.5,silhouette:1.5,movement:1.5,ornament:2},
     why:"Sheer mesh panels, deep V and a metal-eyelet lace-up cinch, sleeveless \u2014 the high-skin going-out top Night Shift is built for. Pure nights-out energy." },
   { id:"sh_db2", name:"Rain Cape Onyx", brand:"Demobaza", tier:"discussed", cat:"Cape", persona:"night-shift", fills:"Warm-weather flowing layer", priority:"high",
     price:"$557", url:"https://www.demobaza.com/collections/jackets-demoman/products/rain-cape-onyx-1", img:"https://www.demobaza.com/cdn/shop/files/RAIN-CAPE-ONYX-5_2cdba4c1-1ffb-4ecc-8b03-d503053ea316.jpg?v=1773144891",
-    stats:{drama:4,structure:2,skin:1,edge:4,formality:2},
+    stats:{drama:3.5,structure:2,skin:1,edge:4,formality:2,presence:2,silhouette:3,movement:3.5,ornament:1},
     why:"A flowing black cape \u2014 the lightweight, movement-forward third layer for warm-weather nights. Exactly the cape silhouette the whole wardrobe is built around." },
   { id:"sh_ls1", name:"Dragon Scalemail Pauldron with Cape", brand:"LissaraStudio", tier:"new", cat:"Harness", persona:"night-shift", fills:"Gold armored statement + cape", priority:"list",
     price:"$250 (with cape)", url:"https://www.etsy.com/listing/4506395473/dragon-scalemail-pauldron-with-cape", img:"https://i.etsystatic.com/66004412/r/il/5533d6/8137526317/il_1080xN.8137526317_7gas.jpg",
-    stats:{drama:5,structure:3,skin:1,edge:3,formality:0},
+    stats:{drama:5,structure:3,skin:1,edge:3,formality:0,presence:3,silhouette:2.5,movement:3,ornament:5},
     why:"Anodized gold dragon-scalemail shoulder pauldron on a faux-leather harness with an optional teal satin cape \u2014 the matching statement to your gold dragon body chain, with a cape flourish for movement. Pure Night Shift armor-glam." },
   { id:"sh_da1", name:"Gold Armor Corset (Sculptural Chest Piece)", brand:"DarbagUA", tier:"new", cat:"Corset", persona:"overlord", fills:"Sculptural armor torso", priority:"list",
     price:"$218 (sale)", url:"https://www.etsy.com/listing/4503299336/mens-gold-armor-corset-sculptural-luxury", img:"https://i.etsystatic.com/47566345/r/il/6530f5/8056407735/il_1080xN.8056407735_smgr.jpg",
-    stats:{drama:5,structure:4,skin:2,edge:3,formality:0},
+    stats:{drama:5,structure:4,skin:2,edge:3,formality:0,presence:4,silhouette:2.5,movement:0.5,ornament:5},
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 118;
+const DATA_VERSION = 120;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -614,25 +614,161 @@ function boostText(boost){
 // EFFECTIVE outfit stats: per-item singles averaged, then outfit-level combos added full-strength
 function effectiveOutfitStats(outfit){
   if (!outfit || !outfit.pieces) return null;
-  const totals = { drama:0, structure:0, skin:0, edge:0, formality:0 };
+  // Aggregate all 8 facet/base keys (+ drama headline) across pieces.
+  const AGG = STAT_KEYS5.concat(FACET_KEYS); // drama,structure,skin,edge,formality + 4 facets
+  const totals = {}; AGG.forEach(k => totals[k] = 0);
   let n = 0;
   outfit.pieces.forEach(p => {
     const it = itemForPiece(p); if (!it || !it.stats) return;
     const eff = itemEffectiveStats(it, p.styling || []);
-    STAT_KEYS5.forEach(k => { totals[k] += eff[k]; });
+    AGG.forEach(k => { totals[k] += (eff[k] || 0); });
     n++;
   });
   if (!n) return null;
-  const avg = {}; STAT_KEYS5.forEach(k => { avg[k] = totals[k] / n; });
+  const avg = {}; AGG.forEach(k => { avg[k] = totals[k] / n; });
   const attrs = outfitAttrs(outfit);
+  // Combos still only boost the 5 base keys (facet-targeted combos land in Phase 6).
   const cd = { drama:0, structure:0, skin:0, edge:0, formality:0 };
   STYLE_COMBOS.forEach(c => {
     const fires = c.test ? c.test(outfit) : (c.needs || []).every(a => attrs.has(a));
     if (fires) STAT_KEYS5.forEach(k => { if (c.boost[k] != null) cd[k] += c.boost[k]; });
   });
-  STAT_KEYS5.forEach(k => {
-    const capped = Math.max(-STYLE_COMBO_CAP, Math.min(STYLE_COMBO_CAP, cd[k]));
+  AGG.forEach(k => {
+    const capped = (k in cd) ? Math.max(-STYLE_COMBO_CAP, Math.min(STYLE_COMBO_CAP, cd[k])) : 0;
     avg[k] = Math.round(clamp05(avg[k] + capped) * 10) / 10;
   });
   return avg;
+}
+
+/* ── SHARED SPIDER (8-spoke) ─────────────────────────────────────────────────
+   ONE renderer for every page (wardrobe, persona, profile, shop) — replaces the
+   old per-file copies. Spokes are in "similarity order": the rigor hemisphere
+   (Formality · Structure · Presence · Edge) then the expression hemisphere
+   (Skin · Ornament · Movement · Silhouette), so correlated axes sit adjacent.
+   Labels render only at detail size (>=120px); small cards are shape-only.
+   A ~9% radius floor keeps near-zero pieces from collapsing to a single dot.
+   Signature kept back-compatible: (stats, size, fillColor?, uid?). */
+const SPIDER_KEYS   = ["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
+const SPIDER_LABELS = ["Formality","Structure","Presence","Edge","Skin","Ornament","Movement","Silhouette"];
+const SPIDER_ABBR   = { formality:"Form", structure:"Str", presence:"Pres", edge:"Edge", skin:"Skin", ornament:"Orn", movement:"Move", silhouette:"Silh" };
+const SPIDER_FLOOR  = 0.09;
+// The two spokes a piece scores highest on (value > 0), for card peak-labels + caption.
+function spiderTop2(stats){ return SPIDER_KEYS.map(k => [k, stats[k]||0]).sort((a,b) => b[1]-a[1]).filter(x => x[1] > 0).slice(0,2); }
+// Two render modes, switched by size:
+//   size >= 120  → DETAIL: all 8 axis labels (used on the big detail/panel spiders)
+//   size <  120  → CARD/PREVIEW: peak labels on the top-2 spokes + a caption tag naming them
+function drawSpider(stats, size, fillColor, uid){
+  if (!stats) return "";
+  const fill = fillColor || "#e2d3b4";
+  const keys = SPIDER_KEYS, labels = SPIDER_LABELS, n = keys.length;
+  const fullMode = size >= 120;
+  const pad = fullMode ? size * 0.30 : size * 0.26;      // card mode needs room for 2 peak labels
+  const W = size + pad * 2, cx = W / 2, cy = W / 2;
+  const top2 = fullMode ? [] : spiderTop2(stats);
+  const capText = top2.map(t => SPIDER_LABELS[keys.indexOf(t[0])]).join("  ·  ");
+  const capH = (!fullMode && capText) ? Math.round(size * 0.24) : 0;   // caption strip below the chart
+  const H = W + capH;
+  const r = size * 0.30, labelR = size * 0.40, peakR = size * 0.45;
+  const ang = i => (Math.PI * 2 / n) * i - Math.PI / 2;
+  const px = (i, rr) => (cx + rr * Math.cos(ang(i))).toFixed(1);
+  const py = (i, rr) => (cy + rr * Math.sin(ang(i))).toFixed(1);
+  const rv = v => r * (SPIDER_FLOOR + (1 - SPIDER_FLOOR) * (Math.max(0, Math.min(5, v || 0)) / 5));
+  let rings = "";
+  for (let ring = 1; ring <= 5; ring++){
+    const pts = keys.map((_,i) => px(i, r*(ring/5)) + "," + py(i, r*(ring/5))).join(" ");
+    rings += '<polygon points="' + pts + '" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
+  }
+  const axes = keys.map((_,i) => '<line x1="'+cx+'" y1="'+cy+'" x2="'+px(i,r)+'" y2="'+py(i,r)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
+  const dataPts = keys.map((k,i) => { const rr = rv(stats[k]); return (cx+rr*Math.cos(ang(i))).toFixed(1)+","+(cy+rr*Math.sin(ang(i))).toFixed(1); }).join(" ");
+  const poly = '<polygon points="'+dataPts+'" fill="'+fill+'" fill-opacity="0.25" stroke="'+fill+'" stroke-width="1.5"/>';
+  const peakSet = new Set(top2.map(t => t[0]));
+  const dots = keys.map((k,i) => { const rr = rv(stats[k]); const hi = peakSet.has(k); return '<circle cx="'+(cx+rr*Math.cos(ang(i))).toFixed(1)+'" cy="'+(cy+rr*Math.sin(ang(i))).toFixed(1)+'" r="'+(hi ? (size>70?2.6:2) : (fullMode?2:1.6))+'" fill="'+(hi ? "#f0e4c8" : fill)+'"/>'; }).join("");
+  let lbls = "";
+  if (fullMode){
+    const fs = (W * 0.045).toFixed(1);
+    lbls = labels.map((lbl,i) => {
+      const lx = (cx + labelR*Math.cos(ang(i))).toFixed(1), ly = (cy + labelR*Math.sin(ang(i))).toFixed(1);
+      const c = Math.cos(ang(i)), s = Math.sin(ang(i));
+      const anchor = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
+      const dy = s > 0.3 ? "0.8em" : s < -0.3 ? "0em" : "0.35em";
+      return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="rgba(255,255,255,0.45)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.02em">'+lbl+'</text>';
+    }).join("");
+  } else {
+    // peak labels (abbreviated) on the top-2 spokes
+    const fs = Math.max(7, size * 0.11).toFixed(1);
+    lbls = top2.map(t => {
+      const i = keys.indexOf(t[0]);
+      const lx = (cx + peakR*Math.cos(ang(i))).toFixed(1), ly = (cy + peakR*Math.sin(ang(i))).toFixed(1);
+      const c = Math.cos(ang(i)), s = Math.sin(ang(i));
+      const anchor = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
+      const dy = s > 0.3 ? "0.8em" : s < -0.3 ? "0em" : "0.35em";
+      return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="#d8c9a4" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif">'+SPIDER_ABBR[t[0]]+'</text>';
+    }).join("");
+  }
+  let caption = "";
+  if (capH){
+    let capFont = size * 0.135;
+    const maxW = W - 6, approx = capText.length * capFont * 0.52;
+    if (approx > maxW) capFont = maxW / (capText.length * 0.52);
+    capFont = Math.max(6.5, capFont);
+    const pillW = Math.min(W - 2, capText.length * capFont * 0.52 + 14);
+    const pillH = capH * 0.82, pillY = W + (capH - pillH) / 2;
+    caption = '<rect x="'+(cx - pillW/2).toFixed(1)+'" y="'+pillY.toFixed(1)+'" width="'+pillW.toFixed(1)+'" height="'+pillH.toFixed(1)+'" rx="'+(pillH/2).toFixed(1)+'" fill="#2a2620"/>' +
+      '<text x="'+cx.toFixed(1)+'" y="'+(W + capH*0.62).toFixed(1)+'" text-anchor="middle" fill="#e2d3b4" font-size="'+capFont.toFixed(1)+'" font-family="Helvetica Neue,Arial,sans-serif">'+capText+'</text>';
+  }
+  return '<svg width="'+W.toFixed(0)+'" height="'+H.toFixed(0)+'" viewBox="0 0 '+W.toFixed(0)+' '+H.toFixed(0)+'" xmlns="http://www.w3.org/2000/svg">' + rings + axes + poly + dots + lbls + caption + '</svg>';
+}
+
+/* ── PERSONA TARGET PROFILES (single source) ─────────────────────────────────
+   8-key facet targets, keyed by canonical persona id. Drama split into the four
+   facets per character: Overlord = Presence-led; Wanderer = Silhouette/Movement
+   (cloaks, drape); Night Shift = Movement/Ornament (fringe, sequin); Civilian =
+   quiet; Viceroy = Presence/Silhouette (couture command). Each persona's
+   max(facets) equals its old single drama target, so the roll-up is unchanged.
+   Referenced by persona.html, profile.html, and the matcher — no more per-file
+   copies drifting out of sync. */
+const PERSONA_TARGETS = {
+  overlord:      { presence:4.0, silhouette:2.5, movement:1.0, ornament:1.0, structure:3.5, skin:1.0, edge:3.5, formality:2.0 },
+  wanderer:      { presence:1.5, silhouette:2.5, movement:2.5, ornament:1.0, structure:2.0, skin:1.0, edge:2.0, formality:2.5 },
+  "night-shift": { presence:1.5, silhouette:1.5, movement:3.0, ornament:3.0, structure:1.5, skin:3.5, edge:2.5, formality:1.5 },
+  civilian:      { presence:0.5, silhouette:1.0, movement:0.5, ornament:0.5, structure:1.0, skin:0.5, edge:0.5, formality:1.5 },
+  viceroy:       { presence:2.5, silhouette:2.0, movement:1.0, ornament:1.5, structure:3.0, skin:1.0, edge:1.5, formality:3.5 },
+};
+Object.keys(PERSONA_TARGETS).forEach(k => { PERSONA_TARGETS[k].drama = rollupDrama(PERSONA_TARGETS[k]); });
+
+/* ── SHARED OUTFIT-DETAIL RENDER HELPERS ─────────────────────────────────────
+   Used by the outfit-detail popup on both the outfits page and the persona page
+   so the two are byte-identical. Inline styles + data.js helpers only. */
+function statBarsHtml(stats) {
+  if (!stats) return "";
+  const bars = ["drama","edge","structure","skin","formality"].map(k =>
+    "<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px\">" +
+    "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:70px;flex-shrink:0\">" + k + "</div>" +
+    "<div style=\"width:160px;height:2px;background:var(--border);border-radius:8px;overflow:hidden;flex-shrink:0\"><div style=\"height:100%;width:" + (stats[k]||0)*20 + "%;background:var(--accent);border-radius:8px\"></div></div>" +
+    "<div style=\"font-size:10px;color:var(--accent);width:24px;text-align:right;flex-shrink:0\">" + (stats[k]||0) + "</div>" +
+    "</div>"
+  ).join("");
+  return "<div style=\"display:flex;align-items:center;gap:20px;padding:4px 0\">" +
+    drawSpider(stats, 130, "#e2d3b4", "detail") +
+    "<div style=\"flex:1;min-width:0\">" + bars + "</div>" +
+  "</div>";
+}
+function outfitStylingHtml(outfit){
+  if (typeof outfitCombosFired !== "function") return "";
+  var combos = outfitCombosFired(outfit);
+  var attrs = (typeof outfitAttrs === "function") ? Array.from(outfitAttrs(outfit)) : [];
+  if (!combos.length && !attrs.length) return "";
+  var comboChips = combos.map(function(c){
+    var label = c.labelFn ? c.labelFn(outfit) : c.label;
+    var bt = boostText(c.boost);
+    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#111;font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + label + (bt ? " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + bt + "</span>" : "") + "</span>";
+  }).join("");
+  var attrChips = attrs.map(function(a){
+    return "<span style=\"background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;padding:3px 7px;border-radius:6px\">" + a + "</span>";
+  }).join("");
+  return "<div style=\"margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px\">" +
+    "<div style=\"font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px\">Styling</div>" +
+    (combos.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:6px" + (attrs.length ? ";margin-bottom:8px" : "") + "\">" + comboChips + "</div>" : "") +
+    (attrs.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:5px\">" + attrChips + "</div>" : "") +
+  "</div>";
 }

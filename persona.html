@@ -333,6 +333,8 @@
   .sig-gap { border-style:dashed; }
   .sig-gap .sig-thumb { opacity:.35; }
   .sig-gap .sig-name { color:var(--accent); }
+  .sig-spider { display:flex; justify-content:center; padding:4px 4px 10px; border-top:1px solid var(--border); margin-top:4px; }
+  .sig-spider svg { max-width:100%; height:auto; }
   @media(max-width:600px){ .sig-kit-row{ grid-template-columns:repeat(2,1fr);} }
   /* To Consider — shop picks */
   .picks-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; }
@@ -490,6 +492,46 @@
     .stats-grid { grid-template-columns: 1fr; }
     .personas-row { grid-template-columns: repeat(2, 1fr); }
     .class-grid { grid-template-columns: 1fr; }
+  }
+  /* Gallery → clickable outfit cards with spiders */
+  .gallery { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .gallery-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; cursor:pointer; transition:border-color .2s ease; }
+  .gallery-card:hover { border-color:var(--accent); }
+  .gallery-photo { aspect-ratio:3/4; overflow:hidden; background:var(--surface2); }
+  .gallery-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; filter:brightness(.9); transition:transform .4s ease, filter .4s ease; }
+  .gallery-card:hover .gallery-photo img { transform:scale(1.03); filter:brightness(1); }
+  .gallery-card-body { padding:10px 12px 6px; }
+  .gallery-card-num { font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  .gallery-card-name { font-size:12px; color:var(--text); margin-top:2px; line-height:1.3; min-height:2.2em; }
+  .gallery-card-spider { display:flex; justify-content:center; margin-top:2px; }
+  .gallery-card-spider svg { max-width:100%; height:auto; }
+  /* Outfit detail modal — SAME classes/markup as the outfits page popup */
+  .item-detail-overlay { position:fixed; inset:0; z-index:1200; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; }
+  .item-detail-panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; width:clamp(320px,96vw,1100px); max-height:92vh; overflow:hidden; display:flex; flex-direction:column; position:relative; }
+  .item-detail-inner { display:flex; overflow:hidden; flex:1; min-height:0; align-items:stretch; }
+  .item-detail-close { position:absolute; top:14px; right:16px; background:none; border:1px solid var(--border); color:var(--muted); cursor:pointer; padding:4px 10px; border-radius:10px; font-size:0.9rem; z-index:10; transition:color .2s,border-color .2s; font-family:inherit; }
+  .item-detail-close:hover { color:var(--white); border-color:var(--white); }
+  .item-detail-photo-col { width:40%; flex-shrink:0; background:var(--surface2); border-right:1px solid var(--border); overflow:hidden; align-self:stretch; }
+  .item-detail-photo { width:100%; height:100%; }
+  .item-detail-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+  .item-detail-info-col { flex:1; overflow-y:auto; padding:clamp(16px,3vw,28px); min-width:0; }
+  .lb-outfit-num { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+  .lb-outfit-name { font-size:18px; font-weight:600; color:var(--white); line-height:1.2; margin-bottom:4px; }
+  .lb-outfit-vibe { font-size:11px; color:var(--accent); font-style:italic; margin-bottom:20px; }
+  .lb-pieces-title { font-size:8px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:6px; }
+  .lb-piece-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+  .lb-piece-thumb { width:38px; height:48px; flex-shrink:0; border-radius:6px; overflow:hidden; background:var(--surface2); border:1px solid var(--border); }
+  .lb-piece-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+  .lb-piece-info { flex:1; min-width:0; }
+  .lb-piece-role { font-size:8px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:1px; }
+  .lb-piece-name { font-size:11px; color:var(--text); line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .lb-piece-brand { font-size:8px; color:var(--accent2); margin-top:1px; }
+  @media(max-width:600px){
+    .gallery{ grid-template-columns:repeat(2,1fr);}
+    .item-detail-panel{ width:100%; max-height:100vh; height:100vh; border-radius:0; }
+    .item-detail-inner{ flex-direction:column; }
+    .item-detail-photo-col{ width:100%; height:280px; border-right:none; border-bottom:1px solid var(--border); }
+    .item-detail-info-col{ padding:20px 18px; }
   }
 </style>
 <link rel="stylesheet" href="alter-theme.css">
@@ -765,61 +807,7 @@ const ALL_ORDER = ['overlord', 'wanderer', 'night-shift', 'civilian', 'viceroy']
 
 
 // ── SPIDER CHART ─────────────────────────────────────────────────────────────
-function drawSpider(stats, size, fillColor, uid) {
-  const keys = Object.keys(stats);
-  const vals = Object.values(stats);
-  const n = keys.length;
-  const cx = size / 2, cy = size / 2;
-  const r = size * 0.38;
-  const labelR = size * 0.48;
-  const step = (2 * Math.PI) / n;
-  const toXY = (i, v) => {
-    const a = -Math.PI / 2 + i * step;
-    return [cx + Math.cos(a) * r * (v / 5), cy + Math.sin(a) * r * (v / 5)];
-  };
-  const toLabel = (i) => {
-    const a = -Math.PI / 2 + i * step;
-    return [cx + Math.cos(a) * labelR, cy + Math.sin(a) * labelR];
-  };
-
-  // Grid rings
-  let rings = '';
-  [1,2,3,4,5].forEach(lvl => {
-    const pts = keys.map((_, i) => {
-      const a = -Math.PI / 2 + i * step;
-      return `${cx + Math.cos(a) * r * (lvl/5)},${cy + Math.sin(a) * r * (lvl/5)}`;
-    }).join(' ');
-    rings += `<polygon points="${pts}" class="dv-axis" fill="none" stroke-width="1"/>`;
-  });
-
-  // Spokes
-  let spokes = '';
-  keys.forEach((_, i) => {
-    const a = -Math.PI / 2 + i * step;
-    spokes += `<line x1="${cx}" y1="${cy}" x2="${cx + Math.cos(a)*r}" y2="${cy + Math.sin(a)*r}" class="dv-axis" stroke-width="1"/>`;
-  });
-
-  // Fill polygon
-  const fillPts = vals.map((v, i) => toXY(i, v).join(',')).join(' ');
-  const fillSvg = `<polygon points="${fillPts}" fill="${fillColor}" fill-opacity="0.18" stroke="${fillColor}" stroke-width="1.5"/>`;
-
-  // Dots
-  let dots = '';
-  vals.forEach((v, i) => {
-    const [x, y] = toXY(i, v);
-    dots += `<circle cx="${x}" cy="${y}" r="3" fill="${fillColor}"/>`;
-  });
-
-  // Labels
-  let labels = '';
-  keys.forEach((k, i) => {
-    const [x, y] = toLabel(i);
-    const anchor = x < cx - 4 ? 'end' : x > cx + 4 ? 'start' : 'middle';
-    labels += `<text x="${x}" y="${y}" text-anchor="${anchor}" dominant-baseline="middle" font-size="9" class="dv-label" letter-spacing="1.5" font-family="-apple-system,sans-serif" text-transform="uppercase">${k.toUpperCase()}</text>`;
-  });
-
-  return `<svg width="${size}" height="${size}" viewBox="-40 -40 ${size+80} ${size+80}" xmlns="http://www.w3.org/2000/svg">${rings}${spokes}${fillSvg}${dots}${labels}</svg>`;
-}
+// drawSpider() consolidated into data.js — shared 8-spoke renderer
 
 // ── RENDER ───────────────────────────────────────────────────────────────────
 function render() {
@@ -872,12 +860,20 @@ function render() {
     </div>`
   ).join('');
 
-  const galleryHtml = p.outfits.map(o =>
-    `<div class="gallery-item">
-      <img src="${o.img}" alt="${o.label}" loading="lazy">
-      <div class="gallery-label">${o.label}</div>
-    </div>`
-  ).join('');
+  const galleryHtml = p.outfits.map(o => {
+    const oid = parseInt(o.num, 10);
+    const od = (typeof OUTFITS_DEFAULT !== 'undefined') ? OUTFITS_DEFAULT.find(x => x.id === oid) : null;
+    const st = (od && typeof effectiveOutfitStats === 'function') ? effectiveOutfitStats(od) : null;
+    const spider = (st && typeof drawSpider === 'function') ? drawSpider(st, 88, p.spiderColor) : '';
+    return `<div class="gallery-card" data-oid="${oid}" data-img="${o.img}">
+      <div class="gallery-photo"><img src="${o.img}" alt="${o.label}" loading="lazy"></div>
+      <div class="gallery-card-body">
+        <div class="gallery-card-num">No. ${String(oid).padStart(2,'0')}</div>
+        <div class="gallery-card-name">${(od && od.name) || o.label}</div>
+        <div class="gallery-card-spider">${spider}</div>
+      </div>
+    </div>`;
+  }).join('');
 
   const personasHtml = ALL_ORDER.map(pid => {
     const other = PERSONAS[pid];
@@ -892,7 +888,7 @@ function render() {
   }).join('');
 
   const badgesHtml = p.badges.map(b => `<span class="hero-badge">${b}</span>`).join('');
-  const spiderSvg = drawSpider(p.stats, 220, p.spiderColor, id);
+  const spiderSvg = drawSpider((typeof PERSONA_TARGETS!=='undefined' && PERSONA_TARGETS[id]) || p.stats, 220, p.spiderColor, id);
 
   // Signature Kit — top / bottom / shoe / accessory, resolved live from data.js SIGNATURES
   const SIG_SLOTS = [['top','Top'],['bottom','Bottom'],['shoe','Shoe'],['accessory','Accessory']];
@@ -905,7 +901,7 @@ function render() {
     const img = it ? pieceImg({ id: it.id }) : '';
     const brandLabel = it ? ((typeof BRANDS !== 'undefined' && BRANDS[it.brand] && BRANDS[it.brand].label) || it.brand) : '';
     return it
-      ? `<div class="sig-slot"><div class="sig-thumb">${img ? `<img src="${img}" alt="${it.name}" loading="lazy">` : '&#9672;'}</div><div class="sig-slot-body"><div class="sig-label">${label}</div><div class="sig-name">${it.name}</div><div class="piece-brand">${brandLabel}</div></div></div>`
+      ? `<div class="sig-slot"><div class="sig-thumb">${img ? `<img src="${img}" alt="${it.name}" loading="lazy">` : '&#9672;'}</div><div class="sig-slot-body"><div class="sig-label">${label}</div><div class="sig-name">${it.name}</div><div class="piece-brand">${brandLabel}</div></div><div class="sig-spider">${(typeof drawSpider === 'function' && it.stats) ? drawSpider(it.stats, 72) : ''}</div></div>`
       : `<div class="sig-slot sig-gap"><div class="sig-thumb">&#43;</div><div class="sig-slot-body"><div class="sig-label">${label}</div><div class="sig-name">Gap &mdash; shop target</div></div></div>`;
   }).join('');
   const kitHtml = `<div class="sig-kit-head"><div class="section-label" style="margin:0">Signature Kit</div><span class="sig-count${sigFilled === 4 ? ' complete' : ''}">${sigFilled}/4</span></div><div class="sig-kit-row">${sigCards}</div>`;
@@ -998,7 +994,53 @@ function render() {
 }
 
 render();
+
+// ── Outfit detail popup — identical markup + shared builders as the outfits page ──
+const PLAB_MODAL = { overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy" };
+function openOutfitModal(oid, img){
+  const od = (typeof OUTFITS_DEFAULT !== 'undefined') ? OUTFITS_DEFAULT.find(x => x.id === oid) : null;
+  if (!od) return;
+  document.getElementById('photo-lightbox-img').src = img || '';
+  const piecesHtml = (od.pieces || []).map(function(p){
+    var pim = (typeof pieceImg === 'function') ? pieceImg(p) : '';
+    var pb = (typeof BRANDS !== 'undefined' && BRANDS[p.brand] && BRANDS[p.brand].label) || p.brand;
+    return "<div class='lb-piece-row'><div class='lb-piece-thumb'>" + (pim ? "<img src='" + pim + "' alt='" + p.name + "'>" : "") + "</div>" +
+      "<div class='lb-piece-info'><div class='lb-piece-role'>" + p.role + "</div><div class='lb-piece-name'>" + p.name + "</div><div class='lb-piece-brand'>" + pb + "</div></div></div>";
+  }).join("");
+  const st = (typeof effectiveOutfitStats === 'function') ? effectiveOutfitStats(od) : null;
+  document.getElementById('photo-lightbox-info').innerHTML =
+    "<div class='lb-outfit-num'>No. " + String(od.id).padStart(2,'0') + (od.source === 'detected' ? " &middot; Auto-detected" : "") + "</div>" +
+    "<div class='lb-outfit-name'>" + od.name + "</div>" +
+    "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px'>" +
+      "<div class='lb-outfit-vibe' style='margin-bottom:0'>" + (od.vibe || "") + "</div>" +
+      (od.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PLAB_MODAL[od.persona] || od.persona) + "</span>" : "") +
+    "</div>" +
+    (st ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + (typeof statBarsHtml === 'function' ? statBarsHtml(st) : "") + "</div>" : "") +
+    (typeof outfitStylingHtml === 'function' ? outfitStylingHtml(od) : "") +
+    "<div class='lb-pieces-title'>Pieces</div>" + piecesHtml;
+  document.getElementById('photo-lightbox').style.display = 'flex';
+}
+function closeOutfitModal(){ var m = document.getElementById('photo-lightbox'); if (m) m.style.display = 'none'; }
+document.addEventListener('click', function(e){
+  const card = e.target.closest && e.target.closest('.gallery-card');
+  if (card) { openOutfitModal(parseInt(card.dataset.oid, 10), card.dataset.img); return; }
+  if (e.target.id === 'photo-lightbox-close' || e.target.id === 'photo-lightbox') closeOutfitModal();
+});
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeOutfitModal(); });
 </script>
+
+<!-- Outfit detail modal — identical markup to the outfits page popup -->
+<div class="item-detail-overlay" id="photo-lightbox" style="display:none">
+  <div class="item-detail-panel">
+    <button class="item-detail-close" id="photo-lightbox-close">&#x2715;</button>
+    <div class="item-detail-inner">
+      <div class="item-detail-photo-col">
+        <div class="item-detail-photo"><img id="photo-lightbox-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
+      </div>
+      <div class="item-detail-info-col" id="photo-lightbox-info"></div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

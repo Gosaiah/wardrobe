@@ -37,6 +37,10 @@ Last updated: 2026-07-28 · data.js at DATA_VERSION 67
 - [ ] **Add `status` field to items** (`active` / `sold-out` / `dead`). Keep gone items for their stats/history but render greyed-out with the View link disabled instead of silently rotting.
 - [ ] **On-demand link checker.** Small script: HEAD-request every `url` + `img`, flag non-200s so decayed entries surface for a status bump.
 
+## Shared-code audit (avoid duplicative work)
+
+- [ ] **Evaluate what self-contained styling + functionality should be fully shared.** We've been consolidating piecemeal (drawSpider, statBarsHtml, outfitStylingHtml, persona targets → data.js; outfit-detail popup shared across outfits + persona pages). Do a deliberate pass: inventory every per-page copy of CSS blocks (e.g. the outfit-detail/lightbox modal styles, card styles) and JS helpers, decide what belongs in a shared place (data.js for JS; a shared stylesheet for CSS), and migrate. Goal: one source per thing, no drift. CSS is the current gap — it's still duplicated per HTML file because there's no shared .css yet.
+
 ## Tech debt
 
 - [ ] **Unify persona target profiles into data.js.** The 5-stat persona profiles are hardcoded in three places — persona.html, profile.html (`PERSONA_STATS`), and the 7-key matcher in wardrobe_v2_18.html (`PERSONA_PROFILES`). They drifted during stat calibration and had to be updated by hand in each. Move the display profiles into data.js as one exported constant and reference everywhere so they can't fall out of sync again.

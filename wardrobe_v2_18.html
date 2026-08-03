@@ -2392,62 +2392,8 @@ function getOutfitStats(outfit) {
   return avg;
 }
 
-function drawSpider(stats, size, fillColor, uid) {
-  if (!stats) return "";
-  const keys = ["drama","edge","formality","structure","skin"];
-  const labels = ["Drama","Edge","Form.","Struct.","Skin"];
-  const pad = size * 0.22;
-  const W = size + pad * 2;
-  const cx = W / 2, cy = W / 2;
-  const r = size * 0.28;
-  const labelR = size * 0.38;
-  const n = keys.length;
-  const ang = i => (Math.PI * 2 / n) * i - Math.PI / 2;
-  const px = (i, rr) => (cx + rr * Math.cos(ang(i))).toFixed(1);
-  const py = (i, rr) => (cy + rr * Math.sin(ang(i))).toFixed(1);
-
-  let rings = "";
-  for (let ring = 1; ring <= 5; ring++) {
-    const pts = keys.map((_,i) => px(i,r*(ring/5)) + "," + py(i,r*(ring/5))).join(" ");
-    rings += '<polygon points="' + pts + '" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
-  }
-  const axes = keys.map((_,i) =>
-    '<line x1="' + cx + '" y1="' + cy + '" x2="' + px(i,r) + '" y2="' + py(i,r) + '" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>'
-  ).join("");
-  const dataPts = keys.map((k,i) => {
-    const v = (stats[k]||0); return px(i,r*(v/5)) + "," + py(i,r*(v/5));
-  }).join(" ");
-  const poly = '<polygon points="' + dataPts + '" fill="' + fillColor + '" fill-opacity="0.25" stroke="' + fillColor + '" stroke-width="1.5"/>';
-  const dots = keys.map((k,i) => {
-    const v = (stats[k]||0);
-    return '<circle cx="' + px(i,r*(v/5)) + '" cy="' + py(i,r*(v/5)) + '" r="2" fill="' + fillColor + '"/>';
-  }).join("");
-  const fs = (W * 0.062).toFixed(1);
-  const lbls = labels.map((lbl,i) => {
-    const lx = (cx + labelR * Math.cos(ang(i))).toFixed(1);
-    const ly = (cy + labelR * Math.sin(ang(i))).toFixed(1);
-    const c = Math.cos(ang(i)), s = Math.sin(ang(i));
-    const anchor = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
-    const dy = s > 0.3 ? "0.8em" : s < -0.3 ? "0em" : "0.35em";
-    return '<text x="' + lx + '" y="' + ly + '" text-anchor="' + anchor + '" dy="' + dy + '" fill="rgba(255,255,255,0.45)" font-size="' + fs + '" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.04em">' + lbl + '</text>';
-  }).join("");
-  const ws = W.toFixed(0);
-  return '<svg width="' + ws + '" height="' + ws + '" viewBox="0 0 ' + ws + ' ' + ws + '" xmlns="http://www.w3.org/2000/svg">' + rings + axes + poly + dots + lbls + '</svg>';
-}
-function statBarsHtml(stats) {
-  if (!stats) return "";
-  const bars = ["drama","edge","structure","skin","formality"].map(k =>
-    "<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px\">" +
-    "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:70px;flex-shrink:0\">" + k + "</div>" +
-    "<div style=\"width:160px;height:2px;background:var(--border);border-radius:8px;overflow:hidden;flex-shrink:0\"><div style=\"height:100%;width:" + (stats[k]||0)*20 + "%;background:var(--accent);border-radius:8px\"></div></div>" +
-    "<div style=\"font-size:10px;color:var(--accent);width:24px;text-align:right;flex-shrink:0\">" + (stats[k]||0) + "</div>" +
-    "</div>"
-  ).join("");
-  return "<div style=\"display:flex;align-items:center;gap:20px;padding:4px 0\">" +
-    drawSpider(stats, 130, "#e2d3b4", "detail") +
-    "<div style=\"flex:1;min-width:0\">" + bars + "</div>" +
-  "</div>";
-}
+// drawSpider() consolidated into data.js — shared 8-spoke renderer
+// statBarsHtml() moved to data.js (shared)
 
 function outfitStatPillsHtml(stats) {
   if (!stats) return "";
@@ -2465,25 +2411,7 @@ function outfitStatPillsHtml(stats) {
 }
 
 // ── STYLING CHIPS (which combos are firing + active attributes) ──
-function outfitStylingHtml(outfit){
-  if (typeof outfitCombosFired !== "function") return "";
-  var combos = outfitCombosFired(outfit);
-  var attrs = (typeof outfitAttrs === "function") ? Array.from(outfitAttrs(outfit)) : [];
-  if (!combos.length && !attrs.length) return "";
-  var comboChips = combos.map(function(c){
-    var label = c.labelFn ? c.labelFn(outfit) : c.label;
-    var bt = boostText(c.boost);
-    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#111;font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + label + (bt ? " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + bt + "</span>" : "") + "</span>";
-  }).join("");
-  var attrChips = attrs.map(function(a){
-    return "<span style=\"background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;padding:3px 7px;border-radius:6px\">" + a + "</span>";
-  }).join("");
-  return "<div style=\"margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px\">" +
-    "<div style=\"font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px\">Styling</div>" +
-    (combos.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:6px" + (attrs.length ? ";margin-bottom:8px" : "") + "\">" + comboChips + "</div>" : "") +
-    (attrs.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:5px\">" + attrChips + "</div>" : "") +
-  "</div>";
-}
+// outfitStylingHtml() moved to data.js (shared)
 
 // ── STAT FILTER WIRING ──
 const STAT_FILTER_KEYS = ["drama","edge","structure","skin","formality"];
@@ -3253,9 +3181,12 @@ function getActiveClosetItems() {
 
 function renderClosetStats() {
   const activeItems = getActiveClosetItems();
-  const statKeys = ["drama","structure","skin","edge","formality"];
+  const statKeys = ["drama","structure","skin","edge","formality"]; // headline bars
+  const allKeys = (typeof SPIDER_KEYS!=='undefined')
+    ? statKeys.concat(SPIDER_KEYS.filter(k => !statKeys.includes(k)))
+    : statKeys;
   const avgs = {};
-  statKeys.forEach(k => {
+  allKeys.forEach(k => {
     avgs[k] = activeItems.length
       ? activeItems.reduce((s, i) => s + (i.stats?.[k] || 0), 0) / activeItems.length
       : 0;
