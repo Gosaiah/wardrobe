@@ -432,7 +432,7 @@ const SHOP = [
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 120;
+const DATA_VERSION = 121;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -462,26 +462,28 @@ function pieceImg(p){
 const STAT_KEYS5 = ["drama","structure","skin","edge","formality"];
 
 // single attribute → stat deltas
+// Re-pointed to drama facets (Phase 6): high-waist/tucked/oversized/layered shape
+// the proportion → silhouette; worn-open adds gravitas → presence; flowy → movement.
 const STYLE_MODIFIERS = {
-  "high-waist":    { drama: 0.5 },
+  "high-waist":    { silhouette: 0.5 },
   "low-rise":      { skin: 0.5 },
-  "tucked":        { drama: 0.5, formality: 0.5 },
-  "half-tucked":   { drama: 0.5 },
-  "worn-open":     { drama: 0.5 },
+  "tucked":        { silhouette: 0.5, formality: 0.5 },
+  "half-tucked":   { silhouette: 0.5 },
+  "worn-open":     { presence: 0.5 },
   "belted":        { structure: 0.5 },
   "sleeves-rolled":{ skin: 0.5 },
   "cropped-ankle": { skin: 0.5 },
-  "oversized":     { drama: 0.5, structure: -0.5 },
-  "layered":       { drama: 0.5 },
-  "flowy":         { drama: 0.5 },
+  "oversized":     { silhouette: 0.5, structure: -0.5 },
+  "layered":       { silhouette: 0.5 },
+  "flowy":         { movement: 0.5 },
 };
 
 // combos fire at the outfit level (full strength). `needs` = attrs that must all be
 // present; `test` = computed predicate over the outfit.
 const STYLE_COMBOS = [
   // — from the earlier build —
-  { id:"monochrome-dark", label:"Monochrome command", test: o => isMonochromeDark(o), boost:{ drama:0.5, edge:0.5 } },
-  { id:"high-waist+tucked", label:"Defined waist", needs:["high-waist","tucked"], boost:{ drama:0.5 } },
+  { id:"monochrome-dark", label:"Monochrome command", test: o => isMonochromeDark(o), boost:{ presence:0.5, edge:0.5 } },
+  { id:"high-waist+tucked", label:"Defined waist", needs:["high-waist","tucked"], boost:{ silhouette:0.5 } },
   { id:"worn-open+bare-torso", label:"Open on skin", needs:["worn-open","bare-torso"], boost:{ skin:0.5 } },
   // — auto-computed —
   { id:"hard-soft", label:"Hard shoe · soft bottom", boost:{ edge:0.5 }, test: o => {
@@ -489,9 +491,9 @@ const STYLE_COMBOS = [
       const hardShoe  = g.some(it => it.type==="shoes" && ((it.stats.edge||0) >= 3 || /boot/i.test(it.cat||"")));
       const softBottom= g.some(it => it.type==="bottom" && (["Skirt","Skirt-Trouser"].includes(it.cat) || (it.styling||[]).includes("flowy") || (it.stats.structure||0) <= 1));
       return hardShoe && softBottom; } },
-  { id:"harness", label:"Armored layer", boost:{ edge:0.5, drama:0.5 },
+  { id:"harness", label:"Armored layer", boost:{ edge:0.5, presence:0.5 },
       test: o => (o.pieces||[]).map(itemForPiece).some(it => it && (it.cat==="Harness" || it.cat==="Body Chain" || /harness|body chain/i.test(it.name||""))) },
-  { id:"high-contrast", label:"High contrast", boost:{ drama:0.5 },
+  { id:"high-contrast", label:"High contrast", boost:{ ornament:0.5 },
       test: o => { const g = outfitGarments(o); return g.some(it => isDark(it.color)) && g.some(it => isLight(it.color)); } },
   { id:"tonal", label:"Tonal", boost:{ formality:0.5 },
       test: o => { const f = dominantFamily(o); return (f==="light"||f==="earth"||f==="grey") && !outfitQuiet(o); } },
@@ -499,7 +501,7 @@ const STYLE_COMBOS = [
       test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean); return g.some(it => (it.stats.skin||0) >= 3) && g.some(it => (it.stats.edge||0) >= 3); } },
   { id:"full-layering", label:"Layered", boost:{ structure:0.5 },
       test: o => { const up = (o.pieces||[]).map(itemForPiece).filter(it => it && ["top","outer"].includes(it.type)); return up.length >= 2 && up.some(it => it.type==="outer"); } },
-  { id:"crop-highwaist", label:"Crop + high-waist", boost:{ skin:0.5, drama:0.5 },
+  { id:"crop-highwaist", label:"Crop + high-waist", boost:{ skin:0.5, silhouette:0.5 },
       test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean); const crop = g.some(it => ["Crop Top","Tank"].includes(it.cat) || /crop/i.test(it.name||"")); return crop && outfitAttrs(o).has("high-waist"); } },
   { id:"sharp-tailoring", label:"Sharp tailoring", boost:{ structure:0.5, formality:0.5 },
       test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean);
@@ -514,11 +516,11 @@ const STYLE_COMBOS = [
   { id:"full-brand", label:"Full set", boost:{ structure:0.5 },
       labelFn: o => { const g = outfitGarments(o); return g.length ? ("Full " + brandLabel(g[0].brand)) : "Full set"; },
       test: o => { const g = outfitGarments(o); return g.length >= 2 && g.every(it => it.brand === g[0].brand); } },
-  { id:"earth-cloak", label:"Earth cloak", boost:{ drama:0.5 },
+  { id:"earth-cloak", label:"Earth cloak", boost:{ silhouette:0.5 },
       test: o => dominantFamily(o)==="earth" && (o.pieces||[]).map(itemForPiece).some(it => it && it.type==="outer") },
-  { id:"sequin-sheen", label:"Sequin & sheen", boost:{ drama:0.5, skin:0.5 },
+  { id:"sequin-sheen", label:"Sequin & sheen", boost:{ ornament:0.5, skin:0.5 },
       test: o => (o.pieces||[]).map(itemForPiece).some(it => it && /sequin|sheen|metallic|lam[e\u00e9]|satin|shimmer|glitter/i.test((it.name||"")+" "+(it.style||""))) },
-  { id:"couture-contrast", label:"Couture contrast", boost:{ formality:0.5, drama:0.5 },
+  { id:"couture-contrast", label:"Couture contrast", boost:{ formality:0.5, presence:0.5 },
       test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean); return g.some(it => (it.stats.formality||0) >= 3.5) && dominantFamily(o) != null; } },
   { id:"tonal-ease", label:"Tonal ease", boost:{}, // Civilian: recognition only, no stat change
       test: o => { const f = dominantFamily(o); return (f==="light"||f==="earth"||f==="grey") && outfitQuiet(o); } },
@@ -574,7 +576,7 @@ function applyModifiers(stats, attrs){
   const out = Object.assign({}, stats);
   (attrs || []).forEach(a => {
     const m = STYLE_MODIFIERS[a]; if (!m) return;
-    STAT_KEYS5.forEach(k => { if (m[k] != null) out[k] = (out[k] || 0) + m[k]; });
+    Object.keys(m).forEach(k => { out[k] = (out[k] || 0) + m[k]; });
   });
   return out;
 }
@@ -584,7 +586,8 @@ function itemEffectiveStats(item, extraAttrs){
   if (!item || !item.stats) return null;
   const attrs = (item.styling || []).concat(extraAttrs || []);
   const s = applyModifiers(item.stats, attrs);
-  STAT_KEYS5.forEach(k => { s[k] = clamp05(s[k]); });
+  STAT_KEYS8.forEach(k => { if (s[k] != null) s[k] = clamp05(s[k]); });
+  s.drama = rollupDrama(s);   // keep the headline in sync after facet modifiers
   return s;
 }
 
@@ -608,7 +611,7 @@ function outfitCombosFired(outfit){
 }
 // human-readable boost summary, e.g. "drama +0.5 · edge +0.5"
 function boostText(boost){
-  return STAT_KEYS5.filter(k => boost[k] != null).map(k => k + " " + (boost[k] > 0 ? "+" : "") + boost[k]).join(" · ");
+  return Object.keys(boost).filter(k => boost[k] != null).map(k => k + " " + (boost[k] > 0 ? "+" : "") + boost[k]).join(" · ");
 }
 
 // EFFECTIVE outfit stats: per-item singles averaged, then outfit-level combos added full-strength
@@ -628,15 +631,16 @@ function effectiveOutfitStats(outfit){
   const avg = {}; AGG.forEach(k => { avg[k] = totals[k] / n; });
   const attrs = outfitAttrs(outfit);
   // Combos still only boost the 5 base keys (facet-targeted combos land in Phase 6).
-  const cd = { drama:0, structure:0, skin:0, edge:0, formality:0 };
+  const cd = {}; AGG.forEach(k => cd[k] = 0);
   STYLE_COMBOS.forEach(c => {
     const fires = c.test ? c.test(outfit) : (c.needs || []).every(a => attrs.has(a));
-    if (fires) STAT_KEYS5.forEach(k => { if (c.boost[k] != null) cd[k] += c.boost[k]; });
+    if (fires) Object.keys(c.boost).forEach(k => { if (k in cd) cd[k] += c.boost[k]; });
   });
   AGG.forEach(k => {
-    const capped = (k in cd) ? Math.max(-STYLE_COMBO_CAP, Math.min(STYLE_COMBO_CAP, cd[k])) : 0;
+    const capped = Math.max(-STYLE_COMBO_CAP, Math.min(STYLE_COMBO_CAP, cd[k] || 0));
     avg[k] = Math.round(clamp05(avg[k] + capped) * 10) / 10;
   });
+  avg.drama = rollupDrama(avg);   // headline drama = loudest facet, now that combos target facets
   return avg;
 }
 

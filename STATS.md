@@ -102,8 +102,8 @@ Base stats above are the garment "on the rack." A separate **styling layer** cap
 
 ```
 effective = base
-          + Σ single-attribute modifiers   (e.g. high-waist → +0.5 drama)
-          + Σ combo bonuses                (e.g. high-waist + tucked → +0.5 more drama)
+          + Σ single-attribute modifiers   (e.g. high-waist → +0.5 silhouette)
+          + Σ combo bonuses                (e.g. high-waist + tucked → +0.5 more silhouette)
    (clamped 0–5)
 ```
 
@@ -115,18 +115,22 @@ effective = base
 
 Vocabulary — singles: high-waist, low-rise, tucked, half-tucked, worn-open, belted, sleeves-rolled, cropped-ankle, oversized, layered, flowy. Contextual flag: bare-torso.
 
-**Combos (18).** Most compute from colours / item types / base stats, so they fire automatically. Boosts are spread across stats deliberately so each axis is earnable, not just drama (per-stat combo counts: drama 8 · edge 5 · skin 4 · structure 3 · formality 3).
-- monochrome-dark → drama +0.5, edge +0.5 (all-black "command")
-- high-waist + tucked → drama +0.5 · worn-open + bare-torso → skin +0.5
-- hard-shoe + soft-bottom → edge +0.5 · armored-layer (harness present) → edge +0.5, drama +0.5
-- high-contrast (dark + light) → drama +0.5 · tonal (non-black monochrome, not quiet) → **formality +0.5**
-- skin + edge → **edge +0.5** · layered (outer over a top) → **structure +0.5**
-- crop + high-waist → skin +0.5, drama +0.5
+**Singles → facets (Phase 6).** Nothing targets `drama` directly — `drama` is the roll-up `max(presence, silhouette, movement, ornament)`, so a boost lands on the specific facet it expresses:
+- high-waist · tucked · half-tucked · oversized · layered → **silhouette** (proportion / volume of the shape)
+- worn-open → **presence** · flowy → **movement** · low-rise · sleeves-rolled · cropped-ankle → skin · belted → structure · tucked also → formality
+
+**Combos (18).** Most compute from colours / item types / base stats, so they fire automatically. Boosts land on the facet/base axis each combo actually expresses:
+- monochrome-dark → **presence +0.5**, edge +0.5 (all-black command)
+- high-waist + tucked → **silhouette +0.5** · worn-open + bare-torso → skin +0.5
+- hard-shoe + soft-bottom → edge +0.5 · armored-layer (harness present) → edge +0.5, **presence +0.5**
+- high-contrast (dark + light) → **ornament +0.5** · tonal (non-black monochrome, not quiet) → formality +0.5
+- skin + edge → edge +0.5 · layered (outer over a top) → structure +0.5
+- crop + high-waist → skin +0.5, **silhouette +0.5**
 - sharp tailoring (structured outer + tailored bottom) → structure +0.5, formality +0.5
 - hardware stack (2+ high-edge pieces) → edge +0.5 · sheer stack (2+ high-skin pieces) → skin +0.5
-- Persona signatures: **Full [brand]** (Overlord) → **structure +0.5** · **Earth cloak** (Wanderer, earth-tonal + outer) → drama +0.5 · **Sequin & sheen** (Night Shift) → drama +0.5, skin +0.5 · **Couture contrast** (Viceroy, a formal piece over a dark base) → formality +0.5, drama +0.5 · **Tonal ease** (Civilian, quiet neutral tonal) → recognition chip only, no boost
+- Persona signatures: **Full [brand]** (Overlord) → structure +0.5 · **Earth cloak** (Wanderer, earth-tonal + outer) → **silhouette +0.5** · **Sequin & sheen** (Night Shift) → **ornament +0.5**, skin +0.5 · **Couture contrast** (Viceroy, a formal piece over a dark base) → formality +0.5, **presence +0.5** · **Tonal ease** (Civilian, quiet neutral tonal) → recognition chip only, no boost
 
-_Re-routes (for balance + fidelity): tonal → formality, skin+edge → edge, layered → structure, Full-brand → structure (all previously drama)._
+_Facet routing (Phase 6): the old drama boosts moved onto the facet each combo expresses — monochrome / harness / couture → **presence**; high-waist+tucked / crop / earth-cloak → **silhouette**; sequin & high-contrast → **ornament**. Earlier non-drama re-routes kept (tonal → formality, skin+edge → edge, layered → structure, Full-brand → structure). Outfit `drama` headline = max(facets) after combos._
 
 **Combo cap.** Combos contribute at most **±1.0** to any single stat (`STYLE_COMBO_CAP`), so a heavily-styled look is enriched without swamping the base calibration.
 

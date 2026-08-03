@@ -14,6 +14,10 @@ Last updated: 2026-07-28 · data.js at DATA_VERSION 67
 - [ ] **Viceroy persona rethink.** The refined/tailored read isn't right. Re-define Viceroy in dark-avant terms, or fold it into Overlord.
 - [ ] **Commit to GitHub.** data.js (v67) + shop.html + persona.html + nav.js + the two main pages have uncommitted shop work.
 
+## Drama split — remaining optional enhancement
+
+- [ ] **Facet filter sliders (Phase 7 optional).** The wardrobe stat filters currently expose the `drama` roll-up + the 4 base stats (structure/skin/edge/formality). Add sliders for the four drama facets (presence / silhouette / movement / ornament) so you can filter on them individually — e.g. "show me high-movement pieces." Wire into `STAT_FILTER_KEYS` + the filter UI. Everything else in the drama split (Phases 1–6) is done and committed; this is the only deferred piece.
+
 ## Shop — optional adds (already in good shape: 10 on-aesthetic items)
 
 - [ ] NOT CONVENTIONAL china-button cape-vest (~$223) — dramatic outerwear.
@@ -40,6 +44,7 @@ Last updated: 2026-07-28 · data.js at DATA_VERSION 67
 ## Shared-code audit (avoid duplicative work)
 
 - [ ] **Evaluate what self-contained styling + functionality should be fully shared.** We've been consolidating piecemeal (drawSpider, statBarsHtml, outfitStylingHtml, persona targets → data.js; outfit-detail popup shared across outfits + persona pages). Do a deliberate pass: inventory every per-page copy of CSS blocks (e.g. the outfit-detail/lightbox modal styles, card styles) and JS helpers, decide what belongs in a shared place (data.js for JS; a shared stylesheet for CSS), and migrate. Goal: one source per thing, no drift. CSS is the current gap — it's still duplicated per HTML file because there's no shared .css yet.
+- [ ] **Reuse the exact outfit-page cards on the persona gallery.** The persona gallery currently uses its own `gallery-card` markup/CSS. Swap it to the same outfit-card component the outfits page uses (shared render + styles), so the two are identical — same as we did for the detail popup.
 
 ## Tech debt
 
