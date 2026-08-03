@@ -22,6 +22,8 @@ Last updated: 2026-07-28 · data.js at DATA_VERSION 67
 
 ## Next up
 
+- [ ] **Split `drama` into 4 facets** (Presence / Silhouette / Movement / Ornament). Big one — full plan + phases in **PLAN_drama_split.md**. Do as its own version bump after committing the styling-combo work.
+
 - [x] **Styling modifier layer — engine built (data.js v95).** STYLE_MODIFIERS + STYLE_COMBOS + effectiveOutfitStats; getOutfitStats now uses effective. high-waist/flowy backed out of base. Verified on #1/#60/#64/#39.
 - [ ] **Styling layer — remaining polish:**
   - Surface it in the UI: show which combos are firing on an outfit (e.g. a "Monochrome command" chip), and optionally base-vs-effective toggle on the outfit detail.

@@ -403,7 +403,7 @@ const SHOP = [
     why:"A flowing black cape \u2014 the lightweight, movement-forward third layer for warm-weather nights. Exactly the cape silhouette the whole wardrobe is built around." },
 ];
 
-const DATA_VERSION = 96;
+const DATA_VERSION = 101;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -450,10 +450,53 @@ const STYLE_MODIFIERS = {
 // combos fire at the outfit level (full strength). `needs` = attrs that must all be
 // present; `test` = computed predicate over the outfit.
 const STYLE_COMBOS = [
+  // — from the earlier build —
   { id:"monochrome-dark", label:"Monochrome command", test: o => isMonochromeDark(o), boost:{ drama:0.5, edge:0.5 } },
   { id:"high-waist+tucked", label:"Defined waist", needs:["high-waist","tucked"], boost:{ drama:0.5 } },
   { id:"worn-open+bare-torso", label:"Open on skin", needs:["worn-open","bare-torso"], boost:{ skin:0.5 } },
+  // — auto-computed —
+  { id:"hard-soft", label:"Hard shoe · soft bottom", boost:{ edge:0.5 }, test: o => {
+      const g = (o.pieces||[]).map(itemForPiece).filter(Boolean);
+      const hardShoe  = g.some(it => it.type==="shoes" && ((it.stats.edge||0) >= 3 || /boot/i.test(it.cat||"")));
+      const softBottom= g.some(it => it.type==="bottom" && (["Skirt","Skirt-Trouser"].includes(it.cat) || (it.styling||[]).includes("flowy") || (it.stats.structure||0) <= 1));
+      return hardShoe && softBottom; } },
+  { id:"harness", label:"Armored layer", boost:{ edge:0.5, drama:0.5 },
+      test: o => (o.pieces||[]).map(itemForPiece).some(it => it && (it.cat==="Harness" || it.cat==="Body Chain" || /harness|body chain/i.test(it.name||""))) },
+  { id:"high-contrast", label:"High contrast", boost:{ drama:0.5 },
+      test: o => { const g = outfitGarments(o); return g.some(it => isDark(it.color)) && g.some(it => isLight(it.color)); } },
+  { id:"tonal", label:"Tonal", boost:{ formality:0.5 },
+      test: o => { const f = dominantFamily(o); return (f==="light"||f==="earth"||f==="grey") && !outfitQuiet(o); } },
+  { id:"skin-edge", label:"Skin & edge", boost:{ edge:0.5 },
+      test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean); return g.some(it => (it.stats.skin||0) >= 3) && g.some(it => (it.stats.edge||0) >= 3); } },
+  { id:"full-layering", label:"Layered", boost:{ structure:0.5 },
+      test: o => { const up = (o.pieces||[]).map(itemForPiece).filter(it => it && ["top","outer"].includes(it.type)); return up.length >= 2 && up.some(it => it.type==="outer"); } },
+  { id:"crop-highwaist", label:"Crop + high-waist", boost:{ skin:0.5, drama:0.5 },
+      test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean); const crop = g.some(it => ["Crop Top","Tank"].includes(it.cat) || /crop/i.test(it.name||"")); return crop && outfitAttrs(o).has("high-waist"); } },
+  { id:"sharp-tailoring", label:"Sharp tailoring", boost:{ structure:0.5, formality:0.5 },
+      test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean);
+        const outer  = g.some(it => it.type==="outer"  && (it.stats.structure||0) >= 3);
+        const bottom = g.some(it => it.type==="bottom" && (it.stats.structure||0) >= 3 && (it.stats.formality||0) >= 3);
+        return outer && bottom; } },
+  { id:"hardware-stack", label:"Hardware stack", boost:{ edge:0.5 },
+      test: o => (o.pieces||[]).map(itemForPiece).filter(it => it && (it.stats.edge||0) >= 3).length >= 2 },
+  { id:"sheer-stack", label:"Sheer stack", boost:{ skin:0.5 },
+      test: o => (o.pieces||[]).map(itemForPiece).filter(it => it && (it.stats.skin||0) >= 3).length >= 2 },
+  // — persona signatures —
+  { id:"full-brand", label:"Full set", boost:{ structure:0.5 },
+      labelFn: o => { const g = outfitGarments(o); return g.length ? ("Full " + brandLabel(g[0].brand)) : "Full set"; },
+      test: o => { const g = outfitGarments(o); return g.length >= 2 && g.every(it => it.brand === g[0].brand); } },
+  { id:"earth-cloak", label:"Earth cloak", boost:{ drama:0.5 },
+      test: o => dominantFamily(o)==="earth" && (o.pieces||[]).map(itemForPiece).some(it => it && it.type==="outer") },
+  { id:"sequin-sheen", label:"Sequin & sheen", boost:{ drama:0.5, skin:0.5 },
+      test: o => (o.pieces||[]).map(itemForPiece).some(it => it && /sequin|sheen|metallic|lam[e\u00e9]|satin|shimmer|glitter/i.test((it.name||"")+" "+(it.style||""))) },
+  { id:"couture-contrast", label:"Couture contrast", boost:{ formality:0.5, drama:0.5 },
+      test: o => { const g = (o.pieces||[]).map(itemForPiece).filter(Boolean); return g.some(it => (it.stats.formality||0) >= 3.5) && dominantFamily(o) != null; } },
+  { id:"tonal-ease", label:"Tonal ease", boost:{}, // Civilian: recognition only, no stat change
+      test: o => { const f = dominantFamily(o); return (f==="light"||f==="earth"||f==="grey") && outfitQuiet(o); } },
 ];
+
+// combos enrich but don't swamp base: cap total combo contribution per stat
+const STYLE_COMBO_CAP = 1.0;
 
 const DARK_RE = /(black|graphite|onyx|charcoal|espresso|coal|jet|ink)/i;
 function isDark(color){ return !!color && DARK_RE.test(color); }
@@ -467,6 +510,36 @@ function isMonochromeDark(outfit){
   const dark = garments.filter(it => isDark(it.color)).length;
   return dark / garments.length >= 0.8;
 }
+
+// colour families for tonal / contrast / earth combos
+const LIGHT_RE = /(white|ivory|cream|off.?white|natural|beige)/i;
+const EARTH_RE = /(brown|taupe|olive|khaki|beige|espresso|camel|\btan\b|sand|mocha|natural)/i;
+const GREY_RE  = /(grey|gray|\bash\b|silver)/i;
+function isLight(c){ return !!c && LIGHT_RE.test(c); }
+function isEarth(c){ return !!c && EARTH_RE.test(c); }
+function colorFamily(c){
+  if (!c) return null;
+  if (isDark(c))  return "dark";
+  if (GREY_RE.test(c)) return "grey";
+  if (isLight(c)) return "light";
+  if (isEarth(c)) return "earth";
+  return "color";
+}
+function outfitGarments(o){ return (o.pieces||[]).map(itemForPiece).filter(it => it && ["top","bottom","outer","shoes"].includes(it.type)); }
+// dominant colour family if ≥80% of garments share one, else null
+function dominantFamily(o){
+  const g = outfitGarments(o); if (g.length < 2) return null;
+  const cnt = {}; g.forEach(it => { const f = colorFamily(it.color); if (f) cnt[f] = (cnt[f]||0)+1; });
+  let best=null, bn=0; Object.keys(cnt).forEach(f => { if (cnt[f] > bn){ bn=cnt[f]; best=f; } });
+  return (best && bn/g.length >= 0.8) ? best : null;
+}
+// "quiet" = nothing loud (used to split elevated Tonal from Civilian Tonal Ease)
+function outfitQuiet(o){
+  const g = outfitGarments(o); if (!g.length) return false;
+  const avg = k => g.reduce((s,it)=>s+(it.stats[k]||0),0)/g.length;
+  return avg("drama") <= 2 && avg("edge") <= 1.5 && avg("formality") <= 2;
+}
+function brandLabel(key){ return (BRANDS[key] && BRANDS[key].label) || key; }
 
 function applyModifiers(stats, attrs){
   const out = Object.assign({}, stats);
@@ -523,10 +596,14 @@ function effectiveOutfitStats(outfit){
   if (!n) return null;
   const avg = {}; STAT_KEYS5.forEach(k => { avg[k] = totals[k] / n; });
   const attrs = outfitAttrs(outfit);
+  const cd = { drama:0, structure:0, skin:0, edge:0, formality:0 };
   STYLE_COMBOS.forEach(c => {
     const fires = c.test ? c.test(outfit) : (c.needs || []).every(a => attrs.has(a));
-    if (fires) STAT_KEYS5.forEach(k => { if (c.boost[k] != null) avg[k] += c.boost[k]; });
+    if (fires) STAT_KEYS5.forEach(k => { if (c.boost[k] != null) cd[k] += c.boost[k]; });
   });
-  STAT_KEYS5.forEach(k => { avg[k] = Math.round(clamp05(avg[k]) * 10) / 10; });
+  STAT_KEYS5.forEach(k => {
+    const capped = Math.max(-STYLE_COMBO_CAP, Math.min(STYLE_COMBO_CAP, cd[k]));
+    avg[k] = Math.round(clamp05(avg[k] + capped) * 10) / 10;
+  });
   return avg;
 }
