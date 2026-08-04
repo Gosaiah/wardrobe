@@ -433,7 +433,7 @@ const SHOP = [
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 133;
+const DATA_VERSION = 136;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -737,6 +737,22 @@ const PERSONA_LABELS = { overlord:"Overlord", wanderer:"Wanderer", "night-shift"
 // Brand-key normaliser + brand accent colours (shared).
 function bkey(brand){ return (brand || "").toUpperCase().replace(/[^A-Z]/g, ""); }
 const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a", YASAR:"#909090", ARAHANT:"#c08090" };
+// Conventional board-photo path for an outfit id — single source for the path format.
+function outfitPhotoPath(id){ return "outfits/outfit_" + String(id).padStart(2, "0") + ".jpg"; }
+
+// Filter categories an outfit belongs to (dark/tonal/contrast/night) — derived from the
+// descriptive vibe + persona (union with explicit tags), so filters never depend on
+// hand-typed tags staying in sync. New outfits sort into the right filters automatically.
+function outfitFilterTags(outfit){
+  const t = new Set(outfit.tags || []);
+  const v = (outfit.vibe || "").toLowerCase();
+  const p = outfit.persona || "";
+  if (/dark|minimal|goth|avant/.test(v) || p === "overlord") t.add("dark");
+  if (/tonal|layered|earth|linen|neutral|ease/.test(v) || p === "wanderer") t.add("tonal");
+  if (/contrast|bold|\bpop\b/.test(v)) t.add("contrast");
+  if (/night|going.?out|club|sequin|sheer|fringe/.test(v) || p === "night-shift") t.add("night");
+  return t;
+}
 
 /* Shared clothing item card (same markup/classes as the clothing page mgr-item).
    Renders both the card-view overlay and the default info block; the parent
@@ -836,14 +852,37 @@ function fmtDate(iso){
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
 }
-// Compact read-only wear block (used by the shared popup when a page doesn't inject its own interactive one).
-function wearBlockHtml(kind, id){
-  const count = getWearCount(kind, id);
-  if (!count) return "";
-  const last = getLastWorn(kind, id);
-  return "<div style='margin-bottom:16px'>" +
-    "<div style='font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px'>Wear History</div>" +
-    "<div style='font-size:12px;color:var(--text)'>Worn <strong style='color:var(--accent)'>" + count + "x</strong>" + (last ? " &middot; last " + fmtDate(last) : "") + "</div>" +
+/* Shared wear-history block. One builder for every popup.
+   opts.interactive → renders the clickable "Last worn" card with a unified
+   `.wear-last-worn-link` class (+ data-idx into wornHistory); a single delegated
+   handler on the page opens the wear detail — no per-popup wiring, no drift.
+   opts.outfitPhoto: id->src fallback for the card thumbnail. */
+function wearBlockHtml(kind, id, opts){
+  opts = opts || {};
+  const hist = _wearHistory();
+  const matches = hist.map((w,i) => ({ w, i })).filter(x => kind === "item" ? (x.w.itemIds||[]).includes(id) : x.w.outfitId === id);
+  if (!matches.length) return "";
+  const count = matches.length;
+  const last = matches.slice().sort((a,b) => b.w.date.localeCompare(a.w.date))[0];
+  const lastDate = last.w.date;
+  const head = "<div style='font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px'>Wear History</div>";
+  if (!opts.interactive){
+    return "<div style='margin-bottom:16px'>" + head +
+      "<div style='font-size:12px;color:var(--text)'>Worn <strong style='color:var(--accent)'>" + count + "x</strong>" + (lastDate ? " &middot; last " + fmtDate(lastDate) : "") + "</div>" +
+    "</div>";
+  }
+  const photo = last.w.photo || (opts.outfitPhoto ? opts.outfitPhoto(last.w.outfitId) : "") || "";
+  const photoHtml = photo
+    ? "<img src='" + photo + "' style='width:36px;height:46px;object-fit:cover;object-position:top;border-radius:8px;flex-shrink:0'>"
+    : "<div style='width:36px;height:46px;background:var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0'>&#128197;</div>";
+  return "<div style='margin-bottom:16px'>" + head +
+    "<div style='font-size:12px;color:var(--text);margin-bottom:8px'>Worn <strong style='color:var(--accent)'>" + count + "x</strong></div>" +
+    "<div class='wear-last-worn-link' data-idx='" + last.i + "' style='display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)'>" +
+      photoHtml +
+      "<div><div style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px'>Last worn</div>" +
+        "<div style='font-size:12px;color:var(--text);font-weight:600'>" + fmtDate(lastDate) + "</div></div>" +
+      "<div style='margin-left:auto;font-size:14px;color:var(--muted)'>&#x2192;</div>" +
+    "</div>" +
   "</div>";
 }
 
@@ -928,7 +967,7 @@ function itemDetailInfoHtml(item, opts){
   if (item.size && item.size !== "—" && item.size !== "-") tags.push("SIZE " + item.size);
   if (item.cat) tags.push(item.cat.toUpperCase());
   const persona = opts.persona || null;
-  const outfitPhoto = opts.outfitPhoto || (id => "outfits/outfit_" + String(id).padStart(2,"0") + ".jpg");
+  const outfitPhoto = opts.outfitPhoto || (id => outfitPhotoPath(id));
   let outfitsHtml = "";
   if (itemOutfits.length){
     outfitsHtml = "<div class='item-detail-outfits'><div class='item-detail-section-title'>In " + itemOutfits.length + " Outfit" + (itemOutfits.length!==1?"s":"") + "</div><div class='item-detail-outfit-list'>" +

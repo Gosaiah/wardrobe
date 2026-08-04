@@ -1026,7 +1026,7 @@ function _resolveItem(name, brand){ return (typeof itemForPiece === 'function') 
 
 document.addEventListener('click', function(e){
   const chip = e.target.closest && e.target.closest('[data-outfit-id]');
-  if (chip) { const id = parseInt(chip.dataset.outfitId, 10); closeItemModal(); openOutfitModal(id, chip.dataset.outfitPhoto || ("outfits/outfit_" + String(id).padStart(2,'0') + ".jpg")); return; }
+  if (chip) { const id = parseInt(chip.dataset.outfitId, 10); closeItemModal(); openOutfitModal(id, chip.dataset.outfitPhoto || (outfitPhotoPath(id))); return; }
   const pc = e.target.closest && e.target.closest('.pair-card');
   if (pc) { const it = _resolveItem(pc.dataset.name, pc.dataset.brand); if (it) openItemModal(it); return; }
   const mi = e.target.closest && e.target.closest('.mgr-item');
