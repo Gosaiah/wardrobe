@@ -2971,10 +2971,9 @@ function renderBuilderOutfits() {
           "<span>" + p.name + "</span>" +
         "</div>";
       }).join("");
-      const comboStats = getOutfitStats({pieces: combo.pieces});
       return "<div class='builder-outfit-card'>" +
         "<div class='builder-outfit-pieces'>" + piecesHtml + "</div>" +
-        (comboStats ? "<div style='margin-top:10px'>" + statBarsHtml(comboStats) + "</div>" : "") +
+        ((typeof outfitStatsCompareHtml === "function") ? "<div style='margin-top:10px'>" + outfitStatsCompareHtml({ pieces: combo.pieces }) + "</div>" : "") +
       "</div>";
     }).join("");
     html += "</div>";
