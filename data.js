@@ -432,7 +432,7 @@ const SHOP = [
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 127;
+const DATA_VERSION = 130;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -803,6 +803,64 @@ function outfitCardHtml(outfit, opts){
 /* Shared item-popup builders (same markup/classes as the clothing page item popup).
    opts: { persona, wearHtml (wardrobe-only string), outfitPhoto: id->src }. Outfits &
    pairings computed from the shared catalog so any page can render the popup. */
+// Combos this single piece can contribute to (item-level heuristic mirroring the combo tests).
+function itemStylingCombos(item){
+  const st = item.stats || {};
+  const nm = (item.name || "") + " " + (item.style || "");
+  const attrs = new Set(item.styling || []);
+  const ids = [];
+  const isHarness = item.cat === "Harness" || item.cat === "Body Chain" || /harness|body chain/i.test(nm);
+  if (isHarness) ids.push("harness");
+  if ((st.edge||0) >= 3) ids.push("hardware-stack");
+  if ((st.skin||0) >= 3) ids.push("sheer-stack");
+  if ((st.skin||0) >= 3 || (st.edge||0) >= 3) ids.push("skin-edge");
+  if (/sequin|sheen|metallic|lam[eé]|satin|shimmer|glitter/i.test(nm)) ids.push("sequin-sheen");
+  if (attrs.has("high-waist")) ids.push("high-waist+tucked");
+  if (["Crop Top","Tank"].includes(item.cat) || /crop/i.test(nm) || attrs.has("high-waist")) ids.push("crop-highwaist");
+  if (item.type === "shoes" && ((st.edge||0) >= 3 || /boot/i.test(item.cat||""))) ids.push("hard-soft");
+  if (item.type === "bottom" && (["Skirt","Skirt-Trouser"].includes(item.cat) || attrs.has("flowy") || (st.structure||0) <= 1)) ids.push("hard-soft");
+  if ((item.type === "outer" && (st.structure||0) >= 3) || (item.type === "bottom" && (st.structure||0) >= 3 && (st.formality||0) >= 3)) ids.push("sharp-tailoring");
+  if (item.type === "outer") ids.push("full-layering");
+  const seen = {}, out = [];
+  ids.forEach(id => { if (seen[id]) return; seen[id] = 1; const c = STYLE_COMBOS.find(x => x.id === id); if (c) out.push(c); });
+  return out;
+}
+// Classify a combo from a single piece's view: does it fire on its own (innate) or need a partner (synergy)?
+function _stylingClassify(item, id){
+  const st = item.stats || {}, skin = st.skin||0, edge = st.edge||0, hw = (item.styling||[]).includes("high-waist");
+  if (id === "harness" || id === "sequin-sheen") return { innate:true };
+  if (id === "skin-edge") return (skin>=3 && edge>=3) ? { innate:true } : { innate:false, req: skin>=3 ? "an edgy / hardware piece" : "a revealing piece" };
+  if (id === "hardware-stack") return { innate:false, req:"another hardware-heavy piece" };
+  if (id === "sheer-stack")    return { innate:false, req:"another sheer piece" };
+  if (id === "high-waist+tucked") return { innate:false, req:"a tucked-in top" };
+  if (id === "crop-highwaist") return { innate:false, req: hw ? "a crop top" : "a high-waist bottom" };
+  if (id === "hard-soft")      return { innate:false, req: item.type==="shoes" ? "a soft / flowy bottom" : "hard boots" };
+  if (id === "sharp-tailoring")return { innate:false, req: item.type==="outer" ? "tailored trousers" : "a structured jacket" };
+  if (id === "full-layering")  return { innate:false, req:"another layer" };
+  return { innate:false, req:"a matching piece" };
+}
+// "Styling potential" — RPG set-bonus framing: Innate (fires alone) vs Synergy (pair with…).
+function itemStylingPotentialHtml(item){
+  if (!item) return "";
+  const green = SPIDER_BUFF;
+  const singles = (item.styling || []).filter(a => STYLE_MODIFIERS[a]).map(a => ({ innate:true, name:"Worn " + a.replace(/-/g," "), reward:boostText(STYLE_MODIFIERS[a]) }));
+  const combos = itemStylingCombos(item).map(c => { const cl = _stylingClassify(item, c.id); return { innate:cl.innate, req:cl.req, name:c.label, reward:boostText(c.boost) }; });
+  const all = singles.concat(combos);
+  const innate = all.filter(x => x.innate), synergy = all.filter(x => !x.innate);
+  if (!innate.length && !synergy.length) return "";
+  const innateRow = r => "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(110,206,128,0.08);border:1px solid rgba(110,206,128,0.28);border-radius:7px;padding:6px 10px;margin-bottom:5px'>" +
+    "<span style='font-size:11px;color:var(--text);font-weight:600'>" + r.name + "</span>" +
+    "<span style='font-size:10px;color:" + green + ";white-space:nowrap'>" + r.reward + "</span></div>";
+  const synergyRow = r => "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 10px;margin-bottom:5px'>" +
+    "<span style='min-width:0'><span style='font-size:11px;color:var(--text);font-weight:600'>" + r.name + "</span><br><span style='font-size:9px;color:var(--muted)'>pair with " + r.req + "</span></span>" +
+    "<span style='font-size:10px;color:" + green + ";white-space:nowrap'>" + r.reward + "</span></div>";
+  let html = "<div style='margin-top:14px;padding-top:12px;border-top:1px solid var(--border)'>" +
+    "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Styling potential</div>";
+  if (innate.length) html += "<div style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:" + green + ";margin-bottom:6px'>&#9670; Innate &mdash; applies from this piece</div>" + innate.map(innateRow).join("");
+  if (synergy.length) html += "<div style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin:" + (innate.length ? "10px" : "0") + " 0 6px'>&#9670; Synergy &mdash; pair with&hellip;</div>" + synergy.map(synergyRow).join("");
+  html += "</div>";
+  return html;
+}
 function itemDetailPhotoHtml(item){
   if (!item) return "";
   const bk = bkey(item.brand || "");
@@ -848,7 +906,7 @@ function itemDetailInfoHtml(item, opts){
       }).join("") + "</div></div>";
   }
   const personaTag = persona ? "<span class='item-detail-tag' style='background:var(--accent);color:#111;font-weight:700'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
-  const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(item.stats) + "</div>" : "";
+  const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(item.stats) + itemStylingPotentialHtml(item) + "</div>" : "";
   return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +

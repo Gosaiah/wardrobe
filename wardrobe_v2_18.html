@@ -1519,11 +1519,11 @@ function openItemDetail(name, brand) {
   const b = BRANDS[bk] || { label: brand || "" };
   const imgUrl = IMAGES[name] || (item && item.img) || "";
 
-  // Photo
-  const photoEl = document.getElementById("item-detail-photo");
-  photoEl.innerHTML = imgUrl
-    ? "<img src='" + imgUrl + "' alt='" + name + "'>"
-    : "<div class='item-detail-photo-empty'>" + (bk.slice(0,2)||"") + "</div>";
+  // Photo (shared builder)
+  document.getElementById("item-detail-photo").innerHTML =
+    (item && typeof itemDetailPhotoHtml === "function")
+      ? itemDetailPhotoHtml(item)
+      : (imgUrl ? "<img src='" + imgUrl + "' alt='" + name + "'>" : "<div class='item-detail-photo-empty'>" + (bk.slice(0,2)||"") + "</div>");
 
   // Outfits containing this item
   const itemOutfits = outfits.filter(o => o.pieces.some(p => (item && p.id === item.id) || p.name === name));
@@ -1608,14 +1608,13 @@ function openItemDetail(name, brand) {
       "</div>"
     : "";
 
-  document.getElementById("item-detail-info").innerHTML =
-    "<div class='item-detail-brand-name'>" + b.label + "</div>" +
-    "<div class='item-detail-name'>" + name + "</div>" +
-    (tags.length ? "<div class='item-detail-tags'>" + tags.map(function(t){ return "<span class='item-detail-tag'>"+t+"</span>"; }).join("") + (item&&getItemPersona(item)?"<span class='item-detail-tag' style='background:var(--accent);color:#111;font-weight:700'>"+PERSONA_LABELS[getItemPersona(item)]+"</span>":"") + "</div>" : "") +
-    wearHtml +
-    (item&&item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(item.stats) + "</div>" : "") +
-    outfitsHtml + pairingsHtml +
-    (!itemOutfits.length && !pairings.length ? "<p style='color:var(--muted);font-size:0.8rem;margin-top:12px'>Not used in any outfits yet.</p>" : "");
+  document.getElementById("item-detail-info").innerHTML = (item && typeof itemDetailInfoHtml === "function")
+    ? itemDetailInfoHtml(item, {
+        persona: getItemPersona(item),
+        wearHtml: wearHtml,
+        outfitPhoto: function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || ("outfits/outfit_" + String(id).padStart(2,"0") + ".jpg"); }
+      })
+    : "";
 
   // Wire outfit chip clicks → open outfit detail
   document.getElementById("item-detail-info").querySelectorAll("[data-outfit-id]").forEach(function(chip) {
