@@ -534,6 +534,7 @@
     .item-detail-info-col{ padding:20px 18px; }
   }
 </style>
+<link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="alter-theme.css">
 <script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 </head>
@@ -594,7 +595,8 @@ const PERSONAS = {
     outfits: [
       { num: '01', img: 'outfits/outfit_01.jpg', label: 'All Black Structured' },
       { num: '06', img: 'outfits/outfit_06.jpg', label: 'Full Minoar Skirt Trouser' },
-      { num: '15', img: 'outfits/outfit_15.jpg', label: 'Full Minoar Dark' }
+      { num: '15', img: 'outfits/outfit_15.jpg', label: 'Full Minoar Dark' },
+      { num: '26', img: 'outfits/outfit_26.jpg', label: 'Robe Statement' }
     ]
   },
 
@@ -645,7 +647,8 @@ const PERSONAS = {
     outfits: [
       { num: '02', img: 'outfits/outfit_02.jpg', label: 'Monochrome Grey' },
       { num: '24', img: 'outfits/outfit_24.jpg', label: 'White / Grey Columns' },
-      { num: '25', img: 'outfits/outfit_25.jpg', label: 'Earth Cloak' }
+      { num: '25', img: 'outfits/outfit_25.jpg', label: 'Earth Cloak' },
+      { num: '04', img: 'outfits/outfit_04.jpg', label: 'Deconstructed Layers' }
     ]
   },
 
@@ -696,7 +699,8 @@ const PERSONAS = {
     outfits: [
       { num: '16', img: 'outfits/outfit_16.jpg', label: 'Fringe Cloak Night' },
       { num: '19', img: 'outfits/outfit_19.jpg', label: 'Sequin Vest Night' },
-      { num: '28', img: 'outfits/outfit_28.jpg', label: 'Night Tone Wave' }
+      { num: '28', img: 'outfits/outfit_28.jpg', label: 'Night Tone Wave' },
+      { num: '42', img: 'outfits/outfit_42.jpg', label: 'Fishnet Harness' }
     ]
   },
 
@@ -747,7 +751,8 @@ const PERSONAS = {
     outfits: [
       { num: '38', img: 'outfits/outfit_38.jpg', label: 'Brown Tonal Work' },
       { num: '30', img: 'outfits/outfit_30.jpg', label: 'Blue Volume Night' },
-      { num: '35', img: 'outfits/outfit_35.jpg', label: 'Portrait Tee Volume' }
+      { num: '35', img: 'outfits/outfit_35.jpg', label: 'Portrait Tee Volume' },
+      { num: '33', img: 'outfits/outfit_33.jpg', label: 'Green Contrast' }
     ]
   },
 
@@ -798,7 +803,8 @@ const PERSONAS = {
     outfits: [
       { num: '12', img: 'outfits/outfit_12.jpg', label: 'Ivory/Cream Editorial' },
       { num: '23', img: 'outfits/outfit_23.jpg', label: 'Couture Contrast' },
-      { num: '13', img: 'outfits/outfit_13.jpg', label: 'Bold Green Statement' }
+      { num: '13', img: 'outfits/outfit_13.jpg', label: 'Bold Green Statement' },
+      { num: '17', img: 'outfits/outfit_17.jpg', label: 'Off-White Contrast' }
     ]
   }
 };
@@ -863,16 +869,7 @@ function render() {
   const galleryHtml = p.outfits.map(o => {
     const oid = parseInt(o.num, 10);
     const od = (typeof OUTFITS_DEFAULT !== 'undefined') ? OUTFITS_DEFAULT.find(x => x.id === oid) : null;
-    const st = (od && typeof effectiveOutfitStats === 'function') ? effectiveOutfitStats(od) : null;
-    const spider = (st && typeof drawSpider === 'function') ? drawSpider(st, 88, p.spiderColor) : '';
-    return `<div class="gallery-card" data-oid="${oid}" data-img="${o.img}">
-      <div class="gallery-photo"><img src="${o.img}" alt="${o.label}" loading="lazy"></div>
-      <div class="gallery-card-body">
-        <div class="gallery-card-num">No. ${String(oid).padStart(2,'0')}</div>
-        <div class="gallery-card-name">${(od && od.name) || o.label}</div>
-        <div class="gallery-card-spider">${spider}</div>
-      </div>
-    </div>`;
+    return (od && typeof outfitCardHtml === 'function') ? outfitCardHtml(od, { photo: o.img }) : '';
   }).join('');
 
   const personasHtml = ALL_ORDER.map(pid => {
@@ -897,14 +894,10 @@ function render() {
   const sigCards = SIG_SLOTS.map(([slot, label]) => {
     const iid = sig[slot];
     const it = (iid && typeof itemById === 'function') ? itemById(iid) : null;
-    if (it) sigFilled++;
-    const img = it ? pieceImg({ id: it.id }) : '';
-    const brandLabel = it ? ((typeof BRANDS !== 'undefined' && BRANDS[it.brand] && BRANDS[it.brand].label) || it.brand) : '';
-    return it
-      ? `<div class="sig-slot"><div class="sig-thumb">${img ? `<img src="${img}" alt="${it.name}" loading="lazy">` : '&#9672;'}</div><div class="sig-slot-body"><div class="sig-label">${label}</div><div class="sig-name">${it.name}</div><div class="piece-brand">${brandLabel}</div></div><div class="sig-spider">${(typeof drawSpider === 'function' && it.stats) ? drawSpider(it.stats, 72) : ''}</div></div>`
-      : `<div class="sig-slot sig-gap"><div class="sig-thumb">&#43;</div><div class="sig-slot-body"><div class="sig-label">${label}</div><div class="sig-name">Gap &mdash; shop target</div></div></div>`;
+    if (it) { sigFilled++; return (typeof itemCardHtml === 'function') ? itemCardHtml(it, { persona: id, roleLabel: label }) : ''; }
+    return `<div class="mgr-item sig-gap"><div class="mgr-item-role">${label}</div><div class="mgr-item-img"><div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:26px;color:var(--muted)">&#43;</div></div><div class="mgr-item-cv"><div class="mgr-item-cv-name" style="color:var(--accent)">Gap &mdash; shop target</div></div></div>`;
   }).join('');
-  const kitHtml = `<div class="sig-kit-head"><div class="section-label" style="margin:0">Signature Kit</div><span class="sig-count${sigFilled === 4 ? ' complete' : ''}">${sigFilled}/4</span></div><div class="sig-kit-row">${sigCards}</div>`;
+  const kitHtml = `<div class="sig-kit-head"><div class="section-label" style="margin:0">Signature Kit</div><span class="sig-count${sigFilled === 4 ? ' complete' : ''}">${sigFilled}/4</span></div><div class="mgr-items card-view" style="grid-template-columns:repeat(4,1fr)">${sigCards}</div>`;
 
   // To Consider — shop picks for this persona, sorted by priority
   const PRANK = { list:0, high:1, medium:2, low:3 };
@@ -979,7 +972,7 @@ function render() {
       <!-- GALLERY -->
       <div class="section">
         <div class="section-label">Gallery</div>
-        <div class="gallery">${galleryHtml}</div>
+        <div class="outfits-grid card-view">${galleryHtml}</div>
       </div>
 
       <!-- OTHER PERSONAS -->
@@ -1015,18 +1008,35 @@ function openOutfitModal(oid, img){
       "<div class='lb-outfit-vibe' style='margin-bottom:0'>" + (od.vibe || "") + "</div>" +
       (od.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PLAB_MODAL[od.persona] || od.persona) + "</span>" : "") +
     "</div>" +
-    (st ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + (typeof statBarsHtml === 'function' ? statBarsHtml(st) : "") + "</div>" : "") +
-    (typeof outfitStylingHtml === 'function' ? outfitStylingHtml(od) : "") +
+    (typeof outfitStatsCompareHtml === 'function' ? outfitStatsCompareHtml(od) : "") +
     "<div class='lb-pieces-title'>Pieces</div>" + piecesHtml;
   document.getElementById('photo-lightbox').style.display = 'flex';
 }
 function closeOutfitModal(){ var m = document.getElementById('photo-lightbox'); if (m) m.style.display = 'none'; }
+
+// ── Item detail popup — shared builders (same as the clothing page item popup) ──
+function openItemModal(item){
+  if (!item) return;
+  document.getElementById('item-detail-photo').innerHTML = (typeof itemDetailPhotoHtml === 'function') ? itemDetailPhotoHtml(item) : '';
+  document.getElementById('item-detail-info').innerHTML = (typeof itemDetailInfoHtml === 'function') ? itemDetailInfoHtml(item, {}) : '';
+  document.getElementById('item-detail-overlay').style.display = 'flex';
+}
+function closeItemModal(){ var m = document.getElementById('item-detail-overlay'); if (m) m.style.display = 'none'; }
+function _resolveItem(name, brand){ return (typeof itemForPiece === 'function') ? itemForPiece({ name: name, brand: brand }) : null; }
+
 document.addEventListener('click', function(e){
-  const card = e.target.closest && e.target.closest('.gallery-card');
-  if (card) { openOutfitModal(parseInt(card.dataset.oid, 10), card.dataset.img); return; }
+  const chip = e.target.closest && e.target.closest('[data-outfit-id]');
+  if (chip) { const id = parseInt(chip.dataset.outfitId, 10); closeItemModal(); openOutfitModal(id, chip.dataset.outfitPhoto || ("outfits/outfit_" + String(id).padStart(2,'0') + ".jpg")); return; }
+  const pc = e.target.closest && e.target.closest('.pair-card');
+  if (pc) { const it = _resolveItem(pc.dataset.name, pc.dataset.brand); if (it) openItemModal(it); return; }
+  const mi = e.target.closest && e.target.closest('.mgr-item');
+  if (mi && mi.dataset.id) { const it = (typeof itemById === 'function') ? itemById(mi.dataset.id) : null; if (it) openItemModal(it); return; }
+  const oc = e.target.closest && e.target.closest('.outfit-card');
+  if (oc) { openOutfitModal(parseInt(oc.dataset.id, 10), oc.dataset.img); return; }
   if (e.target.id === 'photo-lightbox-close' || e.target.id === 'photo-lightbox') closeOutfitModal();
+  if (e.target.id === 'item-detail-close' || e.target.id === 'item-detail-overlay') closeItemModal();
 });
-document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeOutfitModal(); });
+document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeOutfitModal(); closeItemModal(); } });
 </script>
 
 <!-- Outfit detail modal — identical markup to the outfits page popup -->
@@ -1038,6 +1048,17 @@ document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeO
         <div class="item-detail-photo"><img id="photo-lightbox-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
       </div>
       <div class="item-detail-info-col" id="photo-lightbox-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Item detail modal — identical markup to the clothing page item popup -->
+<div class="item-detail-overlay" id="item-detail-overlay" style="display:none">
+  <div class="item-detail-panel">
+    <button class="item-detail-close" id="item-detail-close">&#x2715;</button>
+    <div class="item-detail-inner">
+      <div class="item-detail-photo-col"><div class="item-detail-photo" id="item-detail-photo"></div></div>
+      <div class="item-detail-info-col" id="item-detail-info"></div>
     </div>
   </div>
 </div>

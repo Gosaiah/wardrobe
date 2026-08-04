@@ -432,7 +432,7 @@ const SHOP = [
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 121;
+const DATA_VERSION = 127;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -731,6 +731,133 @@ function drawSpider(stats, size, fillColor, uid){
    max(facets) equals its old single drama target, so the roll-up is unchanged.
    Referenced by persona.html, profile.html, and the matcher — no more per-file
    copies drifting out of sync. */
+const PERSONA_LABELS = { overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy" };
+
+// Brand-key normaliser + brand accent colours (shared).
+function bkey(brand){ return (brand || "").toUpperCase().replace(/[^A-Z]/g, ""); }
+const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a", YASAR:"#909090", ARAHANT:"#c08090" };
+
+/* Shared clothing item card (same markup/classes as the clothing page mgr-item).
+   Renders both the card-view overlay and the default info block; the parent
+   container class (.mgr-items.card-view vs default) selects which shows.
+   opts: { persona: slug, selected: bool, custom: bool, roleLabel: str, outfitCount: num }. */
+function itemCardHtml(item, opts){
+  opts = opts || {};
+  const bk = bkey(item.brand);
+  const bc = BCOLS[bk] || "#888";
+  const img = (typeof IMAGES !== "undefined" && IMAGES[item.name]) || item.img || "";
+  const brandLbl = (BRANDS[bk] && BRANDS[bk].label) || item.brand;
+  const persona = opts.persona || null;
+  const outfitCount = (opts.outfitCount != null) ? opts.outfitCount
+    : ((typeof OUTFITS_DEFAULT !== "undefined") ? OUTFITS_DEFAULT.filter(o => (o.pieces||[]).some(p => p.id ? p.id === item.id : p.name === item.name)).length : 0);
+  const personaChipCv = persona ? "<div style='margin-top:5px'><span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[persona]||persona) + "</span></div>" : "";
+  const personaTag = persona ? "<span class='mgr-tag' style='background:var(--accent);color:#111;font-weight:600'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
+  const roleTag = opts.roleLabel ? "<div class='mgr-item-role'>" + opts.roleLabel + "</div>" : "";
+  return "<div class='mgr-item" + (opts.selected ? " selected" : "") + "' data-id='" + item.id + "' data-name=\"" + item.name + "\" data-brand=\"" + item.brand + "\">" +
+    roleTag +
+    "<div class='mgr-item-img'>" + (img ? "<img src='" + img + "' alt='" + item.name + "' loading='lazy'>" : "<div style='display:flex;align-items:center;justify-content:center;height:100%;font-size:32px;color:var(--muted)'>&#x25C8;</div>") + "</div>" +
+    "<div class='mgr-item-cv'><div class='mgr-item-cv-brand'>" + brandLbl + "</div><div class='mgr-item-cv-name'>" + item.name + "</div>" + personaChipCv + "</div>" +
+    "<div class='mgr-item-info'>" +
+      "<div class='mgr-item-brand' style='color:" + bc + "'>" + brandLbl + "</div>" +
+      "<div class='mgr-item-name'>" + item.name + "</div>" +
+      "<div style='display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px'>" +
+        "<span class='mgr-tag'>" + (item.type || item.cat || "—") + "</span>" +
+        (item.color && item.color !== "—" ? "<span class='mgr-tag'>" + item.color + "</span>" : "") +
+        (item.size && item.size !== "—" ? "<span class='mgr-tag'>" + item.size + "</span>" : "") +
+        (opts.custom ? "<span class='mgr-tag' style='color:var(--accent)'>custom</span>" : "") +
+        personaTag +
+      "</div>" +
+      (outfitCount > 0 ? "<div style='font-size:10px;color:var(--accent);letter-spacing:0.06em'>In " + outfitCount + " outfit" + (outfitCount!==1?"s":"") + "</div>" : "<div style='font-size:10px;color:var(--muted)'>Not in any outfits</div>") +
+    "</div></div>";
+}
+
+/* Shared outfit card (card-view). Same markup/classes as the outfits page.
+   opts: { photo: img src, actions: bool (show save/delete) }. Click targets read
+   data-id (+ data-img) — each page wires its own handler. */
+function outfitCardHtml(outfit, opts){
+  opts = opts || {};
+  const stats = (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(outfit) : null;
+  const spiderHtml = stats ? "<div class='cv-spider'>" + drawSpider(stats, 64, "rgba(226,211,180,0.9)") + "</div>" : "";
+  const photoSrc = opts.photo || "";
+  const imgHtml = photoSrc
+    ? "<img class='cv-img' src='" + photoSrc + "' alt='" + outfit.name + "' loading='lazy'><div class='cv-gradient'></div>"
+    : "<div class='cv-no-img'>No photo</div>";
+  const actionsHtml = opts.actions
+    ? "<div class='cv-actions'><button class='action-btn " + (opts.saved ? "saved" : "") + "' data-action='save'>" + (opts.saved ? "&#9733;" : "&#9734;") + "</button><button class='action-btn' data-action='delete'>&#x2715;</button></div>"
+    : "";
+  const personaChip = outfit.persona
+    ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona] || outfit.persona) + "</span>"
+    : "";
+  return "<div class='outfit-card card-view' data-id='" + outfit.id + "'" + (photoSrc ? " data-img='" + photoSrc + "'" : "") + ">" +
+    imgHtml + actionsHtml +
+    "<div class='cv-info'>" + spiderHtml +
+      "<div class='cv-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" +
+      "<div class='cv-name'>" + outfit.name + "</div>" +
+      "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px'>" +
+        "<div class='cv-vibe' style='margin-top:0'>" + (outfit.vibe || "") + "</div>" + personaChip +
+      "</div>" +
+    "</div>" +
+  "</div>";
+}
+
+/* Shared item-popup builders (same markup/classes as the clothing page item popup).
+   opts: { persona, wearHtml (wardrobe-only string), outfitPhoto: id->src }. Outfits &
+   pairings computed from the shared catalog so any page can render the popup. */
+function itemDetailPhotoHtml(item){
+  if (!item) return "";
+  const bk = bkey(item.brand || "");
+  const img = (typeof IMAGES !== "undefined" && IMAGES[item.name]) || item.img || "";
+  return img ? "<img src='" + img + "' alt='" + item.name + "'>" : "<div class='item-detail-photo-empty'>" + bk.slice(0,2) + "</div>";
+}
+function itemDetailInfoHtml(item, opts){
+  if (!item) return "";
+  opts = opts || {};
+  const bk = bkey(item.brand || "");
+  const bLbl = (BRANDS[bk] && BRANDS[bk].label) || item.brand || "";
+  const name = item.name;
+  const pool = (typeof _allItems === "function") ? _allItems() : (typeof WARDROBE_DATA !== "undefined" ? WARDROBE_DATA : []);
+  const allOutfits = (typeof OUTFITS_DEFAULT !== "undefined") ? OUTFITS_DEFAULT : [];
+  const itemOutfits = allOutfits.filter(o => (o.pieces||[]).some(p => (item.id && p.id === item.id) || p.name === name));
+  const pairCounts = {};
+  itemOutfits.forEach(o => (o.pieces||[]).forEach(p => { if (p.name === name) return; pairCounts[p.name] = (pairCounts[p.name]||0) + 1; }));
+  const pairings = Object.entries(pairCounts).sort((a,b) => b[1]-a[1]).slice(0,12);
+  const tags = [];
+  if (item.color && item.color !== "—" && item.color !== "-") tags.push(item.color.toUpperCase());
+  if (item.size && item.size !== "—" && item.size !== "-") tags.push("SIZE " + item.size);
+  if (item.cat) tags.push(item.cat.toUpperCase());
+  const persona = opts.persona || null;
+  const outfitPhoto = opts.outfitPhoto || (id => "outfits/outfit_" + String(id).padStart(2,"0") + ".jpg");
+  let outfitsHtml = "";
+  if (itemOutfits.length){
+    outfitsHtml = "<div class='item-detail-outfits'><div class='item-detail-section-title'>In " + itemOutfits.length + " Outfit" + (itemOutfits.length!==1?"s":"") + "</div><div class='item-detail-outfit-list'>" +
+      itemOutfits.map(o => {
+        const ps = outfitPhoto(o.id);
+        const ph = ps ? "<div class='item-detail-outfit-photo'><img src='" + ps + "' alt='" + o.name + "'></div>" : "<div class='item-detail-outfit-photo'>" + String(o.id).padStart(2,"0") + "</div>";
+        return "<div class='item-detail-outfit-chip' data-outfit-id='" + o.id + "' data-outfit-photo=\"" + (ps||"") + "\">" + ph + "<div><div class='item-detail-outfit-num'>No. " + String(o.id).padStart(2,"0") + "</div><div class='item-detail-outfit-name'>" + o.name + "</div></div></div>";
+      }).join("") + "</div></div>";
+  }
+  let pairingsHtml = "";
+  if (pairings.length){
+    pairingsHtml = "<div class='item-detail-pairs'><div class='item-detail-section-title'>Pairs With</div><div class='item-detail-pairs-grid'>" +
+      pairings.map(entry => {
+        const pairName = entry[0], count = entry[1];
+        const pairImg = (typeof IMAGES !== "undefined" && IMAGES[pairName]) || "";
+        const pairItem = pool.find(i => i.name === pairName);
+        const pb = pairItem ? bkey(pairItem.brand) : "";
+        return "<div class='pair-card' data-name=\"" + pairName + "\" data-brand=\"" + (pairItem && pairItem.brand || "") + "\"><div class='pair-card-thumb'>" + (pairImg ? "<img src='" + pairImg + "' alt='" + pairName + "' loading='lazy'>" : "<div class='pair-card-thumb-empty'>" + pb.slice(0,2) + "</div>") + "</div><div class='pair-card-name'>" + pairName + (count>1?"<br><span class='pair-count-badge'>" + count + "x</span>":"") + "</div></div>";
+      }).join("") + "</div></div>";
+  }
+  const personaTag = persona ? "<span class='item-detail-tag' style='background:var(--accent);color:#111;font-weight:700'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
+  const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(item.stats) + "</div>" : "";
+  return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
+    "<div class='item-detail-name'>" + name + "</div>" +
+    ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
+    (opts.wearHtml || "") +
+    statsHtml +
+    outfitsHtml + pairingsHtml +
+    (!itemOutfits.length && !pairings.length ? "<p style='color:var(--muted);font-size:0.8rem;margin-top:12px'>Not used in any outfits yet.</p>" : "");
+}
+
 const PERSONA_TARGETS = {
   overlord:      { presence:4.0, silhouette:2.5, movement:1.0, ornament:1.0, structure:3.5, skin:1.0, edge:3.5, formality:2.0 },
   wanderer:      { presence:1.5, silhouette:2.5, movement:2.5, ornament:1.0, structure:2.0, skin:1.0, edge:2.0, formality:2.5 },
@@ -774,5 +901,95 @@ function outfitStylingHtml(outfit){
     "<div style=\"font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px\">Styling</div>" +
     (combos.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:6px" + (attrs.length ? ";margin-bottom:8px" : "") + "\">" + comboChips + "</div>" : "") +
     (attrs.length ? "<div style=\"display:flex;flex-wrap:wrap;gap:5px\">" + attrChips + "</div>" : "") +
+  "</div>";
+}
+
+/* ── OUTFIT STATS: base vs effective (RPG-style base + styling-buff) ──────────
+   base  = raw average of the pieces' on-the-rack stats
+   eff   = base + per-item singles + outfit combos (effectiveOutfitStats)
+   The delta (eff − base) is the styling buff, shown in green. */
+const SPIDER_BUFF = "#6ece80"; // styling-buff green
+function outfitBaseStats(outfit){
+  if (!outfit || !outfit.pieces) return null;
+  const t = {}; STAT_KEYS8.forEach(k => t[k] = 0); let n = 0;
+  outfit.pieces.forEach(p => { const it = itemForPiece(p); if (it && it.stats){ STAT_KEYS8.forEach(k => t[k] += (it.stats[k]||0)); n++; } });
+  if (!n) return null;
+  const a = {}; STAT_KEYS8.forEach(k => a[k] = Math.round(t[k]/n*10)/10); a.drama = rollupDrama(a); return a;
+}
+// Two-layer spider: gold = base outfit, green outline = effective (buff pushes past base).
+function drawSpiderCompare(base, eff, size){
+  if (!eff) return "";
+  const keys = SPIDER_KEYS, labels = SPIDER_LABELS, n = keys.length;
+  const pad = size * 0.30, W = size + pad * 2, cx = W / 2, cy = W / 2;
+  const r = size * 0.30, labelR = size * 0.40;
+  const ang = i => (Math.PI * 2 / n) * i - Math.PI / 2;
+  const rv = v => r * (SPIDER_FLOOR + (1 - SPIDER_FLOOR) * (Math.max(0, Math.min(5, v || 0)) / 5));
+  const ptsOf = st => keys.map((k,i) => { const rr = rv(st[k]); return (cx+rr*Math.cos(ang(i))).toFixed(1)+","+(cy+rr*Math.sin(ang(i))).toFixed(1); }).join(" ");
+  let rings = "";
+  for (let ring = 1; ring <= 5; ring++){
+    const rp = keys.map((_,i) => (cx+r*(ring/5)*Math.cos(ang(i))).toFixed(1)+","+(cy+r*(ring/5)*Math.sin(ang(i))).toFixed(1)).join(" ");
+    rings += '<polygon points="'+rp+'" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
+  }
+  const axes = keys.map((_,i) => '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+r*Math.cos(ang(i))).toFixed(1)+'" y2="'+(cy+r*Math.sin(ang(i))).toFixed(1)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
+  const effPoly = '<polygon points="'+ptsOf(eff)+'" fill="'+SPIDER_BUFF+'" fill-opacity="0.12" stroke="'+SPIDER_BUFF+'" stroke-width="1.4"/>';
+  const basePoly = base ? '<polygon points="'+ptsOf(base)+'" fill="#e2d3b4" fill-opacity="0.28" stroke="#e2d3b4" stroke-width="1.4"/>' : '';
+  const fs = (W * 0.045).toFixed(1);
+  const lbls = labels.map((lbl,i) => {
+    const lx = (cx + labelR*Math.cos(ang(i))).toFixed(1), ly = (cy + labelR*Math.sin(ang(i))).toFixed(1);
+    const c = Math.cos(ang(i)), si = Math.sin(ang(i));
+    const anc = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
+    const dy = si > 0.3 ? "0.8em" : si < -0.3 ? "0em" : "0.35em";
+    return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" dy="'+dy+'" fill="rgba(255,255,255,0.45)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.02em">'+lbl+'</text>';
+  }).join("");
+  const ws = W.toFixed(0);
+  return '<svg width="'+ws+'" height="'+ws+'" viewBox="0 0 '+ws+' '+ws+'" xmlns="http://www.w3.org/2000/svg">'+rings+axes+effPoly+basePoly+lbls+'</svg>';
+}
+// Combined STATS panel: two-layer spider + 8 two-tone bars (base + buff) with total & delta.
+function outfitStatsCompareHtml(outfit){
+  const base = outfitBaseStats(outfit), eff = effectiveOutfitStats(outfit);
+  if (!eff) return "";
+  const spider = drawSpiderCompare(base, eff, 150);
+  const bars = SPIDER_KEYS.map(function(k, idx){
+    const bv = (base && base[k]) || 0, ev = eff[k] || 0, d = Math.round((ev - bv) * 10) / 10;
+    const basePct = Math.min(bv, ev) / 5 * 100, bonusPct = d > 0 ? d / 5 * 100 : 0;
+    return "<div style='display:flex;align-items:center;gap:8px;margin-bottom:7px'>" +
+      "<div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:74px;flex-shrink:0'>" + SPIDER_LABELS[idx] + "</div>" +
+      "<div style='flex:1;min-width:0;height:6px;background:var(--border);border-radius:6px;overflow:hidden;display:flex'>" +
+        "<div style='height:100%;width:" + basePct.toFixed(1) + "%;background:#e2d3b4'></div>" +
+        (bonusPct ? "<div style='height:100%;width:" + bonusPct.toFixed(1) + "%;background:" + SPIDER_BUFF + "'></div>" : "") +
+      "</div>" +
+      "<div style='font-size:11px;color:var(--text);width:24px;text-align:right;flex-shrink:0'>" + ev + "</div>" +
+      "<div style='font-size:10px;color:" + SPIDER_BUFF + ";width:26px;flex-shrink:0'>" + (d > 0 ? "+" + d : "") + "</div>" +
+    "</div>";
+  }).join("");
+  const legend = "<div style='display:flex;gap:14px;justify-content:flex-end;margin-bottom:10px;font-size:9px;color:var(--muted)'>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:#e2d3b4;margin-right:4px;vertical-align:middle'></span>base</span>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:" + SPIDER_BUFF + ";margin-right:4px;vertical-align:middle'></span>styling buff</span>" +
+  "</div>";
+  // Styling chips (combos + raw attribute tags) folded into the same panel.
+  var combos = (typeof outfitCombosFired === "function") ? outfitCombosFired(outfit) : [];
+  var attrs = (typeof outfitAttrs === "function") ? Array.from(outfitAttrs(outfit)) : [];
+  var comboChips = combos.map(function(c){
+    var label = c.labelFn ? c.labelFn(outfit) : c.label; var bt = boostText(c.boost);
+    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#111;font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + label + (bt ? " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + bt + "</span>" : "") + "</span>";
+  }).join("");
+  var attrChips = attrs.map(function(a){
+    return "<span style=\"background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;padding:3px 7px;border-radius:6px\">" + a + "</span>";
+  }).join("");
+  var stylingSection = (combos.length || attrs.length)
+    ? "<div style='margin-top:16px;padding-top:14px;border-top:1px solid var(--border)'>" +
+        "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Styling</div>" +
+        (combos.length ? "<div style='display:flex;flex-wrap:wrap;gap:6px" + (attrs.length ? ";margin-bottom:8px" : "") + "'>" + comboChips + "</div>" : "") +
+        (attrs.length ? "<div style='display:flex;flex-wrap:wrap;gap:5px'>" + attrChips + "</div>" : "") +
+      "</div>"
+    : "";
+  return "<div style='margin-bottom:20px;padding:16px;background:var(--surface2);border-radius:8px'>" +
+    "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px'>Stats</div>" +
+    legend +
+    "<div style='display:flex;align-items:center;gap:18px;flex-wrap:wrap'>" +
+      "<div style='flex-shrink:0;margin:0 auto'>" + spider + "</div>" +
+      "<div style='flex:1;min-width:190px'>" + bars + "</div>" +
+    "</div>" +
+    stylingSection +
   "</div>";
 }

@@ -1338,7 +1338,7 @@ function persist() {
   document.getElementById("nav-stat").textContent = items.length + " pieces · " + outfits.filter(o => o.source !== "proposed").length + " outfits";
 }
 
-function bkey(brand) { return brand.toUpperCase().replace(/[^A-Z]/g,""); }
+// bkey() now provided by data.js (shared)
 
 // ── OUTFIT PHOTOS ──
 let OUTFIT_PHOTOS = {};
@@ -1710,8 +1710,7 @@ function openOutfitDetail(outfitId) {
       (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
     "</div>" +
     outfitWearHtml +
-    (outfitStats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(outfitStats) + "</div>" : "") +
-    outfitStylingHtml(outfit) +
+    outfitStatsCompareHtml(outfit) +
     "<div class='item-detail-section-title'>Pieces</div>" +
     outfit.pieces.map(function(p) {
       var img = pieceImg(p);
@@ -1792,8 +1791,7 @@ function openLightbox(outfitId) {
       (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
     "</div>" +
     lbWearHtml +
-    (lbStats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(lbStats) + "</div>" : "") +
-    outfitStylingHtml(outfit) +
+    outfitStatsCompareHtml(outfit) +
     "<div class='lb-pieces-title'>Pieces</div>" + piecesHtml;
   document.getElementById("photo-lightbox").style.display = "flex";
   // Wire last worn link in lightbox
@@ -1834,7 +1832,7 @@ const PERSONA_PROFILES = {
   civilian:      {drama:1.0, structure:1.0, skin:0.5, edge:0.5, formality:1.5, mass:2.5, chroma:2.0},
   viceroy:       {drama:2.5, structure:3.0, skin:1.0, edge:1.5, formality:3.5, mass:3.0, chroma:4.0},
 };
-const PERSONA_LABELS = {overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy"};
+// PERSONA_LABELS now provided by data.js (shared) — local copy removed to avoid a const redeclaration.
 
 function getItemPersona(item) {
   const s = item.stats;
@@ -2122,7 +2120,7 @@ document.getElementById("btn-save-modal").addEventListener("click", () => {
 // ═══════════════════════════════════════════════════
 // WARDROBE MANAGER
 // ═══════════════════════════════════════════════════
-const BCOLS = {ORTTU:"#c8b89a",MINOAR:"#8a9aaa",RYVK:"#9a8ac8",FRKM:"#aa8a8a",YASAR:"#909090",ARAHANT:"#c08090"};
+// BCOLS now provided by data.js (shared)
 
 function renderMgr() {
   const search = document.getElementById("mgr-search").value.toLowerCase();
@@ -2454,29 +2452,9 @@ document.getElementById("vtoggle-card").addEventListener("click", () => {
 });
 
 function renderCardViewCard(outfit) {
-  const isSaved = saved.has(outfit.id);
+  // Shared card builder (data.js). Local markup retired — one source across pages.
   const photoSrc = OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || "";
-  const stats = getOutfitStats(outfit);
-  const spiderHtml = stats ? "<div class='cv-spider'>" + drawSpider(stats, 64, "rgba(226, 211, 180,0.9)", "cv" + outfit.id) + "</div>" : "";
-  const imgHtml = photoSrc
-    ? "<img class='cv-img' src='" + photoSrc + "' alt='" + outfit.name + "' loading='lazy'><div class='cv-gradient'></div>"
-    : "<div class='cv-no-img'>No photo</div>";
-  return "<div class='outfit-card card-view' data-id='" + outfit.id + "'>" +
-    imgHtml +
-    "<div class='cv-actions'>" +
-      "<button class='action-btn " + (isSaved?"saved":"") + "' data-action='save'>" + (isSaved?"&#9733;":"&#9734;") + "</button>" +
-      "<button class='action-btn' data-action='delete'>&#x2715;</button>" +
-    "</div>" +
-    "<div class='cv-info'>" +
-      spiderHtml +
-      "<div class='cv-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" +
-      "<div class='cv-name'>" + outfit.name + "</div>" +
-      "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px'>" +
-        "<div class='cv-vibe' style='margin-top:0'>" + (outfit.vibe||"") + "</div>" +
-        (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
-      "</div>" +
-    "</div>" +
-  "</div>";
+  return outfitCardHtml(outfit, { photo: photoSrc, actions: true, saved: saved.has(outfit.id) });
 }
 
 function renderHorizontalCard(outfit) {
@@ -2850,9 +2828,7 @@ function openWearDetail(wornEntry) {
   }).join("");
 
   // Stats spider
-  const statsHtml = stats
-    ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(stats) + "</div>"
-    : "";
+  const statsHtml = outfit ? outfitStatsCompareHtml(outfit) : "";
 
   // Confidence placeholder
   const ratingHtml = wornEntry.confidence
