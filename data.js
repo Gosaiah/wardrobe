@@ -364,7 +364,8 @@ const OUTFITS_DEFAULT = [
   {id:62,name:"Raye Print Lounge",vibe:"Tonal",tags:["tonal"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"al1",name:"Double Take Short Black",brand:"ALO"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:63,name:"Photo Tee Espresso",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF"},{role:"Bottom",id:"al2",name:"Double Take Short Espresso",brand:"ALO"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:64,name:"Olive Tee + Pinstripe Tailoring",vibe:"Tonal",tags:["tonal"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",styling:["tucked"]},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
-  {id:65,name:"Longline Shirt + Cargo Skirt",vibe:"Layered",tags:["tonal"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o5",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]}
+  {id:65,name:"Longline Shirt + Cargo Skirt",vibe:"Layered",tags:["tonal"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o5",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
+  {id:66,name:"Sheer Cargo Night",vibe:"Dark / Going-out",tags:["dark"],source:"detected",persona:"night-shift",styling:["bare-torso"],pieces:[{role:"Top",id:"o15",name:"Alejandro Cardigan",brand:"ORTTU",styling:["worn-open"]},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
 ];
 
 
@@ -432,7 +433,7 @@ const SHOP = [
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
 ];
 
-const DATA_VERSION = 131;
+const DATA_VERSION = 133;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -803,6 +804,49 @@ function outfitCardHtml(outfit, opts){
 /* Shared item-popup builders (same markup/classes as the clothing page item popup).
    opts: { persona, wearHtml (wardrobe-only string), outfitPhoto: id->src }. Outfits &
    pairings computed from the shared catalog so any page can render the popup. */
+/* ── SHARED WEAR STORE ───────────────────────────────────────────────────────
+   Wear history (worn dates/photos) — one source. On the wardrobe page the live
+   mutable `wornHistory` is the writer; the getters below read it when present,
+   else fall back to localStorage (with the seed) so any page can show wear info. */
+const WORN_HISTORY_DEFAULT = [
+  { date:"2026-07-13", outfitId:34, outfitSource:"detected", itemIds:["tw1","m17","pw2"], photo:"wear-photos/wear_2026-07-13.jpeg" },
+  { date:"2026-07-14", outfitId:35, outfitSource:"detected", itemIds:["hd1","m9","s1"], photo:"wear-photos/wear_2026-07-14.jpeg" },
+  { date:"2026-07-17", outfitId:39, outfitSource:"detected", itemIds:["z1","m17","pw1"], photo:"wear-photos/wear_2026-07-17.jpeg" },
+  { date:"2026-07-22", outfitId:40, itemIds:["m6","m20","pw2"], photo:"wear-photos/wear_2026-07-22.jpg" },
+  { date:"2026-07-23", outfitId:52, itemIds:["am7","m18","pw1"], photo:"wear-photos/wear_2026-07-23.jpg", notes:"Wore with white sneakers instead of zipped tall boots" },
+  { date:"2026-07-28", outfitId:64, outfitSource:"detected", itemIds:["z2","o3","pw2"], photo:"wear-photos/wear_2026-07-28.jpeg" },
+  { date:"2026-07-30", outfitId:65, outfitSource:"detected", itemIds:["o5","m21","pw1"], photo:"wear-photos/wear_2026-07-30.jpeg" },
+  { date:"2026-08-01", outfitId:66, outfitSource:"detected", itemIds:["o15","m21","dm1"], photo:"wear-photos/wear_2026-08-01.jpeg" }
+];
+function _wearHistory(){
+  if (typeof wornHistory !== "undefined" && Array.isArray(wornHistory)) return wornHistory; // wardrobe's live store
+  try { const v = JSON.parse(localStorage.getItem("worn-history") || "null"); if (Array.isArray(v) && v.length) return v; } catch(e){}
+  return WORN_HISTORY_DEFAULT;
+}
+function getWearCount(type, id){
+  return _wearHistory().filter(w => type === "item" ? (w.itemIds||[]).includes(id) : w.outfitId === id).length;
+}
+function getLastWorn(type, id){
+  const e = _wearHistory().filter(w => type === "item" ? (w.itemIds||[]).includes(id) : w.outfitId === id);
+  if (!e.length) return null;
+  return e.reduce((a,b) => a.date > b.date ? a : b).date;
+}
+function fmtDate(iso){
+  if (!iso) return "";
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+}
+// Compact read-only wear block (used by the shared popup when a page doesn't inject its own interactive one).
+function wearBlockHtml(kind, id){
+  const count = getWearCount(kind, id);
+  if (!count) return "";
+  const last = getLastWorn(kind, id);
+  return "<div style='margin-bottom:16px'>" +
+    "<div style='font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px'>Wear History</div>" +
+    "<div style='font-size:12px;color:var(--text)'>Worn <strong style='color:var(--accent)'>" + count + "x</strong>" + (last ? " &middot; last " + fmtDate(last) : "") + "</div>" +
+  "</div>";
+}
+
 // Combos this single piece can contribute to (item-level heuristic mirroring the combo tests).
 function itemStylingCombos(item){
   const st = item.stats || {};
@@ -910,7 +954,7 @@ function itemDetailInfoHtml(item, opts){
   return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
-    (opts.wearHtml || "") +
+    ((opts.wearHtml != null) ? opts.wearHtml : (item.id ? wearBlockHtml("item", item.id) : "")) +
     statsHtml +
     outfitsHtml + pairingsHtml +
     (!itemOutfits.length && !pairings.length ? "<p style='color:var(--muted);font-size:0.8rem;margin-top:12px'>Not used in any outfits yet.</p>" : "");

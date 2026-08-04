@@ -1206,70 +1206,7 @@
 
 // Wear history — logged from confirmed photo uploads (chat-assisted detection pilot)
 // wearCounts are DERIVED from this array at runtime, not stored redundantly on items/outfits
-const WORN_HISTORY_DEFAULT = [
-  {
-    date: "2026-07-13",
-    outfitId: 34,
-    outfitSource: "detected",
-    itemIds: ["tw1","m17","pw2"],
-    photo: "wear-photos/wear_2026-07-13.jpeg"
-  },
-  {
-    date: "2026-07-14",
-    outfitId: 35,
-    outfitSource: "detected",
-    itemIds: ["hd1","m9","s1"],
-    photo: "wear-photos/wear_2026-07-14.jpeg"
-  },
-  {
-    date: "2026-07-17",
-    outfitId: 39,
-    outfitSource: "detected",
-    itemIds: ["z1","m17","pw1"],
-    photo: "wear-photos/wear_2026-07-17.jpeg"
-  },
-  {
-    date: "2026-07-22",
-    outfitId: 40,
-    itemIds: ["m6","m20","pw2"],
-    photo: "wear-photos/wear_2026-07-22.jpg"
-  },
-  {
-    date: "2026-07-23",
-    outfitId: 52,
-    itemIds: ["am7","m18","pw1"],
-    photo: "wear-photos/wear_2026-07-23.jpg",
-    notes: "Wore with white sneakers instead of zipped tall boots"
-  },
-  {
-    date: "2026-07-28",
-    outfitId: 64,
-    outfitSource: "detected",
-    itemIds: ["z2","o3","pw2"],
-    photo: "wear-photos/wear_2026-07-28.jpeg"
-  },
-  {
-    date: "2026-07-30",
-    outfitId: 65,
-    outfitSource: "detected",
-    itemIds: ["o5","m21","pw1"],
-    photo: "wear-photos/wear_2026-07-30.jpeg"
-  }
-];
-function getWearCount(type, id) {
-  // type: 'item' | 'outfit'
-  return wornHistory.filter(w => type === 'item' ? w.itemIds.includes(id) : w.outfitId === id).length;
-}
-function getLastWorn(type, id) {
-  const entries = wornHistory.filter(w => type === 'item' ? w.itemIds.includes(id) : w.outfitId === id);
-  if (!entries.length) return null;
-  return entries.reduce((a,b) => a.date > b.date ? a : b).date;
-}
-function fmtDate(iso) {
-  if (!iso) return "";
-  const d = new Date(iso + "T00:00:00");
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-}
+// WORN_HISTORY_DEFAULT + getWearCount / getLastWorn / fmtDate now provided by data.js (shared wear store).
 // Style lookup — reads directly from item.style field
 const PIECE_STYLES = (() => {
   const map = {};
@@ -1525,66 +1462,7 @@ function openItemDetail(name, brand) {
       ? itemDetailPhotoHtml(item)
       : (imgUrl ? "<img src='" + imgUrl + "' alt='" + name + "'>" : "<div class='item-detail-photo-empty'>" + (bk.slice(0,2)||"") + "</div>");
 
-  // Outfits containing this item
-  const itemOutfits = outfits.filter(o => o.pieces.some(p => (item && p.id === item.id) || p.name === name));
-
-  // Pairings
-  const pairCounts = {};
-  itemOutfits.forEach(function(outfit) {
-    outfit.pieces.forEach(function(p) {
-      if (p.name === name) return;
-      pairCounts[p.name] = (pairCounts[p.name] || 0) + 1;
-    });
-  });
-  const pairings = Object.entries(pairCounts).sort(function(a,b){ return b[1]-a[1]; }).slice(0,12);
-
-  // Tags
-  const tags = [];
-  if (item) {
-    if (item.color && item.color !== "-") tags.push(item.color.toUpperCase());
-    if (item.size && item.size !== "-") tags.push("SIZE " + item.size);
-    if (item.cat) tags.push(item.cat.toUpperCase());
-  }
-
-  // Outfits HTML
-  let outfitsHtml = "";
-  if (itemOutfits.length) {
-    outfitsHtml = "<div class='item-detail-outfits'>" +
-      "<div class='item-detail-section-title'>In " + itemOutfits.length + " Outfit" + (itemOutfits.length!==1?"s":"") + "</div>" +
-      "<div class='item-detail-outfit-list'>" +
-      itemOutfits.map(function(o) {
-        const photoSrc = OUTFIT_PHOTOS[o.id] || "";
-        const photoHtml = photoSrc
-          ? "<div class='item-detail-outfit-photo'><img src='" + photoSrc + "' alt='" + o.name + "'></div>"
-          : "<div class='item-detail-outfit-photo'>" + String(o.id).padStart(2,"0") + "</div>";
-        return "<div class='item-detail-outfit-chip' data-outfit-id='" + o.id + "'>" +
-          photoHtml +
-          "<div><div class='item-detail-outfit-num'>No. " + String(o.id).padStart(2,"0") + "</div>" +
-          "<div class='item-detail-outfit-name'>" + o.name + "</div></div></div>";
-      }).join("") +
-      "</div></div>";
-  }
-
-  // Pairings HTML
-  let pairingsHtml = "";
-  if (pairings.length) {
-    pairingsHtml = "<div class='item-detail-pairs'>" +
-      "<div class='item-detail-section-title'>Pairs With</div>" +
-      "<div class='item-detail-pairs-grid'>" +
-      pairings.map(function(entry) {
-        var pairName = entry[0]; var count = entry[1];
-        var pairImg = IMAGES[pairName] || "";
-        var pairItem = items.find(function(i){ return i.name === pairName; });
-        var pb = pairItem ? bkey(pairItem.brand) : "";
-        return "<div class='pair-card' data-name='" + pairName + "' data-brand='" + (pairItem&&pairItem.brand||"") + "'>" +
-          "<div class='pair-card-thumb'>" +
-          (pairImg ? "<img src='" + pairImg + "' alt='" + pairName + "' loading='lazy'>" : "<div class='pair-card-thumb-empty'>" + pb.slice(0,2) + "</div>") +
-          "</div>" +
-          "<div class='pair-card-name'>" + pairName + (count>1?"<br><span class='pair-count-badge'>"+count+"x</span>":"") + "</div>" +
-          "</div>";
-      }).join("") +
-      "</div></div>";
-  }
+  // Outfits-containing + pairings + tags are now computed inside the shared itemDetailInfoHtml (data.js).
 
   const itemWearCount = item ? getWearCount("item", item.id) : 0;
   const itemLastWorn = item ? getLastWorn("item", item.id) : null;
