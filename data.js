@@ -29,6 +29,7 @@ const BRANDS = {
   ALO:{label:"Alo",dot:"dot-frkm",tag:"tag-frkm"},
   MUAZOE:{label:"Muazoe",dot:"dot-ryvk",tag:"tag-ryvk"},
   UNBRANDED:{label:"Unbranded",dot:"dot-frkm",tag:"tag-frkm"},
+  YEEZYGAP:{label:"Yeezy Gap",dot:"dot-frkm",tag:"tag-frkm"},
   DEMONIA:{label:"Demonia",dot:"dot-yasar",tag:"tag-yasar"},
 };
 
@@ -196,7 +197,7 @@ const WARDROBE_DATA = [
   {id:"m13",name:"Division Cut Linear Collar Shirt",brand:"MINOAR",color:"White",size:"L",cat:"Shirt",type:"top",style:"Contrast",url:"https://www.minoar.com/product/division-cut-linear-collar-shirt-2/",stats:{drama:2,structure:3,skin:1,edge:2,formality:3,presence:2,silhouette:0,movement:0,ornament:0}},
   {id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR",color:"Black",size:"L",cat:"Cardigan",type:"outer",style:"Dark / Minimal",stats:{drama:3,structure:3,skin:0,edge:3,formality:2.5,presence:3,silhouette:0,movement:3,ornament:0}},
   {id:"m15",name:"Reverse Edge Construct Jogger",brand:"MINOAR",color:"Black",size:"L",cat:"Pants",type:"bottom",style:"Dark / Minimal",stats:{drama:1.5,structure:2,skin:0,edge:3,formality:1.5,presence:1.5,silhouette:0,movement:0,ornament:0}},
-  {id:"m16",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",stats:{drama:3.5,structure:4,skin:2,edge:2,formality:3.5,presence:3.5,silhouette:3,movement:3,ornament:0},styling:["flowy"]},
+  {id:"m16",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",warmth:3.5,stats:{drama:3.5,structure:4,skin:2,edge:2,formality:3.5,presence:3.5,silhouette:3,movement:3,ornament:0},styling:["flowy"]},
   {id:"m17",name:"External Cropped Loose Grey Trousers",brand:"MINOAR",color:"Grey",size:"L",cat:"Trousers",type:"bottom",style:"Tonal",stats:{drama:1.5,structure:2,skin:0,edge:1,formality:3,presence:0,silhouette:1.5,movement:0,ornament:0},styling:["high-waist"]},
   {id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt",type:"bottom",style:"Dark / Minimal",stats:{drama:4,structure:3,skin:1,edge:2,formality:2,presence:3,silhouette:4,movement:2,ornament:0},styling:["high-waist"]},
   {id:"m19",name:"Reverse Edge Hood Buckle Cardigan",brand:"MINOAR",color:"Black",size:"L",cat:"Cardigan",type:"outer",style:"Contrast",stats:{drama:2,structure:3,skin:0,edge:4,formality:2,presence:2,silhouette:0,movement:0,ornament:0}},
@@ -284,6 +285,7 @@ const WARDROBE_DATA = [
   {id:"cp1",name:"Earth Plaid Blanket Cape",brand:"UNBRANDED",color:"Burgundy/Grey",size:"OS",cat:"Cape",type:"outer",style:"Tonal",img:"earth-plaid-cape.jpg",stats:{drama:3.5,structure:1,skin:0,edge:0.5,formality:1.5,presence:2,silhouette:3.5,movement:3.5,ornament:2.5}},
   {id:"md2",name:"Hogo Coat",brand:"MDNT45",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",url:"https://www.mdnt45.com/products/hogo-coat",img:"https://www.mdnt45.com/cdn/shop/products/mdnt45-hogo-coat-29765240848581.jpg",stats:{drama:4,structure:4,skin:0,edge:3,formality:3,presence:4,silhouette:3,movement:1.5,ornament:0.5}},
   {id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA",color:"Black",size:"EU 44",cat:"Boots",type:"shoes",style:"Dark / Minimal",url:"https://demoniacult.com/products/neptune-210bvl",stats:{drama:4.5,structure:5,skin:0,edge:4.5,formality:1,presence:4.5,silhouette:0,movement:0,ornament:0}},
+  {id:"yg1",name:"Yeezy Gap Dove Hoodie",brand:"YEEZYGAP",color:"Dark Grey",size:"—",cat:"Hoodie",type:"outer",style:"Dark / Minimal",url:"https://www.goat.com/apparel/yeezy-gap-dove-hoodie-dark-grey-4605510320000",img:"https://image.goat.com/transform/v1/attachments/product_template_additional_pictures/images/072/988/486/original/950502_01.jpg.jpeg?width=750",stats:{drama:2.5,structure:1.5,skin:0,edge:1,formality:1.5,presence:2,silhouette:2.5,movement:1.5,ornament:0}},
 ];
 
 // ── DRAMA FACETS ────────────────────────────────────────────────────────────
@@ -431,9 +433,17 @@ const SHOP = [
     price:"$218 (sale)", url:"https://www.etsy.com/listing/4503299336/mens-gold-armor-corset-sculptural-luxury", img:"https://i.etsystatic.com/47566345/r/il/6530f5/8056407735/il_1080xN.8056407735_smgr.jpg",
     stats:{drama:5,structure:4,skin:2,edge:3,formality:0,presence:4,silhouette:2.5,movement:0.5,ornament:5},
     why:"A mirror-finish anatomical gold chest plate \u2014 rigid sculptural torso armor in the Overlord command register. Handmade, made-to-order (gold or silver, S/M/L). Maximal presence with real structure." },
+  { id:"sh_nc1", name:"China Button Cape Vest", brand:"NOT CONVENTIONAL", tier:"new", cat:"Vest", persona:"wanderer", fills:"Draped statement layer", priority:"low",
+    price:"$223 (\u00a533,000)", url:"https://not-conventional.com/products/detail/2465472", img:"https://not-conventional.com/html/upload/save_image/0002465472_0000022754.jpg",
+    stats:{drama:3.5,structure:3,skin:1,edge:3.5,formality:2.5,presence:3.5,silhouette:3.5,movement:3,ornament:2},
+    why:"Extreme-shoulder cape-vest in NOT's own T/R (poly/rayon) with a high-sheen, drapey hand and a china-button closure \u2014 a sculptural draped layer over the collar shirts or a tee. Wide-shoulder presence with real movement; unisex, in stock, ships worldwide from Japan (~7\u201310 days)." },
+  { id:"sh_nc2", name:"Linen\u00d7Cotton Kimono Gown", brand:"NOT CONVENTIONAL", tier:"new", cat:"Gown", persona:"wanderer", fills:"Long draped goth statement", priority:"low",
+    price:"$297 (\u00a544,000)", url:"https://not-conventional.com/products/detail/2464713", img:"https://not-conventional.com/html/upload/save_image/0002464713_0000022731.jpg",
+    stats:{drama:4.5,structure:1.5,skin:2,edge:3,formality:2.5,presence:3,silhouette:4,movement:4.5,ornament:1.5},
+    why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 136;
+const DATA_VERSION = 147;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -449,7 +459,7 @@ function itemForPiece(p){
 }
 function pieceImg(p){
   const it = itemForPiece(p);
-  return (it && (IMAGES[it.name] || it.img)) || (p ? (IMAGES[p.name] || getImg(p.name)) : "") || "";
+  return (it && (IMAGES[it.name] || it.img)) || (p ? (IMAGES[p.name] || p.img || getImg(p.name)) : "") || "";
 }
 
 /* ── STYLING LAYER ──────────────────────────────────────────────────────────
@@ -526,6 +536,29 @@ const STYLE_COMBOS = [
   { id:"tonal-ease", label:"Tonal ease", boost:{}, // Civilian: recognition only, no stat change
       test: o => { const f = dominantFamily(o); return (f==="light"||f==="earth"||f==="grey") && outfitQuiet(o); } },
 ];
+
+// Plain-language "why this bonus is active" — mirrors the item popup's clear
+// "pair with a structured jacket" phrasing, but for a look that already fires it.
+const COMBO_DESC = {
+  "monochrome-dark":  "an all-dark palette",
+  "high-waist+tucked":"a tucked, high-waisted line",
+  "worn-open+bare-torso":"worn open over bare skin",
+  "hard-soft":        "hard boots against a soft bottom",
+  "harness":          "a harness / body-chain layer",
+  "high-contrast":    "dark and light pieces together",
+  "tonal":            "a soft tonal palette",
+  "skin-edge":        "skin next to hardware",
+  "full-layering":    "a layered top + outer",
+  "crop-highwaist":   "a crop over a high waist",
+  "sharp-tailoring":  "structured tailoring, top and bottom",
+  "hardware-stack":   "several hard, edgy pieces",
+  "sheer-stack":      "layered sheer pieces",
+  "full-brand":       "a head-to-toe single-brand set",
+  "earth-cloak":      "an earthy cloak layer",
+  "sequin-sheen":     "a sequined / shiny piece",
+  "couture-contrast": "a high-formality statement piece",
+  "tonal-ease":       "an easy tonal palette"
+};
 
 // combos enrich but don't swamp base: cap total combo contribution per stat
 const STYLE_COMBO_CAP = 1.0;
@@ -623,7 +656,7 @@ function effectiveOutfitStats(outfit){
   const totals = {}; AGG.forEach(k => totals[k] = 0);
   let n = 0;
   outfit.pieces.forEach(p => {
-    const it = itemForPiece(p); if (!it || !it.stats) return;
+    const it = itemForPiece(p) || (p && p.stats ? p : null); if (!it || !it.stats) return;
     const eff = itemEffectiveStats(it, p.styling || []);
     AGG.forEach(k => { totals[k] += (eff[k] || 0); });
     n++;
@@ -662,16 +695,16 @@ function spiderTop2(stats){ return SPIDER_KEYS.map(k => [k, stats[k]||0]).sort((
 // Two render modes, switched by size:
 //   size >= 120  → DETAIL: all 8 axis labels (used on the big detail/panel spiders)
 //   size <  120  → CARD/PREVIEW: peak labels on the top-2 spokes + a caption tag naming them
-function drawSpider(stats, size, fillColor, uid){
+function drawSpider(stats, size, fillColor, uid, hideCaption){
   if (!stats) return "";
-  const fill = fillColor || "#e2d3b4";
+  const fill = fillColor || "var(--accent)";
   const keys = SPIDER_KEYS, labels = SPIDER_LABELS, n = keys.length;
   const fullMode = size >= 120;
   const pad = fullMode ? size * 0.30 : size * 0.26;      // card mode needs room for 2 peak labels
   const W = size + pad * 2, cx = W / 2, cy = W / 2;
   const top2 = fullMode ? [] : spiderTop2(stats);
   const capText = top2.map(t => SPIDER_LABELS[keys.indexOf(t[0])]).join("  ·  ");
-  const capH = (!fullMode && capText) ? Math.round(size * 0.24) : 0;   // caption strip below the chart
+  const capH = (!fullMode && capText && !hideCaption) ? Math.round(size * 0.24) : 0;   // caption strip below the chart
   const H = W + capH;
   const r = size * 0.30, labelR = size * 0.40, peakR = size * 0.45;
   const ang = i => (Math.PI * 2 / n) * i - Math.PI / 2;
@@ -681,13 +714,13 @@ function drawSpider(stats, size, fillColor, uid){
   let rings = "";
   for (let ring = 1; ring <= 5; ring++){
     const pts = keys.map((_,i) => px(i, r*(ring/5)) + "," + py(i, r*(ring/5))).join(" ");
-    rings += '<polygon points="' + pts + '" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
+    rings += '<polygon points="' + pts + '" fill="none" style="stroke:var(--border)" stroke-opacity="0.6" stroke-width="0.5"/>';
   }
-  const axes = keys.map((_,i) => '<line x1="'+cx+'" y1="'+cy+'" x2="'+px(i,r)+'" y2="'+py(i,r)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
+  const axes = keys.map((_,i) => '<line x1="'+cx+'" y1="'+cy+'" x2="'+px(i,r)+'" y2="'+py(i,r)+'" style="stroke:var(--border)" stroke-width="0.5"/>').join("");
   const dataPts = keys.map((k,i) => { const rr = rv(stats[k]); return (cx+rr*Math.cos(ang(i))).toFixed(1)+","+(cy+rr*Math.sin(ang(i))).toFixed(1); }).join(" ");
-  const poly = '<polygon points="'+dataPts+'" fill="'+fill+'" fill-opacity="0.25" stroke="'+fill+'" stroke-width="1.5"/>';
+  const poly = '<polygon points="'+dataPts+'" style="fill:'+fill+';stroke:'+fill+'" fill-opacity="0.25" stroke-width="1.5"/>';
   const peakSet = new Set(top2.map(t => t[0]));
-  const dots = keys.map((k,i) => { const rr = rv(stats[k]); const hi = peakSet.has(k); return '<circle cx="'+(cx+rr*Math.cos(ang(i))).toFixed(1)+'" cy="'+(cy+rr*Math.sin(ang(i))).toFixed(1)+'" r="'+(hi ? (size>70?2.6:2) : (fullMode?2:1.6))+'" fill="'+(hi ? "#f0e4c8" : fill)+'"/>'; }).join("");
+  const dots = keys.map((k,i) => { const rr = rv(stats[k]); const hi = peakSet.has(k); return '<circle cx="'+(cx+rr*Math.cos(ang(i))).toFixed(1)+'" cy="'+(cy+rr*Math.sin(ang(i))).toFixed(1)+'" r="'+(hi ? (size>70?2.6:2) : (fullMode?2:1.6))+'" style="fill:'+(hi ? "var(--accent2)" : fill)+'"/>'; }).join("");
   let lbls = "";
   if (fullMode){
     const fs = (W * 0.045).toFixed(1);
@@ -696,7 +729,7 @@ function drawSpider(stats, size, fillColor, uid){
       const c = Math.cos(ang(i)), s = Math.sin(ang(i));
       const anchor = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
       const dy = s > 0.3 ? "0.8em" : s < -0.3 ? "0em" : "0.35em";
-      return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="rgba(255,255,255,0.45)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.02em">'+lbl+'</text>';
+      return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" style="fill:var(--muted)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.02em">'+lbl+'</text>';
     }).join("");
   } else {
     // peak labels (abbreviated) on the top-2 spokes
@@ -707,7 +740,7 @@ function drawSpider(stats, size, fillColor, uid){
       const c = Math.cos(ang(i)), s = Math.sin(ang(i));
       const anchor = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
       const dy = s > 0.3 ? "0.8em" : s < -0.3 ? "0em" : "0.35em";
-      return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" fill="#d8c9a4" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif">'+SPIDER_ABBR[t[0]]+'</text>';
+      return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anchor+'" dy="'+dy+'" style="fill:var(--accent2)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif">'+SPIDER_ABBR[t[0]]+'</text>';
     }).join("");
   }
   let caption = "";
@@ -718,8 +751,8 @@ function drawSpider(stats, size, fillColor, uid){
     capFont = Math.max(6.5, capFont);
     const pillW = Math.min(W - 2, capText.length * capFont * 0.52 + 14);
     const pillH = capH * 0.82, pillY = W + (capH - pillH) / 2;
-    caption = '<rect x="'+(cx - pillW/2).toFixed(1)+'" y="'+pillY.toFixed(1)+'" width="'+pillW.toFixed(1)+'" height="'+pillH.toFixed(1)+'" rx="'+(pillH/2).toFixed(1)+'" fill="#2a2620"/>' +
-      '<text x="'+cx.toFixed(1)+'" y="'+(W + capH*0.62).toFixed(1)+'" text-anchor="middle" fill="#e2d3b4" font-size="'+capFont.toFixed(1)+'" font-family="Helvetica Neue,Arial,sans-serif">'+capText+'</text>';
+    caption = '<rect x="'+(cx - pillW/2).toFixed(1)+'" y="'+pillY.toFixed(1)+'" width="'+pillW.toFixed(1)+'" height="'+pillH.toFixed(1)+'" rx="'+(pillH/2).toFixed(1)+'" style="fill:var(--surface2)"/>' +
+      '<text x="'+cx.toFixed(1)+'" y="'+(W + capH*0.62).toFixed(1)+'" text-anchor="middle" style="fill:var(--accent)" font-size="'+capFont.toFixed(1)+'" font-family="Helvetica Neue,Arial,sans-serif">'+capText+'</text>';
   }
   return '<svg width="'+W.toFixed(0)+'" height="'+H.toFixed(0)+'" viewBox="0 0 '+W.toFixed(0)+' '+H.toFixed(0)+'" xmlns="http://www.w3.org/2000/svg">' + rings + axes + poly + dots + lbls + caption + '</svg>';
 }
@@ -739,6 +772,40 @@ function bkey(brand){ return (brand || "").toUpperCase().replace(/[^A-Z]/g, "");
 const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a", YASAR:"#909090", ARAHANT:"#c08090" };
 // Conventional board-photo path for an outfit id — single source for the path format.
 function outfitPhotoPath(id){ return "outfits/outfit_" + String(id).padStart(2, "0") + ".jpg"; }
+// Outfit ids that have a curated board photo at outfits/outfit_XX.jpg — SINGLE source
+// (the Outfits board + Today both read this so they agree on which outfits have a photo).
+const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,64,65,66];
+function outfitHasPhoto(id){ return OUTFIT_PHOTO_IDS.indexOf(id) >= 0; }
+// Best photo src for an outfit: an uploaded board photo (from the shared IndexedDB store,
+// passed in via `uploads`) wins, else the curated default path, else "" (renders "No photo").
+function outfitPhotoSrc(id, uploads){ return (uploads && uploads[id]) || (outfitHasPhoto(id) ? outfitPhotoPath(id) : ""); }
+// Live outfit list — the board's edited/added set (its live `outfits` var when present,
+// else the localStorage the board persists), falling back to the defaults. One source so
+// Today shows exactly what the Outfits board shows.
+function _allOutfits(){
+  try { if (typeof outfits !== "undefined" && Array.isArray(outfits) && outfits.length) return outfits; } catch(e){}
+  try { const v = JSON.parse(localStorage.getItem("outfits") || "null"); if (Array.isArray(v) && v.length && v.every(o => o && o.id)) return v; } catch(e){}
+  return OUTFITS_DEFAULT;
+}
+// Shared reader for board photo uploads (same IndexedDB store the Outfits board writes).
+// Returns a promise of { [outfitId]: objectURL }. Any page can call it to show the same photos.
+function loadUploadedOutfitPhotos(){
+  return new Promise(function(resolve){
+    try {
+      const req = indexedDB.open("outfitBoardPhotos", 1);
+      req.onupgradeneeded = function(e){ try { e.target.result.createObjectStore("photos"); } catch(_){} };
+      req.onsuccess = function(e){
+        const db = e.target.result, out = {};
+        try {
+          const cur = db.transaction("photos", "readonly").objectStore("photos").openCursor();
+          cur.onsuccess = function(ev){ const c = ev.target.result; if (c){ try { out[c.key] = URL.createObjectURL(c.value); } catch(_){} c.continue(); } else resolve(out); };
+          cur.onerror = function(){ resolve(out); };
+        } catch(_){ resolve(out); }
+      };
+      req.onerror = function(){ resolve({}); };
+    } catch(_){ resolve({}); }
+  });
+}
 
 // Filter categories an outfit belongs to (dark/tonal/contrast/night) — derived from the
 // descriptive vibe + persona (union with explicit tags), so filters never depend on
@@ -767,8 +834,8 @@ function itemCardHtml(item, opts){
   const persona = opts.persona || null;
   const outfitCount = (opts.outfitCount != null) ? opts.outfitCount
     : ((typeof OUTFITS_DEFAULT !== "undefined") ? OUTFITS_DEFAULT.filter(o => (o.pieces||[]).some(p => p.id ? p.id === item.id : p.name === item.name)).length : 0);
-  const personaChipCv = persona ? "<div style='margin-top:5px'><span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[persona]||persona) + "</span></div>" : "";
-  const personaTag = persona ? "<span class='mgr-tag' style='background:var(--accent);color:#111;font-weight:600'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
+  const personaChipCv = persona ? "<div style='margin-top:5px'><span style='background:var(--accent);color:var(--on-accent);font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[persona]||persona) + "</span></div>" : "";
+  const personaTag = persona ? "<span class='mgr-tag' style='background:var(--accent);color:var(--on-accent);font-weight:600'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
   const roleTag = opts.roleLabel ? "<div class='mgr-item-role'>" + opts.roleLabel + "</div>" : "";
   return "<div class='mgr-item" + (opts.selected ? " selected" : "") + "' data-id='" + item.id + "' data-name=\"" + item.name + "\" data-brand=\"" + item.brand + "\">" +
     roleTag +
@@ -789,29 +856,121 @@ function itemCardHtml(item, opts){
 }
 
 /* Shared outfit card (card-view). Same markup/classes as the outfits page.
-   opts: { photo: img src, actions: bool (show save/delete) }. Click targets read
-   data-id (+ data-img) — each page wires its own handler. */
+   opts: { photo: img src, collage: [img srcs] (photo-less looks, e.g. built combos),
+           actions: bool (save/delete), saved: bool, kicker: str (overrides "NO. XX";
+           "" hides it), cardClass: str (extra classes, e.g. a featured/hero variant) }.
+   Click targets read data-id (+ data-img) — each page wires its own handler. */
+// The outfit's two strongest stats, e.g. "PRESENCE 4 · EDGE 3.5" — shown on cards in
+// place of vibe/character (those are filter dimensions). Uses effective stats.
+function leadingStatsHtml(stats, color){
+  if (!stats || typeof spiderTop2 !== "function") return "";
+  const top = spiderTop2(stats);
+  if (!top.length) return "";
+  // De-emphasized — styled like the outfit number (small, uppercase, letter-spaced, dim).
+  return "<div style='font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:" + (color || "var(--muted)") + "'>" +
+    top.map(function(t){ return SPIDER_LABELS[SPIDER_KEYS.indexOf(t[0])] + " " + (Math.round(t[1]*10)/10); }).join("  &middot;  ") +
+  "</div>";
+}
 function outfitCardHtml(outfit, opts){
   opts = opts || {};
-  const stats = (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(outfit) : null;
-  const spiderHtml = stats ? "<div class='cv-spider'>" + drawSpider(stats, 64, "rgba(226,211,180,0.9)") + "</div>" : "";
+  // effective stats when the pieces resolve; else the outfit's own precomputed stats
+  // (proposals/aspirational looks whose pieces aren't in the wardrobe).
+  const stats = ((typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(outfit) : null) || outfit.stats || null;
+  const spiderHtml = stats ? "<div class='cv-spider'>" + drawSpider(stats, 64, "rgba(226,211,180,0.9)", "cv", true) + "</div>" : "";
   const photoSrc = opts.photo || "";
-  const imgHtml = photoSrc
-    ? "<img class='cv-img' src='" + photoSrc + "' alt='" + outfit.name + "' loading='lazy'><div class='cv-gradient'></div>"
-    : "<div class='cv-no-img'>No photo</div>";
+  // Global fallback: an outfit with no generated photo shows a collage of its piece
+  // images (like Today's built combos). Explicit opts.collage still wins.
+  const collageImgs = (opts.collage && opts.collage.length)
+    ? opts.collage.slice(0,4)
+    : (!photoSrc ? (outfit.pieces || []).map(function(p){ return pieceImg(p); }).filter(Boolean).slice(0,4) : null);
+  let imgHtml;
+  if (collageImgs && collageImgs.length){
+    imgHtml = "<div class='cv-collage'>" + collageImgs.map(function(s){ return "<img src='" + s + "' alt='' loading='lazy'>"; }).join("") + "</div><div class='cv-gradient'></div>";
+  } else if (photoSrc){
+    imgHtml = "<img class='cv-img' src='" + photoSrc + "' alt='" + outfit.name + "' loading='lazy'><div class='cv-gradient'></div>";
+  } else {
+    imgHtml = "<div class='cv-no-img'>No photo</div>";
+  }
   const actionsHtml = opts.actions
     ? "<div class='cv-actions'><button class='action-btn " + (opts.saved ? "saved" : "") + "' data-action='save'>" + (opts.saved ? "&#9733;" : "&#9734;") + "</button><button class='action-btn' data-action='delete'>&#x2715;</button></div>"
     : "";
-  const personaChip = outfit.persona
-    ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona] || outfit.persona) + "</span>"
-    : "";
-  return "<div class='outfit-card card-view' data-id='" + outfit.id + "'" + (photoSrc ? " data-img='" + photoSrc + "'" : "") + ">" +
-    imgHtml + actionsHtml +
+  const numLine = (opts.kicker !== undefined)
+    ? (opts.kicker ? "<div class='cv-number'>" + opts.kicker + "</div>" : "")
+    : (typeof outfit.id === "number" ? "<div class='cv-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" : "");
+  const dataId = (!opts.noDataId && outfit.id != null) ? " data-id='" + outfit.id + "'" : "";   // noDataId: caller wires its own click (e.g. History → wear detail)
+  const extraAttrs = opts.dataAttrs ? " " + opts.dataAttrs : "";   // e.g. data-session / data-cat (proposals), data-idx (history)
+  const badges = opts.badges || "";                                 // overlay chips (session / ✓ Added / worn-photo)
+  const headerExtra = opts.headerExtra || "";                       // extra header block after the stats line (e.g. supportive photos)
+  const headerActions = opts.headerActions ? "<div class='outfit-card-actions'>" + opts.headerActions + "</div>" : "";  // top-right header buttons (e.g. remove-entry)
+
+  // ── Grid + Editorial views — same markup/classes as the Outfits page (alter-theme.css) ──
+  if (opts.view === "grid" || opts.view === "editorial"){
+    const extraCls = opts.cardClass ? " " + opts.cardClass : "";
+    if (opts.view === "grid"){
+      // Same markup/classes as the Outfits page grid card (styled by alter-theme.css).
+      const gridNum = (opts.kicker !== undefined)
+        ? (opts.kicker ? "<div class='outfit-number'>" + opts.kicker + "</div>" : "")
+        : (typeof outfit.id === "number" ? "<div class='outfit-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" : "");
+      const headMeta = "<div style='margin-top:5px'>" + leadingStatsHtml(stats, "var(--muted)") + "</div>";
+      const overlay = stats ? "<div class='outfit-photo-stats-overlay'>" + drawSpider(stats, 70, "rgba(226,211,180,0.9)", "g" + (outfit.id || "x"), true) + "</div>" : "";
+      const photoBlock = (collageImgs && collageImgs.length)
+        ? "<div class='outfit-photo'>" + badges + "<div class='cv-collage'>" + collageImgs.map(function(s){ return "<img src='" + s + "' loading='lazy'>"; }).join("") + "</div>" + overlay + "</div>"
+        : (photoSrc ? "<div class='outfit-photo'>" + badges + "<img src='" + photoSrc + "' alt='" + outfit.name + "'>" + overlay + "</div>"
+                    : "<div class='outfit-photo outfit-photo-empty'>" + badges + "<span>no photo</span></div>");
+      const pieceRows = (outfit.pieces || []).map(function(p){
+        var im = pieceImg(p);
+        var thumb = "<div class='piece-thumb piece-name-link' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\">" + (im ? "<img src='" + im + "' alt='" + p.name + "' loading='lazy'>" : "<div class='piece-thumb-empty'>&middot;</div>") + "</div>";
+        return "<div class='piece-row'>" + thumb + "<span class='piece-role'>" + (p.role||"") + "</span><span class='piece-name piece-name-link' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\">" + p.name + "</span></div>";
+      }).join("");
+      return "<div class='outfit-card" + extraCls + "'" + dataId + extraAttrs + " style='cursor:pointer'>" +
+        photoBlock +
+        "<div class='outfit-card-header'><div>" + gridNum + "<div class='outfit-name'>" + outfit.name + "</div>" + headMeta + headerExtra + "</div>" + headerActions + "</div>" +
+        "<div class='outfit-pieces'>" + pieceRows + "</div>" +
+      "</div>";
+    }
+    // Editorial (horizontal) — same markup/classes as the Outfits page (alter-theme.css).
+    const eNum = (opts.kicker !== undefined)
+      ? (opts.kicker ? "<div class='outfit-number'>" + opts.kicker + "</div>" : "")
+      : (typeof outfit.id === "number" ? "<div class='outfit-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" : "");
+    const eMeta = "<div style='margin-top:5px'>" + leadingStatsHtml(stats, "var(--muted)") + "</div>";
+    // Stats: effective spider + the same base(gold)+buff(green) bars as the popup.
+    const eBase = (typeof outfitBaseStats === "function") ? outfitBaseStats(outfit) : null;
+    const eStats = stats
+      ? "<div style='display:flex;align-items:flex-start;gap:16px;margin-top:10px'>" +
+          "<div style='flex-shrink:0'>" + drawSpider(stats, 84, "var(--accent)", "h" + (outfit.id || "x"), true) + "</div>" +
+          "<div style='flex:1;min-width:0;max-width:360px'>" + ((typeof statCompareBarsHtml === "function") ? statCompareBarsHtml(eBase, stats) : "") + "</div>" +
+        "</div>"
+      : "";
+    const ePhoto = (collageImgs && collageImgs.length)
+      ? "<div class='outfit-photo'>" + badges + "<div class='cv-collage'>" + collageImgs.map(function(s){ return "<img src='" + s + "' loading='lazy'>"; }).join("") + "</div></div>"
+      : (photoSrc ? "<div class='outfit-photo'>" + badges + "<img src='" + photoSrc + "' alt='" + outfit.name + "'></div>"
+                  : "<div class='outfit-photo outfit-photo-empty'>" + badges + "<span>no photo</span></div>");
+    const hPieces = (outfit.pieces || []).map(function(p){
+      var im = pieceImg(p);
+      return "<div class='h-piece-card piece-name-link' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\">" +
+        "<div class='h-piece-img'>" + (im ? "<img src='" + im + "' alt='" + p.name + "' loading='lazy'>" : "<div class='h-piece-img-empty'>&#x25C8;</div>") + "</div>" +
+        "<div class='h-piece-info'><div class='h-piece-role'>" + (p.role||"") + "</div><div class='h-piece-name'>" + p.name + "</div></div>" +
+      "</div>";
+    }).join("");
+    return "<div class='outfit-card horizontal" + extraCls + "'" + dataId + extraAttrs + ">" +
+      ePhoto +
+      "<div class='outfit-card-horizontal-right'>" +
+        "<div class='outfit-card-header'><div style='flex:1'>" + eNum + "<div class='outfit-name'>" + outfit.name + "</div>" + eMeta + headerExtra + eStats + "</div>" + headerActions + "</div>" +
+        "<div class='h-pieces-row'>" + hPieces + "</div>" +
+      "</div>" +
+    "</div>";
+  }
+
+  const cls = "outfit-card card-view" + (opts.cardClass ? " " + opts.cardClass : "");
+  const cvThumb = opts.cvThumb || "";   // optional left-of-text thumbnail (e.g. History's worn photo)
+  return "<div class='" + cls + "'" + dataId + extraAttrs + (photoSrc ? " data-img='" + photoSrc + "'" : "") + ">" +
+    imgHtml + badges + actionsHtml +
     "<div class='cv-info'>" + spiderHtml +
-      "<div class='cv-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" +
-      "<div class='cv-name'>" + outfit.name + "</div>" +
-      "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px'>" +
-        "<div class='cv-vibe' style='margin-top:0'>" + (outfit.vibe || "") + "</div>" + personaChip +
+      "<div class='cv-bottom-row'>" + cvThumb +
+        "<div class='cv-text'>" + numLine +
+          "<div class='cv-name'>" + outfit.name + "</div>" +
+          "<div style='margin-top:4px'>" + leadingStatsHtml(stats, "rgba(255,255,255,0.45)") + "</div>" +
+        "</div>" +
       "</div>" +
     "</div>" +
   "</div>";
@@ -851,6 +1010,20 @@ function fmtDate(iso){
   if (!iso) return "";
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+}
+// Shared wear WRITER — append a wear entry to the localStorage store the History
+// page reads. Any page that logs a wear (e.g. Today's "Wear this") should use this
+// instead of writing localStorage directly. Returns false if that outfit is already
+// logged for that date. (The wardrobe page has its own live `wornHistory` writer.)
+function addWear(entry){
+  if (!entry || !entry.date) return false;
+  let hist;
+  try { const v = JSON.parse(localStorage.getItem("worn-history") || "null"); hist = Array.isArray(v) ? v : _wearHistory().slice(); }
+  catch(e){ hist = _wearHistory().slice(); }
+  if (hist.some(w => w.date === entry.date && w.outfitId === entry.outfitId)) return false;
+  hist.push(entry);
+  try { localStorage.setItem("worn-history", JSON.stringify(hist)); } catch(e){}
+  return true;
 }
 /* Shared wear-history block. One builder for every popup.
    opts.interactive → renders the clickable "Last worn" card with a unified
@@ -931,7 +1104,7 @@ function itemStylingPotentialHtml(item){
   const all = singles.concat(combos);
   const innate = all.filter(x => x.innate), synergy = all.filter(x => !x.innate);
   if (!innate.length && !synergy.length) return "";
-  const innateRow = r => "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(110,206,128,0.08);border:1px solid rgba(110,206,128,0.28);border-radius:7px;padding:6px 10px;margin-bottom:5px'>" +
+  const innateRow = r => "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--buff-soft);border:1px solid var(--buff-border);border-radius:7px;padding:6px 10px;margin-bottom:5px'>" +
     "<span style='font-size:11px;color:var(--text);font-weight:600'>" + r.name + "</span>" +
     "<span style='font-size:10px;color:" + green + ";white-space:nowrap'>" + r.reward + "</span></div>";
   const synergyRow = r => "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 10px;margin-bottom:5px'>" +
@@ -988,7 +1161,7 @@ function itemDetailInfoHtml(item, opts){
         return "<div class='pair-card' data-name=\"" + pairName + "\" data-brand=\"" + (pairItem && pairItem.brand || "") + "\"><div class='pair-card-thumb'>" + (pairImg ? "<img src='" + pairImg + "' alt='" + pairName + "' loading='lazy'>" : "<div class='pair-card-thumb-empty'>" + pb.slice(0,2) + "</div>") + "</div><div class='pair-card-name'>" + pairName + (count>1?"<br><span class='pair-count-badge'>" + count + "x</span>":"") + "</div></div>";
       }).join("") + "</div></div>";
   }
-  const personaTag = persona ? "<span class='item-detail-tag' style='background:var(--accent);color:#111;font-weight:700'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
+  const personaTag = persona ? "<span class='item-detail-tag' style='background:var(--accent);color:var(--on-accent);font-weight:700'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
   const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(item.stats) + itemStylingPotentialHtml(item) + "</div>" : "";
   return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
@@ -1008,6 +1181,21 @@ const PERSONA_TARGETS = {
 };
 Object.keys(PERSONA_TARGETS).forEach(k => { PERSONA_TARGETS[k].drama = rollupDrama(PERSONA_TARGETS[k]); });
 
+// Best-fit persona for an item — scores its stats against the unified PERSONA_TARGETS
+// (8-facet), using only the keys the item actually has. One matcher, one profile source.
+function getItemPersona(item){
+  const s = item && item.stats; if (!s) return null;
+  const keys = STAT_KEYS8.filter(k => s[k] != null);
+  if (!keys.length) return null;
+  let best = null, bestDist = Infinity;
+  Object.keys(PERSONA_TARGETS).forEach(slug => {
+    const ps = PERSONA_TARGETS[slug];
+    const dist = Math.sqrt(keys.reduce((sum, k) => sum + Math.pow((s[k]||0) - (ps[k]||0), 2), 0));
+    if (dist < bestDist) { bestDist = dist; best = slug; }
+  });
+  return best;
+}
+
 /* ── SHARED OUTFIT-DETAIL RENDER HELPERS ─────────────────────────────────────
    Used by the outfit-detail popup on both the outfits page and the persona page
    so the two are byte-identical. Inline styles + data.js helpers only. */
@@ -1021,7 +1209,7 @@ function statBarsHtml(stats) {
     "</div>"
   ).join("");
   return "<div style=\"display:flex;align-items:center;gap:20px;padding:4px 0\">" +
-    drawSpider(stats, 130, "#e2d3b4", "detail") +
+    drawSpider(stats, 130, "var(--accent)", "detail") +
     "<div style=\"flex:1;min-width:0\">" + bars + "</div>" +
   "</div>";
 }
@@ -1033,7 +1221,7 @@ function outfitStylingHtml(outfit){
   var comboChips = combos.map(function(c){
     var label = c.labelFn ? c.labelFn(outfit) : c.label;
     var bt = boostText(c.boost);
-    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#111;font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + label + (bt ? " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + bt + "</span>" : "") + "</span>";
+    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:var(--on-accent);font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + label + (bt ? " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + bt + "</span>" : "") + "</span>";
   }).join("");
   var attrChips = attrs.map(function(a){
     return "<span style=\"background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;padding:3px 7px;border-radius:6px\">" + a + "</span>";
@@ -1049,11 +1237,11 @@ function outfitStylingHtml(outfit){
    base  = raw average of the pieces' on-the-rack stats
    eff   = base + per-item singles + outfit combos (effectiveOutfitStats)
    The delta (eff − base) is the styling buff, shown in green. */
-const SPIDER_BUFF = "#6ece80"; // styling-buff green
+const SPIDER_BUFF = "var(--buff)"; // styling-buff green (theme token)
 function outfitBaseStats(outfit){
   if (!outfit || !outfit.pieces) return null;
   const t = {}; STAT_KEYS8.forEach(k => t[k] = 0); let n = 0;
-  outfit.pieces.forEach(p => { const it = itemForPiece(p); if (it && it.stats){ STAT_KEYS8.forEach(k => t[k] += (it.stats[k]||0)); n++; } });
+  outfit.pieces.forEach(p => { const it = itemForPiece(p) || (p && p.stats ? p : null); if (it && it.stats){ STAT_KEYS8.forEach(k => t[k] += (it.stats[k]||0)); n++; } });
   if (!n) return null;
   const a = {}; STAT_KEYS8.forEach(k => a[k] = Math.round(t[k]/n*10)/10); a.drama = rollupDrama(a); return a;
 }
@@ -1069,59 +1257,74 @@ function drawSpiderCompare(base, eff, size){
   let rings = "";
   for (let ring = 1; ring <= 5; ring++){
     const rp = keys.map((_,i) => (cx+r*(ring/5)*Math.cos(ang(i))).toFixed(1)+","+(cy+r*(ring/5)*Math.sin(ang(i))).toFixed(1)).join(" ");
-    rings += '<polygon points="'+rp+'" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="0.5"/>';
+    rings += '<polygon points="'+rp+'" fill="none" style="stroke:var(--border)" stroke-opacity="0.6" stroke-width="0.5"/>';
   }
-  const axes = keys.map((_,i) => '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+r*Math.cos(ang(i))).toFixed(1)+'" y2="'+(cy+r*Math.sin(ang(i))).toFixed(1)+'" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>').join("");
-  const effPoly = '<polygon points="'+ptsOf(eff)+'" fill="'+SPIDER_BUFF+'" fill-opacity="0.12" stroke="'+SPIDER_BUFF+'" stroke-width="1.4"/>';
-  const basePoly = base ? '<polygon points="'+ptsOf(base)+'" fill="#e2d3b4" fill-opacity="0.28" stroke="#e2d3b4" stroke-width="1.4"/>' : '';
+  const axes = keys.map((_,i) => '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+r*Math.cos(ang(i))).toFixed(1)+'" y2="'+(cy+r*Math.sin(ang(i))).toFixed(1)+'" style="stroke:var(--border)" stroke-width="0.5"/>').join("");
+  const effPoly = '<polygon points="'+ptsOf(eff)+'" style="fill:'+SPIDER_BUFF+';stroke:'+SPIDER_BUFF+'" fill-opacity="0.12" stroke-width="1.4"/>';
+  const basePoly = base ? '<polygon points="'+ptsOf(base)+'" style="fill:var(--accent);stroke:var(--accent)" fill-opacity="0.28" stroke-width="1.4"/>' : '';
   const fs = (W * 0.045).toFixed(1);
   const lbls = labels.map((lbl,i) => {
     const lx = (cx + labelR*Math.cos(ang(i))).toFixed(1), ly = (cy + labelR*Math.sin(ang(i))).toFixed(1);
     const c = Math.cos(ang(i)), si = Math.sin(ang(i));
     const anc = c > 0.3 ? "start" : c < -0.3 ? "end" : "middle";
     const dy = si > 0.3 ? "0.8em" : si < -0.3 ? "0em" : "0.35em";
-    return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" dy="'+dy+'" fill="rgba(255,255,255,0.45)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.02em">'+lbl+'</text>';
+    return '<text x="'+lx+'" y="'+ly+'" text-anchor="'+anc+'" dy="'+dy+'" style="fill:var(--muted)" font-size="'+fs+'" font-family="Helvetica Neue,Arial,sans-serif" letter-spacing="0.02em">'+lbl+'</text>';
   }).join("");
   const ws = W.toFixed(0);
   return '<svg width="'+ws+'" height="'+ws+'" viewBox="0 0 '+ws+' '+ws+'" xmlns="http://www.w3.org/2000/svg">'+rings+axes+effPoly+basePoly+lbls+'</svg>';
 }
 // Combined STATS panel: two-layer spider + 8 two-tone bars (base + buff) with total & delta.
-function outfitStatsCompareHtml(outfit){
-  const base = outfitBaseStats(outfit), eff = effectiveOutfitStats(outfit);
+// Two-tone stat bars: base (gold) + styling buff (green) + final value + delta.
+// Shared by the outfit-detail popup AND the editorial card so their stat readouts match.
+function statCompareBarsHtml(base, eff){
   if (!eff) return "";
-  const spider = drawSpiderCompare(base, eff, 150);
-  const bars = SPIDER_KEYS.map(function(k, idx){
+  return SPIDER_KEYS.map(function(k, idx){
     const bv = (base && base[k]) || 0, ev = eff[k] || 0, d = Math.round((ev - bv) * 10) / 10;
     const basePct = Math.min(bv, ev) / 5 * 100, bonusPct = d > 0 ? d / 5 * 100 : 0;
     return "<div style='display:flex;align-items:center;gap:8px;margin-bottom:7px'>" +
       "<div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:74px;flex-shrink:0'>" + SPIDER_LABELS[idx] + "</div>" +
       "<div style='flex:1;min-width:0;height:6px;background:var(--border);border-radius:6px;overflow:hidden;display:flex'>" +
-        "<div style='height:100%;width:" + basePct.toFixed(1) + "%;background:#e2d3b4'></div>" +
+        "<div style='height:100%;width:" + basePct.toFixed(1) + "%;background:var(--accent)'></div>" +
         (bonusPct ? "<div style='height:100%;width:" + bonusPct.toFixed(1) + "%;background:" + SPIDER_BUFF + "'></div>" : "") +
       "</div>" +
       "<div style='font-size:11px;color:var(--text);width:24px;text-align:right;flex-shrink:0'>" + ev + "</div>" +
       "<div style='font-size:10px;color:" + SPIDER_BUFF + ";width:26px;flex-shrink:0'>" + (d > 0 ? "+" + d : "") + "</div>" +
     "</div>";
   }).join("");
+}
+function outfitStatsCompareHtml(outfit){
+  const base = outfitBaseStats(outfit), eff = effectiveOutfitStats(outfit);
+  if (!eff) return "";
+  const spider = drawSpiderCompare(base, eff, 150);
+  const bars = statCompareBarsHtml(base, eff);
   const legend = "<div style='display:flex;gap:14px;justify-content:flex-end;margin-bottom:10px;font-size:9px;color:var(--muted)'>" +
-    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:#e2d3b4;margin-right:4px;vertical-align:middle'></span>base</span>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--accent);margin-right:4px;vertical-align:middle'></span>base</span>" +
     "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:" + SPIDER_BUFF + ";margin-right:4px;vertical-align:middle'></span>styling buff</span>" +
   "</div>";
-  // Styling chips (combos + raw attribute tags) folded into the same panel.
+  // Active styling bonuses — clear reward rows, matching the item popup's
+  // "Styling potential" framing (name + plain-language why + green reward).
   var combos = (typeof outfitCombosFired === "function") ? outfitCombosFired(outfit) : [];
   var attrs = (typeof outfitAttrs === "function") ? Array.from(outfitAttrs(outfit)) : [];
-  var comboChips = combos.map(function(c){
-    var label = c.labelFn ? c.labelFn(outfit) : c.label; var bt = boostText(c.boost);
-    return "<span style=\"display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#111;font-size:9px;font-weight:700;padding:4px 9px;border-radius:7px;letter-spacing:0.03em\">&#9672; " + label + (bt ? " <span style=\"font-weight:500;opacity:0.65;font-size:8px\">" + bt + "</span>" : "") + "</span>";
+  var comboRows = combos.map(function(c){
+    var label = c.labelFn ? c.labelFn(outfit) : c.label;
+    var bt = boostText(c.boost);
+    var desc = (typeof COMBO_DESC !== "undefined" && COMBO_DESC[c.id]) || "";
+    return "<div style='display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--buff-soft);border:1px solid var(--buff-border);border-radius:7px;padding:6px 10px;margin-bottom:5px'>" +
+      "<span style='min-width:0'>" +
+        "<span style='font-size:11px;color:var(--text);font-weight:600'>" + label + "</span>" +
+        (desc ? "<br><span style='font-size:9px;color:var(--muted)'>from " + desc + "</span>" : "") +
+      "</span>" +
+      "<span style='font-size:10px;color:var(--buff);white-space:nowrap'>" + (bt || "no stat change") + "</span>" +
+    "</div>";
   }).join("");
-  var attrChips = attrs.map(function(a){
-    return "<span style=\"background:var(--surface);border:1px solid var(--border);color:var(--muted);font-size:8px;text-transform:uppercase;letter-spacing:0.1em;padding:3px 7px;border-radius:6px\">" + a + "</span>";
-  }).join("");
+  var attrLine = attrs.length
+    ? "<div style='font-size:9px;color:var(--muted);margin-top:8px;letter-spacing:0.02em'>Worn: " + attrs.join(" &middot; ") + "</div>"
+    : "";
   var stylingSection = (combos.length || attrs.length)
     ? "<div style='margin-top:16px;padding-top:14px;border-top:1px solid var(--border)'>" +
         "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Styling</div>" +
-        (combos.length ? "<div style='display:flex;flex-wrap:wrap;gap:6px" + (attrs.length ? ";margin-bottom:8px" : "") + "'>" + comboChips + "</div>" : "") +
-        (attrs.length ? "<div style='display:flex;flex-wrap:wrap;gap:5px'>" + attrChips + "</div>" : "") +
+        (combos.length ? "<div style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--buff);margin-bottom:6px'>&#9670; Active &mdash; boosting this look</div>" + comboRows : "") +
+        attrLine +
       "</div>"
     : "";
   return "<div style='margin-bottom:20px;padding:16px;background:var(--surface2);border-radius:8px'>" +
@@ -1133,4 +1336,278 @@ function outfitStatsCompareHtml(outfit){
     "</div>" +
     stylingSection +
   "</div>";
+}
+
+/* ── SHARED PAIRING ENGINE ────────────────────────────────────────────────────
+   "What completes a look around this piece." Given an anchor (a wardrobe item OR
+   a shop item), score complementary wardrobe pieces by stat closeness + persona
+   fit and assemble a few full outfits. Shared by the Builder (Suggestions tab)
+   and the Shop ("Pairs with your wardrobe"). Anchors that aren't in the wardrobe
+   pool carry their own stats/img on the piece ref, which the stat aggregators +
+   pieceImg pick up via their embedded-stats fallback. */
+const CAT_ROLE = {
+  top:"top", shirt:"top", tee:"top", "t-shirt":"top", tshirt:"top", tank:"top", blouse:"top",
+  corset:"top", bodysuit:"top", bustier:"top", bra:"top",
+  pants:"bottom", trousers:"bottom", skirt:"bottom", shorts:"bottom", jeans:"bottom", leggings:"bottom",
+  jacket:"outer", coat:"outer", cardigan:"outer", cape:"outer", vest:"outer", gown:"outer",
+  blazer:"outer", outer:"outer", robe:"outer", overcoat:"outer", kimono:"outer",
+  boots:"shoes", shoes:"shoes", boot:"shoes", sneakers:"shoes", heels:"shoes", sandals:"shoes",
+  harness:"accessory", jumpsuit:"full", dress:"full", set:"full", overall:"full"
+};
+function pieceRole(item){
+  if (!item) return "top";
+  if (item.type) return item.type;
+  return CAT_ROLE[(item.cat || "").toLowerCase().trim()] || "top";
+}
+// Complementary wardrobe slots to source for a given anchor role, in display order.
+function _pairSlots(anchorRole){
+  switch (anchorRole){
+    case "top":       return ["bottom","outer","shoes"];
+    case "bottom":    return ["top","outer","shoes"];
+    case "outer":     return ["top","bottom","shoes"];
+    case "shoes":     return ["top","bottom","outer"];
+    case "accessory": return ["top","bottom","shoes"];   // harness layers over a top
+    case "full":      return ["outer","shoes"];          // jumpsuit/dress = full look already
+    default:          return ["bottom","shoes"];
+  }
+}
+// Piece ref for a suggestion; embeds stats/img so out-of-pool anchors still resolve.
+function _pairRef(it, role){
+  return { role: role || "Piece", id: it.id, name: it.name, brand: it.brand,
+    stats: it.stats, img: (typeof IMAGES !== "undefined" && IMAGES[it.name]) || it.img };
+}
+/* ── GARMENT WARMTH MODEL (weather fit) ──────────────────────────────────────
+   Each item gets a 0–5 warmth (0 = mesh/tank, 5 = heavy winter coat), auto-derived
+   from its category + name keywords; a per-item `warmth` field overrides the derived
+   value for outliers. Rolled up to an outfit warmth (warmest layer + a small layering
+   bonus) and checked against the temperature band, so a winter coat isn't suggested at
+   80° (and bare mesh isn't suggested at 30°). Shared: Today's scoring AND the
+   pairing/builder engine both read this. */
+const WARMTH_BY_TYPE = { top:1.5, bottom:1, outer:3.5, shoes:1, accessory:0.5, full:1.2 };
+const WARMTH_BY_CAT = {
+  coat:5, overcoat:5, puffer:5, parka:5, peacoat:4.5, trench:3.5,
+  sweater:4, knit:4, cardigan:3, hoodie:2.5, sweatshirt:2.5,
+  jacket:3, blazer:3, vest:2.5, gilet:2.5, overshirt:2, flannel:2.5,
+  shirt:1, tee:0.8, "t-shirt":0.8, top:1, tank:0, camisole:0.3,
+  pants:1, trousers:1, jeans:1.2, joggers:1.2, leggings:1, skirt:0.8, shorts:0.2,
+  dress:1, jumpsuit:1.2, romper:0.6,
+  boots:1.2, sneakers:1, shoes:1, loafers:1, sandals:0.2, heels:0.6,
+  harness:0, scarf:1.5, gloves:1, hat:0.5, belt:0, jewelry:0, ring:0, chain:0, necklace:0
+};
+const WARMTH_KW = [
+  [/puffer|parka|down|shearling|fur|quilt|padded/i, 1.5],
+  [/wool|cashmere|fleece|thermal|sherpa|teddy/i, 1.0],
+  [/leather|knit|sweater|cardigan|\bcoat/i, 0.5],
+  [/heavy|lined|insulat/i, 0.5],
+  [/mesh|sheer|see.?through|\bnet\b|tulle|fishnet/i, -1.5],
+  [/tank|sleeveless|camisole|bralette|bandeau/i, -1.0],
+  [/linen|shorts/i, -0.7],
+  [/\bcrop|short.?sleeve/i, -0.5]
+];
+function _wclamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
+function itemWarmth(item){
+  if (!item) return 1;
+  if (typeof item.warmth === "number") return _wclamp(item.warmth, 0, 5);      // per-item override wins
+  const cat = (item.cat || "").toLowerCase().trim();
+  const role = (typeof pieceRole === "function") ? pieceRole(item) : item.type;
+  let w = (cat && cat in WARMTH_BY_CAT) ? WARMTH_BY_CAT[cat]
+        : (WARMTH_BY_TYPE[role] != null ? WARMTH_BY_TYPE[role] : 1);
+  const name = item.name || "";
+  WARMTH_KW.forEach(function(k){ if (k[0].test(name)) w += k[1]; });
+  return Math.round(_wclamp(w, 0, 5) * 10) / 10;
+}
+function pieceWarmth(p){
+  const it = itemForPiece(p) || (p && p.stats ? p : null);
+  return it ? itemWarmth(it) : 1;
+}
+function outfitWarmth(outfit){
+  const ws = (outfit && outfit.pieces || []).map(pieceWarmth);
+  if (!ws.length) return null;
+  const base = Math.max.apply(null, ws);
+  const layers = ws.filter(function(w){ return w >= 2; }).length;   // warm layers stack a little
+  return Math.round(_wclamp(base + 0.3 * Math.max(0, layers - 1), 0, 5) * 10) / 10;
+}
+// Temp band → comfortable warmth. Outside hardMin/hardMax = severe mismatch (drop);
+// outside softMin/softMax = soft re-rank nudge; near ideal = a small reward.
+const BAND_WARMTH = {
+  freezing: { ideal:4.5, softMin:3.5, softMax:5,   hardMin:2.5, hardMax:6   },
+  cold:     { ideal:3.5, softMin:2.5, softMax:5,   hardMin:1.5, hardMax:6   },
+  cool:     { ideal:2.5, softMin:1.5, softMax:4,   hardMin:0,   hardMax:6   },
+  mild:     { ideal:1.5, softMin:0.5, softMax:3,   hardMin:0,   hardMax:4.2 },
+  warm:     { ideal:1,   softMin:0,   softMax:2.2, hardMin:0,   hardMax:3.5 },
+  hot:      { ideal:0.6, softMin:0,   softMax:1.8, hardMin:0,   hardMax:2.8 }
+};
+function weatherFit(warmth, band){
+  if (!band || warmth == null || !(band in BAND_WARMTH)) return { drop:false, nudge:0 };
+  const b = BAND_WARMTH[band];
+  if (warmth > b.hardMax || warmth < b.hardMin) return { drop:true, nudge:-99 };
+  const over  = Math.max(0, warmth - b.softMax);
+  const under = Math.max(0, b.softMin - warmth);
+  let nudge = -(over * 0.8 + under * 0.9);
+  if (over === 0 && under === 0){
+    const spread = Math.max(0.5, (b.softMax - b.softMin) / 2);
+    nudge += (1 - Math.abs(warmth - b.ideal) / spread) * 0.3;
+  }
+  return { drop:false, nudge: Math.round(nudge * 100) / 100 };
+}
+function outfitWeatherFit(outfit, band){ return weatherFit(outfitWarmth(outfit), band); }
+
+// Assemble up to opts.max full-look suggestions around an anchor.
+function buildPairings(anchor, opts){
+  if (!anchor) return [];
+  opts = opts || {};
+  const pool = opts.pool || _allItems();
+  const max  = opts.max || 3;
+  const persona = opts.persona || anchor.persona ||
+    ((typeof getItemPersona === "function") ? getItemPersona(anchor) : null);
+  const anchorRole = pieceRole(anchor);
+  const a = anchor.stats || null;
+  // Weather gate: exclude pieces too warm to wear at all today (a coat can't be cooled
+  // by layering), and prefer pieces whose warmth suits the band. band = temp band string.
+  const bw = (opts.band && typeof BAND_WARMTH !== "undefined" && BAND_WARMTH[opts.band]) ? BAND_WARMTH[opts.band] : null;
+  const tooWarm = it => bw ? (itemWarmth(it) > bw.hardMax) : false;
+  const byRole = role => pool.filter(i => i.id !== anchor.id && i.stats && pieceRole(i) === role && !tooWarm(i));
+  function score(it){
+    const s = it.stats; if (!s || !a) return 0;
+    let sc = 0;
+    sc += Math.abs((s.drama||0)     - (a.drama||0))     < 1.5 ? 1   : 0;
+    sc += Math.abs((s.edge||0)      - (a.edge||0))      < 1.5 ? 1   : 0;
+    sc += Math.abs((s.formality||0) - (a.formality||0)) < 1.5 ? 0.5 : 0;
+    sc += (s.structure||0) >= 2 ? 0.3 : 0;
+    if (persona && typeof getItemPersona === "function" && getItemPersona(it) === persona) sc += 1.2;
+    if (bw) sc += weatherFit(itemWarmth(it), opts.band).nudge * 0.4;   // gentle warmth preference
+    return sc;
+  }
+  const best = (arr, k) => arr.slice().sort((x,y) => score(y) - score(x)).slice(0, k == null ? 1 : k);
+  const roleLabel   = { top:"Top", bottom:"Bottom", outer:"Outer", shoes:"Shoes" };
+  const anchorLabel = { top:"Top", bottom:"Bottom", outer:"Outer", shoes:"Shoes", accessory:"Layer", full:"Full look" };
+  // Drop the outer slot when it's warm/hot — no coat/jacket needed.
+  const slots = _pairSlots(anchorRole).filter(r => !(r === "outer" && (opts.band === "warm" || opts.band === "hot")));
+  const primaryRole = slots[0];
+  const primaries = best(byRole(primaryRole), max);
+  if (!primaries.length) return [];
+  return primaries.map((primary, idx) => {
+    const pieces = [ _pairRef(anchor, anchorLabel[anchorRole] || "Piece"), _pairRef(primary, roleLabel[primaryRole]) ];
+    slots.slice(1).forEach(role => {
+      const cands = best(byRole(role), max);
+      const pick = cands[Math.min(idx, cands.length - 1)] || cands[0];
+      if (pick) pieces.push(_pairRef(pick, roleLabel[role]));
+    });
+    return { pieces };
+  });
+}
+// One horizontal chip (thumbnail + role + name inline) for a suggestion piece.
+// Horizontal reads much better than a narrow vertical thumbnail — names stay legible.
+function pairingPieceChip(p){
+  const img = pieceImg(p);
+  const role = p.role ? "<span style='font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block'>" + p.role + "</span>" : "";
+  return "<div style='display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--text)'>" +
+    "<div style='width:32px;height:42px;flex-shrink:0;overflow:hidden;border-radius:6px;background:var(--surface)'>" +
+      (img ? "<img src='" + img + "' loading='lazy' style='width:100%;height:100%;object-fit:cover;object-position:top;display:block'>" : "") +
+    "</div>" +
+    "<span style='min-width:0'>" + role + p.name + "</span>" +
+  "</div>";
+}
+// Full shared "Pairs" VIEW: header (kicker/name/subtitle + gold/green legend) + the
+// cards grid. One component for the Shop full-screen view and the Builder Suggestions
+// panel. Copy is overridable via opts.kicker / opts.title / opts.subtitle.
+function pairsViewHtml(anchor, opts){
+  if (!anchor) return "";
+  opts = opts || {};
+  const kicker = opts.kicker || "Pairs with your wardrobe";
+  const title  = (opts.title !== undefined) ? opts.title : (anchor.name || "");
+  const sub    = opts.subtitle ||
+    "Full looks this piece would unlock from what you already own — base <span style=\"color:var(--accent)\">gold</span>, styling buff <span style=\"color:var(--buff)\">green</span>.";
+  return "<div class='pair-head'>" +
+      "<div class='ph-kicker'>" + kicker + "</div>" +
+      (title ? "<div class='ph-name'>" + title + "</div>" : "") +
+      "<div class='ph-sub'>" + sub + "</div>" +
+    "</div>" +
+    "<div class='pair-body'>" + pairingCardsHtml(anchor, opts) + "</div>";
+}
+// Full "pairs with" block: N suggestion cards, each = piece chips + the base/buff compare panel.
+function pairingCardsHtml(anchor, opts){
+  const sugg = buildPairings(anchor, opts);
+  if (!sugg.length) return "<div style='color:var(--muted);font-size:12px;padding:14px 0'>No strong wardrobe pairings yet — add more pieces with matching stats and they'll show up here.</div>";
+  return sugg.map(combo =>
+    "<div style='background:var(--card-grad);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:14px'>" +
+      "<div style='display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px'>" +
+        combo.pieces.map(pairingPieceChip).join("") +
+      "</div>" +
+      ((typeof outfitStatsCompareHtml === "function") ? "<div style='margin-top:10px'>" + outfitStatsCompareHtml({ pieces: combo.pieces }) + "</div>" : "") +
+    "</div>"
+  ).join("");
+}
+
+/* ── SHARED OUTFIT-DETAIL POPUP BUILDERS ──────────────────────────────────────
+   One outfit-detail content builder for every page (Outfits board, Proposals,
+   Persona). Self-contained: inline styles + data.js helpers only, so any page can
+   drop the output into a panel. `outfitDetailPhotoHtml` = the piece-thumbnail
+   column (photo side); `outfitDetailInfoHtml` = header + stats + pieces (info side).
+   Piece rows carry data-name/data-brand + class .outfit-detail-piece so each page
+   can wire clicks to its own item popup (or leave them inert). */
+function outfitDetailPhotoHtml(outfit){
+  if (!outfit || !outfit.pieces) return "";
+  const rows = outfit.pieces.map(function(p){
+    const img = pieceImg(p);
+    const bl = (BRANDS[bkey(p.brand)] && BRANDS[bkey(p.brand)].label) || p.brand || "";
+    return "<div style='display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border)'>" +
+      "<div style='width:36px;height:46px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);overflow:hidden;border-radius:6px'>" +
+        (img ? "<img src='" + img + "' style='width:100%;height:100%;object-fit:cover;object-position:top'>" : "") +
+      "</div>" +
+      "<div>" +
+        "<div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px'>" + (p.role||"") + "</div>" +
+        "<div style='font-size:11px;color:var(--text)'>" + p.name + "</div>" +
+        "<div style='font-size:9px;color:var(--accent2)'>" + bl + "</div>" +
+      "</div>" +
+    "</div>";
+  }).join("");
+  return "<div style='overflow-y:auto;height:100%'>" + rows + "</div>";
+}
+function outfitDetailInfoHtml(outfit, opts){
+  if (!outfit) return "";
+  opts = opts || {};
+  const personaChip = outfit.persona
+    ? "<span style='background:var(--accent);color:var(--on-accent);font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" +
+        ((typeof PERSONA_LABELS !== "undefined" && PERSONA_LABELS[outfit.persona]) || outfit.persona) + "</span>"
+    : "";
+  const piecesHtml = (outfit.pieces || []).map(function(p){
+    const img = pieceImg(p);
+    const bl = (BRANDS[bkey(p.brand)] && BRANDS[bkey(p.brand)].label) || p.brand || "";
+    return "<div class='outfit-detail-piece' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\" style='display:flex;align-items:center;gap:10px;padding:6px 4px;border-radius:8px;cursor:pointer;transition:background 0.12s' onmouseover=\"this.style.background='var(--surface2)'\" onmouseout=\"this.style.background=''\">" +
+      "<div style='width:40px;height:52px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);overflow:hidden;border-radius:6px'>" +
+        (img ? "<img src='" + img + "' alt='" + p.name + "' style='width:100%;height:100%;object-fit:cover;object-position:top'>" : "") +
+      "</div>" +
+      "<div style='min-width:0'>" +
+        "<div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)'>" + (p.role||"") + "</div>" +
+        "<div style='font-size:12px;color:var(--text)'>" + p.name + "</div>" +
+        "<div style='font-size:9px;color:var(--accent2)'>" + bl + "</div>" +
+      "</div>" +
+    "</div>";
+  }).join("");
+  return (function(){
+      const k = (opts.kicker !== undefined) ? opts.kicker
+        : (typeof outfit.id === "number" ? "No. " + String(outfit.id).padStart(2,"0") + (outfit.source==="detected" ? " &middot; Auto-detected" : "") : "");
+      return k ? "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px'>" + k + "</div>" : "";
+    })() +
+    "<div style='font-size:20px;color:var(--white);font-weight:600;line-height:1.2;margin-bottom:6px'>" + outfit.name + "</div>" +
+    "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px'>" +
+      "<div style='font-size:11px;color:var(--accent);font-style:italic'>" + (outfit.vibe||"") + "</div>" + personaChip +
+    "</div>" +
+    (opts.wearHtml || "") +
+    (function(){
+      const cmp = (typeof outfitStatsCompareHtml === "function") ? outfitStatsCompareHtml(outfit) : "";
+      if (cmp) return cmp;
+      // Fallback: proposal/aspirational pieces may not be in the wardrobe, so the
+      // per-piece compare can't compute — show the outfit's own precomputed spider.
+      if (outfit.stats && typeof drawSpider === "function")
+        return "<div style='margin-bottom:20px;padding:16px;background:var(--surface2);border-radius:8px'>" +
+          "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px'>Stats</div>" +
+          "<div style='display:flex;justify-content:center'>" + drawSpider(outfit.stats, 150, "var(--accent)", "od" + outfit.id) + "</div>" +
+        "</div>";
+      return "";
+    })() +
+    "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px'>Pieces</div>" +
+    piecesHtml +
+    (opts.note ? "<p style='margin-top:16px;font-size:11px;color:var(--muted)'>" + opts.note + "</p>" : "");
 }

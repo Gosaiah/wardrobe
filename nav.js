@@ -78,6 +78,7 @@
   const isProposals = page === 'outfit_proposals.html';
   const isShop      = page === 'shop.html';
   const isProfile   = page === 'profile.html';
+  const isToday     = page === 'today.html';
 
   // On wardrobe page: real buttons (existing JS handles tab switching).
   // On other pages: anchors that link back to wardrobe.
@@ -103,6 +104,7 @@
       </svg>
       <span class="nav-wm">Alter</span>
     </a>
+    <a href="today.html" class="nav-tab${isToday ? ' active' : ''}">Today</a>
     ${tabsHtml}
     <div class="nav-divider"></div>
     <a href="outfit_proposals.html" class="nav-link${isProposals ? ' active' : ''}">Proposals</a>

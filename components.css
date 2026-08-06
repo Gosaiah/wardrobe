@@ -3,21 +3,8 @@
    that renders them, so there is one definition and no per-file drift.
    Relies on each page's CSS variables (--surface, --border, --accent, etc.). */
 
-/* Outfit card — card-view (photo tile with spider overlay). Mirrors the outfits page. */
-.outfits-grid.card-view { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px; }
-.outfit-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; transition:border-color 0.2s; }
-.outfit-card.card-view { position:relative; aspect-ratio:3/4; overflow:hidden; border-radius:8px; cursor:pointer; border:1px solid var(--border); background:var(--surface2); transition:border-color 0.2s; }
-.outfit-card.card-view:hover { border-color:var(--accent2); }
-.outfit-card.card-view .cv-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
-.outfit-card.card-view .cv-no-img { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:9px; letter-spacing:0.14em; text-transform:uppercase; }
-.outfit-card.card-view .cv-gradient { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.75) 100%); pointer-events:none; }
-.outfit-card.card-view .cv-info { position:absolute; bottom:0; left:0; right:0; padding:14px; }
-.outfit-card.card-view .cv-number { font-size:9px; letter-spacing:0.14em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:2px; }
-.outfit-card.card-view .cv-name { font-size:14px; font-weight:600; color:var(--white); line-height:1.2; }
-.outfit-card.card-view .cv-vibe { font-size:10px; color:var(--accent); font-style:italic; margin-top:3px; }
-.outfit-card.card-view .cv-spider { display:block; margin-bottom:6px; pointer-events:none; }
-.outfit-card.card-view .cv-actions { position:absolute; top:8px; left:8px; display:flex; gap:4px; opacity:0; transition:opacity 0.15s; }
-.outfit-card.card-view:hover .cv-actions { opacity:1; }
+/* Outfit card CSS (card/grid/editorial) + view toggle now live in alter-theme.css
+   (loaded by every page incl. the Outfits board, which doesn't link components.css). */
 
 /* Clothing item card — same mgr-item component as the clothing page. */
 .mgr-items { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
@@ -66,3 +53,20 @@
 .pair-card-thumb-empty { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.1); font-size:0.6rem; text-transform:uppercase; }
 .pair-card-name { padding:4px 5px 6px; font-size:0.62rem; color:var(--muted); line-height:1.3; }
 .pair-count-badge { display:inline-block; background:rgba(255,255,255,0.07); border-radius:8px; padding:1px 4px; font-size:0.58rem; color:var(--accent); margin-top:2px; }
+
+/* ── Shared outfit/item detail modal (Outfits board, Proposals, Persona) ────── */
+.item-detail-overlay { position:fixed; inset:0; z-index:1200; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; }
+.item-detail-panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; width:clamp(320px,96vw,1100px); max-height:92vh; overflow:hidden; display:flex; flex-direction:column; position:relative; }
+.item-detail-inner { display:flex; overflow:hidden; flex:1; min-height:0; align-items:stretch; }
+.item-detail-close { position:absolute; top:14px; right:16px; background:none; border:1px solid var(--border); color:var(--muted); cursor:pointer; padding:4px 10px; border-radius:10px; font-size:0.9rem; z-index:10; transition:color .2s,border-color .2s; font-family:inherit; }
+.item-detail-close:hover { color:var(--white); border-color:var(--white); }
+.item-detail-photo-col { width:40%; flex-shrink:0; background:var(--surface2); border-right:1px solid var(--border); overflow:hidden; align-self:stretch; }
+.item-detail-photo { width:100%; height:100%; }
+.item-detail-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+.item-detail-info-col { flex:1; overflow-y:auto; padding:clamp(16px,3vw,28px); min-width:0; }
+@media(max-width:600px){
+  .item-detail-panel{ width:100%; max-height:100vh; height:100vh; border-radius:0; }
+  .item-detail-inner{ flex-direction:column; }
+  .item-detail-photo-col{ width:100%; height:280px; border-right:none; border-bottom:1px solid var(--border); }
+  .item-detail-info-col{ padding:20px 18px; }
+}

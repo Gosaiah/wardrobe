@@ -20,7 +20,7 @@
   }
   html { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; font-size: 14px; line-height: 1.5; }
   body { margin: 0; padding: 0; }
-  .page-content { max-width: 960px; margin: 0 auto; padding: 24px 24px 80px; }
+  .page-content { max-width: var(--page-max); margin: 0; padding: 32px 24px 90px; }
 
 
   /* ── SECTION LABEL ── */
@@ -278,17 +278,24 @@ const PERSONA_STATS = {
   p5: PERSONA_TARGETS.viceroy,
 };
 
-const BRAND_BARS = [
-  {name:"MINOAR", count:20, max:20},
-  {name:"ORTTU",  count:18, max:20},
-  {name:"CRAFTD", count:12, max:20},
-  {name:"GASPER", count:6,  max:20},
-  {name:"RYVK",   count:5,  max:20},
-  {name:"DERNHOLT",count:3, max:20},
-  {name:"AMAZON", count:3,  max:20},
-  {name:"YASAR",  count:2,  max:20},
-  {name:"JAKCUZ", count:2,  max:20},
-];
+// Brand counts computed live from WARDROBE_DATA (auto-reflects catalog changes) —
+// grouped by normalized brand key, labeled via BRANDS, top 10, bars scaled to the leader.
+const BRAND_BARS = (function(){
+  const counts = {};
+  (typeof WARDROBE_DATA!=='undefined'?WARDROBE_DATA:[]).forEach(i=>{
+    if(!i || !i.brand) return;
+    const key = (typeof bkey==='function') ? bkey(i.brand) : String(i.brand).toUpperCase();
+    const label = (typeof BRANDS!=='undefined' && BRANDS[key] && BRANDS[key].label) ? BRANDS[key].label : i.brand;
+    counts[label] = (counts[label]||0) + 1;
+  });
+  const rows = Object.entries(counts)
+    .map(([name,count]) => ({name,count}))
+    .sort((a,b) => b.count - a.count)
+    .slice(0, 10);
+  const max = rows.length ? rows[0].count : 1;
+  rows.forEach(r => r.max = max);
+  return rows;
+})();
 
 const VIBES = [
   {label:"Dark / Minimal", count:15, color:"var(--cat-dark)"},

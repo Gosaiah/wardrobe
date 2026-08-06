@@ -16,13 +16,6 @@
     --accent: #e2d3b4;
     --accent2: #c9b98f;
     --white: #f5f2ee;
-    --tag-orttu: #1f2937;
-    --tag-minoar: #1a1a2e;
-    --tag-ryvk: #2d1b1b;
-    --tag-frkm: #1a1510;
-    --tag-yasar: #0f0f0f;
-    --tag-teamm8: #1a1a2e;
-    --tag-arahant: #1a0e10;
     --green: var(--success, #2e7d32);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,7 +30,9 @@
 
 
   /* ── TAB PANELS ── */
-  .tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+  /* Cap the workspace to the shared page width so Outfits/Wardrobe/Builder/History
+     line up with every other page (Today, Shop, etc.). Nav stays full-width. */
+  .tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; width: 100%; max-width: var(--page-max); margin: 0 auto; }
   .tab-panel.active { display: flex; }
 
   /* ── ORIGINAL OUTFIT BOARD STYLES (preserved exactly) ── */
@@ -51,24 +46,7 @@
     gap: 16px;
     flex-shrink: 0;
   }
-  .filter-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 5px 12px;
-    border-radius:8px;
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-  }
-  .filter-btn:hover, .filter-btn.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(226, 211, 180,0.06);
-  }
+  /* .filter-btn / .pf-btn styling is shared (alter-theme.css filter/context chip) */
   .container { display: flex; flex: 1; overflow: hidden; }
   .sidebar {
     width: 280px;
@@ -164,9 +142,9 @@
   }
   .btn-add:hover { opacity: 0.85; }
   .outfits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-  .outfit-card { background: var(--surface); border: 1px solid var(--border); border-radius:8px; overflow: hidden; transition: border-color 0.2s; }
+  /* Outfit card base/header/pieces CSS now single-sourced in alter-theme.css (scoped .outfit-card …).
+     Only rules alter-theme lacks or intentionally differs on are kept inline below. */
   .outfit-card:hover { border-color: var(--accent2); }
-  .outfit-card-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .outfit-number { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 2px; }
   .outfit-name { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 0.02em; }
   .outfit-vibe { font-size: 10px; color: var(--accent); margin-top: 4px; font-style: italic; }
@@ -174,26 +152,12 @@
   .action-btn { background: none; border: 1px solid var(--border); color: var(--muted); width: 26px; height: 26px; border-radius:6px; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-family: inherit; }
   .action-btn:hover { border-color: var(--accent); color: var(--accent); }
   .action-btn.saved { border-color: var(--green); color: var(--green); }
-  .outfit-pieces { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
-  .piece-row { display: flex; align-items: center; gap: 8px; }
-  .piece-thumb { width: 30px; height: 38px; flex-shrink: 0; border-radius:6px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: border-color 0.15s; }
-  .piece-thumb:hover { border-color: var(--accent2); }
-  .piece-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .piece-thumb-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--border); }
-  .piece-role { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); width: 52px; flex-shrink: 0; }
+  /* .outfit-pieces / .piece-row / .piece-thumb* / .piece-role now single-sourced in alter-theme.css (scoped) */
   .piece-name { font-size: 11px; color: var(--text); flex: 1; cursor: pointer; }
   .piece-name:hover { color: var(--white); text-decoration: underline; text-decoration-color: var(--accent); }
-  .piece-brand { font-size: 8px; padding: 2px 5px; border-radius:6px; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; flex-shrink: 0; }
-  .drop-zone { border: 1px dashed var(--border); border-radius:6px; padding: 10px 12px; font-size: 10px; color: var(--muted); text-align: center; cursor: pointer; transition: all 0.15s; margin: 0 16px 12px; font-family: inherit; background: none; width: calc(100% - 32px); }
-  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--accent); color: var(--accent); background: rgba(226, 211, 180,0.04); }
+  /* Brand dots (used via BRANDS[..].dot on .item-dot) */
   .dot-orttu { background: #4a6fa5; } .dot-minoar { background: #7c6f5e; } .dot-ryvk { background: #9b4a4a; }
   .dot-frkm { background: #6b5a3e; } .dot-yasar { background: #3d3d3d; } .dot-arahant { background: #7a3040; }
-  .tag-orttu { background: var(--tag-orttu); color: #6b8fc4; }
-  .tag-minoar { background: var(--tag-minoar); color: var(--accent); }
-  .tag-ryvk { background: var(--tag-ryvk); color: #c47a7a; }
-  .tag-frkm { background: var(--tag-frkm); color: #a08a6a; }
-  .tag-yasar { background: var(--tag-yasar); color: var(--muted); border: 1px solid #2a2a2a; }
-  .tag-arahant { background: var(--tag-arahant); color: #c08090; }
   .empty-card { border: 1px dashed var(--border); border-radius:8px; padding: 40px 24px; text-align: center; color: var(--muted); font-size: 11px; line-height: 1.7; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -429,25 +393,10 @@
   .h-supportive-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
   /* ── WORN HISTORY: CARD VIEW ── */
+  /* Card + feed views now use the shared outfit card (data.js outfitCardHtml);
+     these containers just lay the shared cards out. */
   .history-card-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,220px)); gap:10px; justify-content:start; }
   .history-feed-view { display:flex; flex-direction:column; gap:20px; }
-  .history-card-item { position:relative; aspect-ratio:3/4; overflow:hidden; border-radius:8px; border:1px solid var(--border); background:var(--surface2); cursor:pointer; transition:border-color 0.2s; }
-  .history-card-item:hover { border-color:var(--accent2); }
-  .history-card-item img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; }
-  .history-card-item .hcv-no-img { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:9px; letter-spacing:0.12em; text-transform:uppercase; }
-  .history-card-item .hcv-gradient { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(0,0,0,0) 30%,rgba(0,0,0,0.82) 100%); pointer-events:none; }
-  .history-card-item .hcv-info { position:absolute; bottom:0; left:0; right:0; padding:12px; }
-  .history-card-item .hcv-bottom-row { display:flex; align-items:flex-end; gap:8px; }
-  .history-card-item .hcv-thumb { position:relative; inset:auto; width:32px; min-width:32px; height:42px; object-fit:cover; object-position:top center; border-radius:8px; border:1px solid rgba(255,255,255,0.25); flex-shrink:0; }
-  .history-card-item .hcv-text { flex:1; min-width:0; }
-  .history-card-item .hcv-name { font-size:13px; font-weight:600; color:var(--white); line-height:1.2; letter-spacing:0.06em; }
-  .history-card-item .hcv-vibe { font-size:10px; color:var(--accent); font-style:italic; margin-top:3px; }
-  .history-card-item .hcv-spider { display:block; margin-bottom:5px; pointer-events:none; }
-
-  /* History feed: date = headline, outfit name = supporting (mirrors card view) */
-  .history-editorial-card .outfit-number { font-size:15px; font-weight:600; color:var(--white); letter-spacing:0.04em; margin-bottom:4px; }
-  .history-editorial-card .outfit-name { font-size:11px; font-weight:400; color:var(--accent); font-style:italic; cursor:inherit; }
-  .history-editorial-card .outfit-vibe { font-size:10px; color:var(--muted); margin-top:2px; }
 
   /* ── WORN HISTORY: CALENDAR VIEW ── */
   .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
@@ -634,22 +583,6 @@
     gap: 8px; color: var(--muted);
     font-size: 9px; letter-spacing: 0.12em;
     text-transform: uppercase; min-height: 120px;
-    transition: color 0.15s; cursor: pointer;
-  }
-  .outfit-photo-empty::before { content: "\2295"; font-size: 18px; opacity: 0.35; }
-  .outfit-photo-empty:hover { color: var(--accent); }
-  .outfit-photo-view {
-    position: absolute; inset: 0;
-    background: rgba(0,0,0,0);
-    display: flex; align-items: flex-end; padding: 10px;
-    opacity: 0; transition: opacity 0.2s;
-  }
-  .outfit-photo:hover .outfit-photo-view { opacity: 1; }
-  .outfit-photo-view span {
-    font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: rgba(255,255,255,0.7);
-    background: rgba(0,0,0,0.55);
-    padding: 3px 7px; cursor: pointer;
   }
   /* ── PHOTO LIGHTBOX ── */
   .photo-lightbox {
@@ -688,139 +621,7 @@
   .stat-range { accent-color:var(--accent); width:70px; cursor:pointer; }
 
 
-  /* ── HORIZONTAL OUTFIT CARDS ── */
-  .outfits-grid.horizontal { display: flex; flex-direction: column; gap: 16px; }
-  .outfit-card.horizontal {
-    display: flex; flex-direction: row;
-    height: 480px;
-    border-radius:10px; overflow: hidden;
-  }
-  .outfit-card.horizontal .outfit-photo {
-    width: 340px; min-width: 340px; max-width: 340px;
-    border-bottom: none; border-right: 1px solid var(--border);
-    flex-shrink: 0; overflow: hidden; align-self: stretch;
-  }
-  .outfit-card.horizontal .outfit-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .outfit-card.horizontal .outfit-photo-empty { width: 100%; height: 100%; }
-  .outfit-card-horizontal-right {
-    flex: 1; display: flex; flex-direction: column; overflow: hidden;
-  }
-  .outfit-card.horizontal .outfit-card-header {
-    padding: 18px 20px 12px; border-bottom: 1px solid var(--border);
-  }
-  .outfit-card.horizontal .outfit-number { font-size: 10px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 3px; }
-  .outfit-card.horizontal .outfit-name { font-size: 18px; font-weight: 600; color: var(--white); }
-  .outfit-card.horizontal .outfit-vibe { font-size: 11px; color: var(--accent); font-style: italic; margin-top: 3px; }
-  .h-pieces-row {
-    display: flex; gap: 12px; padding: 16px 20px;
-    flex: 1; overflow-x: auto; align-items: flex-start;
-  }
-  .h-piece-card {
-    flex-shrink: 0; width: 180px; cursor: pointer;
-    border: 1px solid var(--border); border-radius:8px;
-    overflow: hidden; background: var(--surface2);
-    transition: border-color 0.15s;
-  }
-  .h-piece-card:hover { border-color: var(--accent2); }
-  .h-piece-img {
-    width: 180px; height: 220px; overflow: hidden;
-    background: var(--surface2);
-  }
-  .h-piece-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-  .h-piece-img-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--border); font-size: 24px; }
-  .h-piece-info { padding: 8px 10px 10px; }
-  .h-piece-role { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-  .h-piece-name { font-size: 11px; color: var(--text); line-height: 1.3; }
-  .outfit-card.horizontal .outfit-stat-pills { padding: 0 20px 14px; border-top: none; }
-  .outfit-card.horizontal .outfit-spider-wrap { padding: 0 20px 14px; border-top: none; justify-content: flex-start; gap: 16px; }
-
-  /* view toggle button */
-  .view-toggle { display: flex; gap: 2px; background: var(--surface2); border: 1px solid var(--border); border-radius:8px; padding: 2px; }
-  .view-toggle-btn { background: none; border: none; color: var(--muted); cursor: pointer; padding: 5px 9px; border-radius:6px; font-size: 13px; transition: all 0.15s; line-height: 1; }
-  .view-toggle-btn.active { background: var(--surface); color: var(--accent); }
-
-  /* ── CARD VIEW ── */
-  .outfits-grid.card-view {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-  }
-  .outfit-card.card-view {
-    position: relative;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-    border-radius:8px;
-    cursor: pointer;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    transition: border-color 0.2s;
-  }
-  .outfit-card.card-view:hover { border-color: var(--accent2); }
-  .outfit-card.card-view .cv-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    display: block;
-  }
-  .outfit-card.card-view .cv-no-img {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-  .outfit-card.card-view .cv-gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.75) 100%);
-    pointer-events: none;
-  }
-  .outfit-card.card-view .cv-info {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 14px 14px 14px;
-  }
-  .outfit-card.card-view .cv-number {
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    color: rgba(255,255,255,0.45);
-    text-transform: uppercase;
-    margin-bottom: 2px;
-  }
-  .outfit-card.card-view .cv-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--white);
-    line-height: 1.2;
-  }
-  .outfit-card.card-view .cv-vibe {
-    font-size: 10px;
-    color: var(--accent);
-    font-style: italic;
-    margin-top: 3px;
-  }
-  .outfit-card.card-view .cv-spider {
-    display: block;
-    margin-bottom: 6px;
-    pointer-events: none;
-  }
-  .outfit-card.card-view .cv-actions {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    display: flex;
-    gap: 4px;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-  .outfit-card.card-view:hover .cv-actions { opacity: 1; }
+  /* horizontal/editorial + h-piece + view-toggle + card-view CSS now shared in alter-theme.css */
 
   /* ══════════════════════════════════════
      MOBILE RESPONSIVE — max-width 768px
@@ -974,7 +775,6 @@
       <button class="filter-btn" data-filter="tonal">Tonal</button>
       <button class="filter-btn" data-filter="contrast">Contrast</button>
       <button class="filter-btn" data-filter="night">Night Out</button>
-      <button class="filter-btn" data-filter="saved">&#9733; Saved</button>
     </div>
     <div class="filter-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
       <button class="filter-btn pf-btn active" data-pfilter="all">All Characters</button>
@@ -1186,7 +986,6 @@
 </div>
 
 <!-- Photo file inputs -->
-<input type="file" id="photo-single-input" accept="image/*" style="display:none">
 
 
 <!-- Wear Detail Modal -->
@@ -1267,7 +1066,6 @@ if (_storedVersion < DATA_VERSION || !_outfitsValid) {
   wornHistory = _historyValid ? _cachedHistory : WORN_HISTORY_DEFAULT;
 }
 
-let saved   = new Set(_safeParse("saved", []));
 let customItems = _safeParse("custom-items", []);
 let items = [...WARDROBE_DATA, ...customItems.filter(c => !WARDROBE_DATA.find(w => w.id === c.id))];
 
@@ -1279,7 +1077,6 @@ let mgrEditingId  = null;
 
 function persist() {
   localStorage.setItem("outfits", JSON.stringify(outfits));
-  localStorage.setItem("saved",   JSON.stringify([...saved]));
   localStorage.setItem("custom-items", JSON.stringify(customItems));
   localStorage.setItem("worn-history", JSON.stringify(wornHistory));
   localStorage.setItem("data-version", String(DATA_VERSION));
@@ -1293,9 +1090,8 @@ function persist() {
 let OUTFIT_PHOTOS = {};
 // Proposal outfit photos — loaded from outfits/ subfolder
 const PROPOSAL_PHOTO_PATHS = {};
-// Outfit IDs that have a board photo in /outfits — add the id when you drop in a new photo (path is derived).
-[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,64,65,66]
-  .forEach(id => { PROPOSAL_PHOTO_PATHS[id] = outfitPhotoPath(id); });
+// Outfit IDs that have a board photo — shared list (data.js OUTFIT_PHOTO_IDS).
+OUTFIT_PHOTO_IDS.forEach(id => { PROPOSAL_PHOTO_PATHS[id] = outfitPhotoPath(id); });
 // Pre-populate OUTFIT_PHOTOS with proposal paths (relative to HTML file)
 Object.entries(PROPOSAL_PHOTO_PATHS).forEach(([id, path]) => {
   if (!OUTFIT_PHOTOS[parseInt(id)]) OUTFIT_PHOTOS[parseInt(id)] = path;
@@ -1379,18 +1175,6 @@ document.getElementById("photo-file-input").addEventListener("change", async fun
   }
   this.value = "";
 });
-
-document.getElementById("photo-single-input").addEventListener("change", async function() {
-  const id = parseInt(this.dataset.outfitId);
-  if (this.files[0] && id) {
-    if (OUTFIT_PHOTOS[id]) URL.revokeObjectURL(OUTFIT_PHOTOS[id]);
-    OUTFIT_PHOTOS[id] = URL.createObjectURL(this.files[0]);
-    await IDB.put(id, this.files[0]);
-    renderGrid();
-  }
-  this.value = "";
-});
-
 
 // ═══════════════════════════════════════════════════
 // TAB SWITCHING
@@ -1480,60 +1264,15 @@ function openOutfitDetail(outfitId) {
   var outfit = outfits.find(function(o){ return o.id === outfitId; });
   if (!outfit) return;
 
-  // Build piece thumbnails as the "photo" side
-  var photoEl = document.getElementById("item-detail-photo");
-  var thumbsHtml = outfit.pieces.map(function(p) {
-    var img = pieceImg(p);
-    return "<div style='display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--border)'>" +
-      "<div style='width:36px;height:46px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);overflow:hidden;border-radius:6px'>" +
-      (img ? "<img src='"+img+"' style='width:100%;height:100%;object-fit:cover;object-position:top'>" : "") +
-      "</div>" +
-      "<div>" +
-        "<div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px'>"+p.role+"</div>" +
-        "<div style='font-size:11px;color:var(--text)'>"+p.name+"</div>" +
-        "<div style='font-size:9px;color:var(--accent2)'>"+(BRANDS[bkey(p.brand)]&&BRANDS[bkey(p.brand)].label||p.brand)+"</div>" +
-      "</div>" +
-      "</div>";
-  }).join("");
-  photoEl.innerHTML = "<div style='overflow-y:auto;height:100%'>" + thumbsHtml + "</div>";
-
-  // Info side
-  const outfitStats = getOutfitStats(outfit);
-  const outfitWearCount = getWearCount("outfit", outfit.id);
-  const outfitLastWorn = getLastWorn("outfit", outfit.id);
-  // Wear block (shared builder — interactive last-worn card fires via the delegated handler)
-  outfitWearHtml = wearBlockHtml("outfit", outfit.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (outfitPhotoPath(id)); } });
-  document.getElementById("item-detail-info").innerHTML =
-    "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px'>No. " + String(outfit.id).padStart(2,"0") + (outfit.source==="detected"?" &middot; Auto-detected":"") + "</div>" +
-    "<div class='item-detail-name'>" + outfit.name + "</div>" +
-    "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px'>" +
-      "<div style='font-size:11px;color:var(--accent);font-style:italic'>" + (outfit.vibe||"") + "</div>" +
-      (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
-    "</div>" +
-    outfitWearHtml +
-    outfitStatsCompareHtml(outfit) +
-    "<div class='item-detail-section-title'>Pieces</div>" +
-    outfit.pieces.map(function(p) {
-      var img = pieceImg(p);
-      var bl = (BRANDS[bkey(p.brand)]&&BRANDS[bkey(p.brand)].label)||p.brand;
-      return "<div class='lb-piece-row outfit-detail-piece' data-name='"+p.name+"' data-brand='"+p.brand+"' style='cursor:pointer;border-radius:8px;padding:4px;transition:background 0.12s' onmouseover=\"this.style.background='rgba(255,255,255,0.04)'\" onmouseout=\"this.style.background=''\">" +
-        "<div class='lb-piece-thumb'>" +
-        (img?"<img src='"+img+"' alt='"+p.name+"'>":"") +
-        "</div>" +
-        "<div class='lb-piece-info'>" +
-          "<div class='lb-piece-role'>"+p.role+"</div>" +
-          "<div class='lb-piece-name'>"+p.name+"</div>" +
-          "<div class='lb-piece-brand'>"+bl+"</div>" +
-        "</div>" +
-        "</div>";
-    }).join("") +
-    "<p style='margin-top:16px;font-size:11px;color:var(--muted)'>Click the photo slot on the card to add an outfit photo.</p>";
+  // Photo side + info side from the shared builders (data.js)
+  document.getElementById("item-detail-photo").innerHTML = outfitDetailPhotoHtml(outfit);
+  const wearHtml = wearBlockHtml("outfit", outfit.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (outfitPhotoPath(id)); } });
+  document.getElementById("item-detail-info").innerHTML = outfitDetailInfoHtml(outfit, { wearHtml: wearHtml, note: "Click the photo slot on the card to add an outfit photo." });
 
   // Wire piece clicks within the panel
   document.getElementById("item-detail-info").querySelectorAll(".outfit-detail-piece").forEach(function(el) {
     el.addEventListener("click", function() { openItemDetail(el.dataset.name, el.dataset.brand); });
   });
-
 
   document.getElementById("item-detail-overlay").style.display = "flex";
 }
@@ -1602,28 +1341,8 @@ document.getElementById("photo-lightbox").addEventListener("click", function(e) 
 // ═══════════════════════════════════════════════════
 // PERSONA MATCHING
 // ═══════════════════════════════════════════════════
-const PERSONA_PROFILES = {
-  overlord:      {drama:4.0, structure:3.5, skin:1.0, edge:3.5, formality:2.0, mass:4.5, chroma:1.0},
-  wanderer:      {drama:2.5, structure:2.0, skin:1.0, edge:2.0, formality:2.5, mass:4.0, chroma:1.5},
-  "night-shift": {drama:3.0, structure:1.5, skin:3.5, edge:2.5, formality:1.5, mass:1.5, chroma:2.0},
-  civilian:      {drama:1.0, structure:1.0, skin:0.5, edge:0.5, formality:1.5, mass:2.5, chroma:2.0},
-  viceroy:       {drama:2.5, structure:3.0, skin:1.0, edge:1.5, formality:3.5, mass:3.0, chroma:4.0},
-};
-// PERSONA_LABELS now provided by data.js (shared) — local copy removed to avoid a const redeclaration.
-
-function getItemPersona(item) {
-  const s = item.stats;
-  if (!s) return null;
-  // Only use keys the item actually has, so missing mass/chroma don't skew older items
-  const keys = ["drama","structure","skin","edge","formality","mass","chroma"].filter(k => s[k] != null);
-  if (!keys.length) return null;
-  let best = null, bestDist = Infinity;
-  Object.entries(PERSONA_PROFILES).forEach(([slug, ps]) => {
-    const dist = Math.sqrt(keys.reduce((sum, k) => sum + Math.pow((s[k]||0) - (ps[k]||0), 2), 0));
-    if (dist < bestDist) { bestDist = dist; best = slug; }
-  });
-  return best;
-}
+// PERSONA_LABELS + PERSONA_PROFILES + getItemPersona now provided by data.js
+// (matcher unified onto the 8-facet PERSONA_TARGETS — single persona-profile source).
 
 // ═══════════════════════════════════════════════════
 // SIDEBAR
@@ -1689,19 +1408,13 @@ document.getElementById("sidebar-tabs").addEventListener("click", e => {
 // ═══════════════════════════════════════════════════
 // OUTFIT GRID
 // ═══════════════════════════════════════════════════
-function brandTagHtml(brand) {
-  const bk = bkey(brand);
-  const b = BRANDS[bk] || { label: brand, tag: "" };
-  return "<span class='piece-brand " + b.tag + "'>" + b.label + "</span>";
-}
 
 function renderGrid() {
   const grid = document.getElementById("outfits-grid");
   // Proposed outfits live on the Proposals page until photographed — hide them here.
   const boardOutfits = outfits.filter(o => o.source !== "proposed");
   let filtered = boardOutfits;
-  if (currentFilter === "saved") filtered = boardOutfits.filter(o => saved.has(o.id));
-  else if (currentFilter !== "all") filtered = boardOutfits.filter(o => outfitFilterTags(o).has(currentFilter));
+  if (currentFilter !== "all") filtered = boardOutfits.filter(o => outfitFilterTags(o).has(currentFilter));
   if (currentPersonaFilter !== "all") filtered = filtered.filter(o => o.persona === currentPersonaFilter);
   // Apply stat filters
   const activeStats = Object.entries(statFilterVals).filter(([k,v]) => v > 0);
@@ -1730,19 +1443,8 @@ function renderGrid() {
   } else if (outfitViewMode === "card") {
     grid.classList.add("card-view");
     grid.innerHTML = filtered.map(renderCardViewCard).join("");
-    grid.querySelectorAll("[data-action]").forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        const id = parseInt(btn.closest(".outfit-card").dataset.id);
-        if (btn.dataset.action === "save") { saved.has(id) ? saved.delete(id) : saved.add(id); persist(); renderGrid(); }
-        else if (btn.dataset.action === "delete") { outfits = outfits.filter(o => o.id !== id); persist(); renderGrid(); }
-      });
-    });
     grid.querySelectorAll(".outfit-card.card-view").forEach(card => {
-      card.addEventListener("click", e => {
-        if (e.target.closest("[data-action]")) return;
-        openOutfitDetail(parseInt(card.dataset.id));
-      });
+      card.addEventListener("click", () => openOutfitDetail(parseInt(card.dataset.id)));
     });
     return;
   }
@@ -1751,114 +1453,26 @@ function renderGrid() {
     grid.querySelectorAll(".piece-name-link").forEach(el => {
       el.addEventListener("click", e => { e.stopPropagation(); openItemDetail(el.dataset.name, el.dataset.brand); });
     });
-    grid.querySelectorAll("[data-view-photo]").forEach(el => {
-      el.addEventListener("click", e => { e.stopPropagation(); openLightbox(parseInt(el.dataset.viewPhoto)); });
-    });
-    grid.querySelectorAll("[data-pick-photo]").forEach(el => {
-      el.addEventListener("click", e => { e.stopPropagation(); const input = document.getElementById("photo-single-input"); input.dataset.outfitId = el.dataset.pickPhoto; input.click(); });
-    });
-    grid.querySelectorAll("[data-action]").forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        const id = parseInt(btn.closest(".outfit-card").dataset.id);
-        if (btn.dataset.action === "save") { saved.has(id) ? saved.delete(id) : saved.add(id); persist(); renderGrid(); }
-        else if (btn.dataset.action === "delete") { outfits = outfits.filter(o => o.id !== id); persist(); renderGrid(); }
-      });
-    });
     grid.querySelectorAll(".outfit-card").forEach(card => {
       card.addEventListener("click", e => {
-        if (e.target.closest(".piece-name-link") || e.target.closest("[data-action]") || e.target.closest("[data-pick-photo]") || e.target.closest("[data-view-photo]")) return;
+        if (e.target.closest(".piece-name-link")) return;
         openOutfitDetail(parseInt(card.dataset.id));
       });
     });
     return;
   }
-  grid.innerHTML = filtered.map(outfit => {
-    const isSaved = saved.has(outfit.id);
-    const photoSrc = OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || "";
-    const gridStats = getOutfitStats(outfit);
-    const statsOverlay = (photoSrc && gridStats)
-      ? "<div class='outfit-photo-stats-overlay'>" + drawSpider(gridStats, 70, "rgba(226, 211, 180,0.9)", "g" + outfit.id) + "</div>"
-      : "";
-    const photoHtml = photoSrc
-      ? "<div class='outfit-photo' data-photo-id='" + outfit.id + "' style='position:relative'><img src='" + photoSrc + "' alt='" + outfit.name + "'>" + statsOverlay + "<div class='outfit-photo-view'><span data-view-photo='" + outfit.id + "'>&#x2197; View</span></div></div>"
-      : "<div class='outfit-photo outfit-photo-empty' data-pick-photo='" + outfit.id + "'><span>add photo</span></div>";
-    const pieces = outfit.pieces.map(p => {
-      const img = pieceImg(p);
-      const thumb = img
-        ? "<div class='piece-thumb piece-name-link' data-name='" + p.name + "' data-brand='" + p.brand + "'><img src='" + img + "' alt='" + p.name + "' loading='lazy'></div>"
-        : "<div class='piece-thumb piece-name-link' data-name='" + p.name + "' data-brand='" + p.brand + "'><div class='piece-thumb-empty'>·</div></div>";
-      return "<div class='piece-row'>" + thumb +
-        "<span class='piece-role'>" + p.role + "</span>" +
-        "<span class='piece-name piece-name-link' data-name='" + p.name + "' data-brand='" + p.brand + "'>" + p.name + "</span>" +
-        brandTagHtml(p.brand) + "</div>";
-    }).join("");
-
-    return "<div class='outfit-card' data-id='" + outfit.id + "'>" +
-      photoHtml +
-      "<div class='outfit-card-header'><div>" +
-        "<div class='outfit-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" +
-        "<div class='outfit-name'>" + outfit.name + "</div>" +
-        "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px'>" +
-          "<div class='outfit-vibe' style='margin-top:0'>" + (outfit.vibe||"") + "</div>" +
-          (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
-        "</div>" +
-      "</div><div class='outfit-card-actions'>" +
-        "<button class='action-btn " + (isSaved?"saved":"") + "' data-action='save'>" + (isSaved?"&#9733;":"&#9734;") + "</button>" +
-        "<button class='action-btn' data-action='delete'>&#x2715;</button>" +
-      "</div></div>" +
-      "<div class='outfit-pieces'>" + pieces + "</div>" +
-    "</div>";
-  }).join("");
+  // Shared grid card builder (data.js). One source across Outfits + Today.
+  grid.innerHTML = filtered.map(outfit =>
+    outfitCardHtml(outfit, { view: "grid", photo: OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || "" })
+  ).join("");
 
   grid.querySelectorAll(".piece-name-link").forEach(el => {
     el.addEventListener("click", e => { e.stopPropagation(); openItemDetail(el.dataset.name, el.dataset.brand); });
   });
-
-  grid.querySelectorAll("[data-view-photo]").forEach(el => {
-    el.addEventListener("click", e => { e.stopPropagation(); openLightbox(parseInt(el.dataset.viewPhoto)); });
-  });
-  grid.querySelectorAll("[data-pick-photo]").forEach(el => {
-    el.addEventListener("click", e => {
-      e.stopPropagation();
-      const input = document.getElementById("photo-single-input");
-      input.dataset.outfitId = el.dataset.pickPhoto;
-      input.click();
-    });
-  });
-  grid.querySelectorAll("[data-action]").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.stopPropagation();
-      const id = parseInt(btn.closest(".outfit-card").dataset.id);
-      if (btn.dataset.action === "save") {
-        saved.has(id) ? saved.delete(id) : saved.add(id);
-        persist(); renderGrid();
-      } else if (btn.dataset.action === "delete") {
-        outfits = outfits.filter(o => o.id !== id);
-        persist(); renderGrid(); buildSidebar();
-      }
-    });
-  });
-  grid.querySelectorAll(".drop-zone").forEach(dz => {
-    dz.addEventListener("dragover", e => { e.preventDefault(); dz.classList.add("drag-over"); });
-    dz.addEventListener("dragleave", () => dz.classList.remove("drag-over"));
-    dz.addEventListener("drop", e => {
-      e.preventDefault(); dz.classList.remove("drag-over");
-      try {
-        const data = JSON.parse(e.dataTransfer.getData("text/plain"));
-        const item = itemById(data.id) || items.find(i => i.name === data.name);
-        const outfit = outfits.find(o => o.id === parseInt(dz.dataset.outfitId));
-        if (item && outfit) { outfit.pieces.push({role: item.cat||item.type, id: item.id, name: item.name, brand: item.brand}); persist(); renderGrid(); }
-      } catch(err) {}
-    });
-  });
   // Click anywhere on card → outfit detail
   grid.querySelectorAll(".outfit-card").forEach(card => {
     card.addEventListener("click", e => {
-      if (e.target.closest(".piece-name-link") ||
-          e.target.closest("[data-action]") ||
-          e.target.closest("[data-view-photo]") ||
-          e.target.closest("[data-pick-photo]")) return;
+      if (e.target.closest(".piece-name-link")) return;
       openOutfitDetail(parseInt(card.dataset.id));
     });
   });
@@ -2231,62 +1845,12 @@ document.getElementById("vtoggle-card").addEventListener("click", () => {
 function renderCardViewCard(outfit) {
   // Shared card builder (data.js). Local markup retired — one source across pages.
   const photoSrc = OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || "";
-  return outfitCardHtml(outfit, { photo: photoSrc, actions: true, saved: saved.has(outfit.id) });
+  return outfitCardHtml(outfit, { photo: photoSrc });
 }
 
 function renderHorizontalCard(outfit) {
-  const isSaved = saved.has(outfit.id);
-  const photoSrc = OUTFIT_PHOTOS[outfit.id] || "";
-  const stats = getOutfitStats(outfit);
-
-  const photoHtml = photoSrc
-    ? "<div class='outfit-photo' data-photo-id='" + outfit.id + "'><img src='" + photoSrc + "' alt='" + outfit.name + "'><div class='outfit-photo-view'><span data-view-photo='" + outfit.id + "'>&#x2197; View</span></div></div>"
-    : "<div class='outfit-photo outfit-photo-empty' data-pick-photo='" + outfit.id + "'><span>add photo</span></div>";
-
-  const piecesHtml = outfit.pieces.map(p => {
-    const img = pieceImg(p);
-    return "<div class='h-piece-card piece-name-link' data-name='" + p.name + "' data-brand='" + p.brand + "'>" +
-      "<div class='h-piece-img'>" + (img ? "<img src='" + img + "' alt='" + p.name + "' loading='lazy'>" : "<div class='h-piece-img-empty'>&#x25C8;</div>") + "</div>" +
-      "<div class='h-piece-info'>" +
-        "<div class='h-piece-role'>" + p.role + "</div>" +
-        "<div class='h-piece-name'>" + p.name + "</div>" +
-      "</div></div>";
-  }).join("");
-
-  const spiderHtml = stats
-    ? "<div style='display:flex;align-items:center;gap:12px;margin-top:10px'>" +
-      drawSpider(stats, 70, "#e2d3b4", "h" + outfit.id) +
-      "<div style='display:flex;flex-direction:column;gap:3px'>" +
-      ["drama","edge","structure","skin","formality"].map(k =>
-        "<div style='display:flex;align-items:center;gap:6px'>" +
-        "<div style='font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);width:56px'>" + k + "</div>" +
-        "<div style='width:50px;height:2px;background:var(--border);border-radius:8px;overflow:hidden'><div style='height:100%;width:" + (stats[k]||0)*20 + "%;background:var(--accent);border-radius:8px'></div></div>" +
-        "<div style='font-size:9px;color:var(--accent);width:12px'>" + (stats[k]||0) + "</div>" +
-        "</div>"
-      ).join("") + "</div></div>"
-    : "";
-
-  return "<div class='outfit-card horizontal' data-id='" + outfit.id + "' data-tags='" + (outfit.tags||[]).join(",") + "'>" +
-    photoHtml +
-    "<div class='outfit-card-horizontal-right'>" +
-      "<div class='outfit-card-header'>" +
-        "<div style='flex:1'>" +
-          "<div class='outfit-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" +
-          "<div class='outfit-name'>" + outfit.name + "</div>" +
-          "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px'>" +
-            "<div class='outfit-vibe' style='margin-top:0'>" + (outfit.vibe||"") + "</div>" +
-            (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
-          "</div>" +
-          spiderHtml +
-        "</div>" +
-        "<div class='outfit-card-actions'>" +
-          "<button class='action-btn " + (isSaved?"saved":"") + "' data-action='save'>" + (isSaved?"&#9733;":"&#9734;") + "</button>" +
-          "<button class='action-btn' data-action='delete'>&#x2715;</button>" +
-        "</div>" +
-      "</div>" +
-      "<div class='h-pieces-row'>" + piecesHtml + "</div>" +
-    "</div>" +
-  "</div>";
+  // Shared editorial card builder (data.js). One source across Outfits + Today.
+  return outfitCardHtml(outfit, { view: "editorial", photo: OUTFIT_PHOTOS[outfit.id] || "" });
 }
 
 // ═══════════════════════════════════════════════════
@@ -2311,6 +1875,26 @@ function getSupportivePhotos(w, mainSrc) {
     .filter((e, i, arr) => arr.findIndex(x => x.src === e.src) === i);
 }
 
+// Shape a wear entry as an outfit-like object so the shared outfitCardHtml renderer
+// can draw it — the worn card and the outfit card are the same component, just fed
+// the worn context (date, worn photo, worn items) instead of the catalog outfit.
+function wearAsOutfit(w) {
+  const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
+  const roleMap = { top:"Top", bottom:"Bottom", outer:"Outer", shoes:"Shoes", accessory:"Accessory" };
+  const pieces = (w.itemIds || []).map(function(id) {
+    const it = items.find(i => i.id === id);
+    if (!it) return null;
+    return { name: it.name, brand: it.brand || "", role: roleMap[it.type] || "Piece" };
+  }).filter(Boolean);
+  return {
+    id: outfit ? outfit.id : undefined,
+    name: outfit ? outfit.name : "Items Only",
+    vibe: outfit ? (outfit.vibe || "") : "",
+    pieces: pieces,
+    stats: outfit ? getOutfitStats(outfit) : null
+  };
+}
+
 function renderHistory() {
   const list = document.getElementById("history-list");
   const tagMap = { dark:["dark"], tonal:["tonal"], contrast:["contrast"], night:["night"] };
@@ -2323,9 +1907,9 @@ function renderHistory() {
     list.innerHTML = "<div class='history-empty'>No wears logged yet. Send a photo to Claude in chat to get started.</div>";
     return;
   }
-  const sorted = [...wornHistory].map((w) => ({...w, _idx: wornHistory.indexOf(w)})).sort((a,b) => b.date.localeCompare(a.date));
+  const sorted = [...filtered].map((w) => ({...w, _idx: wornHistory.indexOf(w)})).sort((a,b) => b.date.localeCompare(a.date));
 
-  // ── Card view ──
+  // ── Card view — shared outfit card-view tile, fed the worn context ──
   if (historyViewMode === "card") {
     list.className = "history-list history-card-view";
     list.innerHTML = sorted.map(function(w) {
@@ -2333,28 +1917,20 @@ function renderHistory() {
       const feedGenerated = outfit ? (OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || null) : null;
       const feedSubmitted = w.photo || null;
       const bg = feedGenerated || feedSubmitted || null;
-      const stats = outfit ? getOutfitStats(outfit) : null;
-      const spiderHtml = stats ? "<div class='hcv-spider'>" + drawSpider(stats, 56, "rgba(226, 211, 180,0.9)", "hcv" + w._idx) + "</div>" : "";
-      const thumbHtml = (feedSubmitted && feedGenerated)
-        ? "<img class='hcv-thumb' src='" + feedSubmitted + "' alt='your photo'>"
+      // Your submitted photo as a corner badge when there's also a generated photo.
+      const wornThumb = (feedSubmitted && feedGenerated)
+        ? "<div class='cv-worn-thumb'><img src='" + feedSubmitted + "' alt='your photo'></div>"
         : "";
-      return "<div class='history-card-item' data-idx='" + w._idx + "'>" +
-        (bg ? "<img src='" + bg + "' alt='' onerror=\"this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')\">" : "") +
-        (!bg ? "<div class='hcv-no-img'>no photo</div>" : "<div class='hcv-no-img' style='display:none'>no photo</div>") +
-        "<div class='hcv-gradient'></div>" +
-        "<div class='hcv-info'>" +
-          spiderHtml +
-          "<div class='hcv-bottom-row'>" +
-            thumbHtml +
-            "<div class='hcv-text'>" +
-              "<div class='hcv-name'>" + fmtDate(w.date).toUpperCase() + "</div>" +
-              "<div class='hcv-vibe'>" + (outfit ? outfit.name : "Items Only") + "</div>" +
-            "</div>" +
-          "</div>" +
-        "</div>" +
-      "</div>";
+      return outfitCardHtml(wearAsOutfit(w), {
+        view: "card",
+        photo: bg || "",
+        kicker: fmtDate(w.date).toUpperCase(),
+        dataAttrs: "data-idx='" + w._idx + "'",
+        cvThumb: wornThumb,
+        noDataId: true
+      });
     }).join("");
-    list.querySelectorAll(".history-card-item").forEach(el => {
+    list.querySelectorAll(".outfit-card[data-idx]").forEach(el => {
       el.addEventListener("click", () => {
         const w = wornHistory[parseInt(el.dataset.idx)];
         if (w) openWearDetail(w);
@@ -2363,6 +1939,7 @@ function renderHistory() {
     return;
   }
 
+  // ── Feed view — shared editorial outfit card, fed the worn context ──
   list.className = "history-list history-feed-view";
   list.innerHTML = sorted.map(function(w) {
     const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
@@ -2374,18 +1951,13 @@ function renderHistory() {
       : null;
     const feedSubmitted = w.photo || null;
     const feedBg = feedGenerated || feedSubmitted || null;
+    // Your submitted photo, pinned over the generated one.
     const feedOverlay = (feedGenerated && feedSubmitted)
       ? "<div style='position:absolute;bottom:12px;left:12px;width:20%;max-width:100px;aspect-ratio:3/4;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,0.35);box-shadow:0 4px 12px rgba(0,0,0,0.7);z-index:2'>" +
           "<img src='" + feedSubmitted + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" +
           "<div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:6px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);padding:2px 3px;text-align:center'>Worn</div>" +
         "</div>"
       : "";
-    const photoHtml = feedBg
-      ? "<div class='outfit-photo' data-src='" + feedBg + "' data-caption='" + fmtDate(w.date) + "' style='position:relative'>" +
-          "<img src='" + feedBg + "' alt=''>" +
-          feedOverlay +
-        "</div>"
-      : "<div class='outfit-photo outfit-photo-empty'><span>no photo</span></div>";
 
     const supportiveHtml = supportive.length
       ? "<div class='h-supportive-row'>" +
@@ -2396,49 +1968,26 @@ function renderHistory() {
         "</div>"
       : "";
 
-    const roleMap = { top: "Top", bottom: "Bottom", outer: "Outer", shoes: "Shoes", accessory: "Accessory" };
-    const piecesHtml = w.itemIds.map(function(id) {
-      const it = items.find(i => i.id === id);
-      if (!it) return "";
-      const img = IMAGES[it.name] || getImg(it.name) || "";
-      return "<div class='h-piece-card piece-name-link' data-name='" + it.name + "' data-brand='" + it.brand + "'>" +
-        "<div class='h-piece-img'>" + (img ? "<img src='" + img + "' alt='" + it.name + "' loading='lazy'>" : "<div class='h-piece-img-empty'>&#x25C8;</div>") + "</div>" +
-        "<div class='h-piece-info'>" +
-          "<div class='h-piece-role'>" + (roleMap[it.type] || "Piece") + "</div>" +
-          "<div class='h-piece-name'>" + it.name + "</div>" +
-        "</div></div>";
-    }).join("");
+    const deleteBtn = "<button class='action-btn' data-remove-idx='" + w._idx + "' title='Remove entry'>&#x2715;</button>";
 
-    return "<div class='outfit-card horizontal history-editorial-card' data-idx='" + w._idx + "'>" +
-      photoHtml +
-      "<div class='outfit-card-horizontal-right'>" +
-        "<div class='outfit-card-header'>" +
-          "<div style='flex:1'>" +
-            "<div class='outfit-name'>" + fmtDate(w.date).toUpperCase() + (w.outfitSource === "detected" ? " &middot; AUTO-DETECTED" : "") + "</div>" +
-            "<div class='outfit-number' " + (outfit ? "data-outfit-id='" + outfit.id + "' style='cursor:pointer'" : "") + ">" + (outfit ? outfit.name : "Items Only") + "</div>" +
-            "<div class='outfit-vibe'>" + (outfit ? (outfit.vibe||"") : "No outfit linked") + "</div>" +
-            supportiveHtml +
-          "</div>" +
-          "<div class='outfit-card-actions'>" +
-            "<button class='action-btn' data-remove-idx='" + w._idx + "' title='Remove entry'>&#x2715;</button>" +
-          "</div>" +
-        "</div>" +
-        "<div class='h-pieces-row'>" + piecesHtml + "</div>" +
-      "</div>" +
-    "</div>";
+    return outfitCardHtml(wearAsOutfit(w), {
+      view: "editorial",
+      photo: feedBg || "",
+      kicker: fmtDate(w.date).toUpperCase() + (w.outfitSource === "detected" ? " &middot; AUTO-DETECTED" : ""),
+      dataAttrs: "data-idx='" + w._idx + "'",
+      badges: feedOverlay,
+      headerActions: deleteBtn,
+      headerExtra: supportiveHtml,
+      noDataId: true
+    });
   }).join("");
 
-  list.querySelectorAll(".outfit-number[data-outfit-id]").forEach(el => {
-    el.addEventListener("click", () => openOutfitDetail(parseInt(el.dataset.outfitId)));
-  });
   // Click history card → open wear detail
-  list.querySelectorAll(".history-editorial-card").forEach(card => {
+  list.querySelectorAll(".outfit-card[data-idx]").forEach(card => {
     card.addEventListener("click", function(e) {
       if (e.target.closest(".piece-name-link") ||
           e.target.closest("[data-remove-idx]") ||
-          e.target.closest(".outfit-photo") ||
-          e.target.closest(".h-supportive-thumb") ||
-          e.target.closest(".outfit-number[data-outfit-id]")) return;
+          e.target.closest(".h-supportive-thumb")) return;
       const idx = parseInt(card.dataset.idx);
       openWearDetail(wornHistory[idx]);
     });
@@ -2711,9 +2260,6 @@ function renderBuilderOutfits() {
   // Find existing outfits with this piece
   const existingOutfits = outfits.filter(o => o.pieces.some(p => (p.id ? p.id === item.id : p.name === item.name)));
 
-  // Build suggested new combinations from wardrobe
-  const suggestions = buildSuggestions(item);
-
   const bk = bkey(item.brand);
   const bl = (BRANDS[bk] && BRANDS[bk].label) || item.brand;
 
@@ -2744,23 +2290,11 @@ function renderBuilderOutfits() {
     html += "</div>";
   }
 
-  if (suggestions.length) {
-    html += "<div class='builder-new-section'><div class='builder-new-title'>Suggested combinations</div>";
-    html += suggestions.map(combo => {
-      const piecesHtml = combo.pieces.map(p => {
-        const pimg = pieceImg(p);
-        return "<div class='builder-outfit-piece-chip'>" +
-          "<div class='builder-outfit-piece-img'>" + (pimg ? "<img src='" + pimg + "' loading='lazy'>" : "") + "</div>" +
-          "<span>" + p.name + "</span>" +
-        "</div>";
-      }).join("");
-      return "<div class='builder-outfit-card'>" +
-        "<div class='builder-outfit-pieces'>" + piecesHtml + "</div>" +
-        ((typeof outfitStatsCompareHtml === "function") ? "<div style='margin-top:10px'>" + outfitStatsCompareHtml({ pieces: combo.pieces }) + "</div>" : "") +
-      "</div>";
-    }).join("");
-    html += "</div>";
-  }
+  const suggestHtml = (typeof pairsViewHtml === "function")
+    ? pairsViewHtml(item, { pool: items, kicker: "Suggested combinations", title: "",
+        subtitle: "Full looks you could build around this piece — base <span style=\"color:var(--accent)\">gold</span>, styling buff <span style=\"color:var(--buff)\">green</span>." })
+    : "";
+  if (suggestHtml) html += "<div class='builder-new-section'>" + suggestHtml + "</div>";
 
   right.innerHTML = html;
 
@@ -2770,60 +2304,7 @@ function renderBuilderOutfits() {
   });
 }
 
-function buildSuggestions(anchorItem) {
-  const suggestions = [];
-  const type = anchorItem.type;
-  const anchorStats = anchorItem.stats || null;
-
-  const tops    = items.filter(i => i.type === "top"    && i.id !== anchorItem.id);
-  const bottoms = items.filter(i => i.type === "bottom" && i.id !== anchorItem.id);
-  const outers  = items.filter(i => i.type === "outer"  && i.id !== anchorItem.id);
-  const shoes   = items.filter(i => i.type === "shoes");
-
-  // Score a piece by how well its stats complement the anchor
-  function score(item) {
-    const s = item.stats;
-    if (!s || !anchorStats) return 0;
-    // Reward similar drama/edge, penalise large skin difference
-    return (Math.abs(s.drama - anchorStats.drama) < 1.5 ? 1 : 0) +
-           (Math.abs(s.edge  - anchorStats.edge)  < 1.5 ? 1 : 0) +
-           (s.structure >= 2 ? 0.5 : 0);
-  }
-
-  function best(pool) {
-    return pool.slice().sort((a,b) => score(b) - score(a)).slice(0, 3);
-  }
-
-  const roleFor = { top:"Top", bottom:"Bottom", outer:"Outer", shoes:"Shoes" };
-
-  // Build one suggestion per good pairing
-  const partners = type === "top" || type === "outer"
-    ? best(bottoms)
-    : type === "bottom"
-    ? best(tops)
-    : best(bottoms);
-
-  partners.forEach((partner, i) => {
-    const pieces = [
-      { role: roleFor[type] || "Piece", id: anchorItem.id, name: anchorItem.name, brand: anchorItem.brand }
-    ];
-    pieces.push({ role: type === "bottom" ? "Top" : "Bottom", id: partner.id, name: partner.name, brand: partner.brand });
-
-    // Add an outer for some suggestions
-    if (i === 0 && outers.length) {
-      const outer = best(outers)[0];
-      if (outer) pieces.push({ role:"Outer", id:outer.id, name:outer.name, brand:outer.brand });
-    }
-
-    // Add best-scoring shoe
-    const shoe = best(shoes)[0];
-    if (shoe) pieces.push({ role:"Shoes", id:shoe.id, name:shoe.name, brand:shoe.brand });
-
-    suggestions.push({ pieces });
-  });
-
-  return suggestions;
-}
+// buildSuggestions was replaced by the shared buildPairings/pairingCardsHtml (data.js).
 
 document.getElementById("builder-search").addEventListener("input", renderBuilderPieces);
 

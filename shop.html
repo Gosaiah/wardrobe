@@ -7,14 +7,10 @@
 <title>Alter · Shop</title>
 <style>
   body { background: var(--bg); color: var(--text); font-family: var(--font-ui); margin: 0; }
-  .shop-wrap { max-width: 1120px; margin: 0 auto; padding: 28px 20px 80px; }
-  .shop-head { margin-bottom: 8px; font-size: 20px; font-weight: 600; letter-spacing: .01em; }
-  .shop-sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; line-height: 1.5; }
+  /* page width/padding + header come from shared .app-page / .page-header (alter-theme.css) */
 
   .shop-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
-  .filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 7px 14px; border-radius: var(--r-pill); cursor: pointer; transition: all var(--tr); }
-  .filter-btn:hover { color: var(--text); border-color: var(--muted); }
-  .filter-btn.active { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 700; }
+  /* .filter-btn styling is shared (alter-theme.css filter/context chip) */
 
   .shop-legend { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 22px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
   .shop-legend .pri { display: inline-flex; align-items: center; gap: 5px; }
@@ -58,7 +54,13 @@
   .list-btn { flex: 1; background: none; border: none; border-right: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 10px; cursor: pointer; transition: all var(--tr); }
   .list-btn:hover { color: var(--text); }
   .list-btn.on { color: var(--on-accent); background: var(--accent); font-weight: 700; }
+  .pair-btn { flex: 1; background: none; border: none; border-right: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 10px; cursor: pointer; transition: all var(--tr); }
+  .pair-btn:hover { color: var(--accent); }
   .shop-foot .shop-view { flex: 1; border-top: none; }
+
+  /* Pairs full-screen view — button uses the shared .action-btn theme; .pair-head/.ph-*/.pair-body are shared (alter-theme.css) */
+  #pairs-view { padding-top: 4px; }
+  .pairs-back { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 8px 14px; margin: 0 0 24px; }
 </style>
 <link rel="stylesheet" href="alter-theme.css">
 <script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -67,18 +69,29 @@
 <script src="nav.js"></script>
 <script src="data.js"></script>
 
-<main class="shop-wrap">
-  <div class="shop-head">Shop</div>
-  <div class="shop-sub">Pieces chosen for <strong>versatility</strong> &mdash; each one should unlock several different outfits when layered or paired with what you already own. Filter by character; sorted by priority. Photos where the site allows; otherwise open the product link.</div>
-  <div class="shop-filters" id="shop-filters"></div>
-  <div class="shop-legend">
-    <span class="pri"><span class="dot high"></span>Priority</span>
-    <span class="pri"><span class="dot medium"></span>Consider</span>
-    <span class="pri"><span class="dot low"></span>Maybe</span>
-    <span class="pri">&#9733; = on your shopping list</span>
+<main class="app-page">
+  <div id="shop-view">
+    <div class="page-header">
+      <div class="page-title-wrap">
+        <h1 class="page-title">Shop</h1>
+        <div class="page-sub">Pieces chosen for <strong>versatility</strong> &mdash; each one should unlock several different outfits when layered or paired with what you already own. Filter by character; sorted by priority.</div>
+      </div>
+    </div>
+    <div class="shop-filters" id="shop-filters"></div>
+    <div class="shop-legend">
+      <span class="pri"><span class="dot high"></span>Priority</span>
+      <span class="pri"><span class="dot medium"></span>Consider</span>
+      <span class="pri"><span class="dot low"></span>Maybe</span>
+      <span class="pri">&#9733; = on your shopping list</span>
+    </div>
+    <div class="shop-summary" id="shop-summary"></div>
+    <div class="shop-grid" id="shop-root"></div>
   </div>
-  <div class="shop-summary" id="shop-summary"></div>
-  <div class="shop-grid" id="shop-root"></div>
+
+  <div id="pairs-view" style="display:none">
+    <button class="action-btn pairs-back" id="pairs-back">&larr; Back to shop</button>
+    <div id="pairs-content"></div>
+  </div>
 </main>
 
 <script>
@@ -115,6 +128,7 @@ function cardHtml(it) {
     '</div>' +
     '<div class="shop-foot">' +
       '<button class="list-btn' + (onList(it.id) ? ' on' : '') + '" data-id="' + it.id + '">' + (onList(it.id) ? '★ On List' : '☆ Add to List') + '</button>' +
+      '<button class="pair-btn" data-pair="' + it.id + '">&#9672; Pairs</button>' +
       '<a class="shop-view" href="' + it.url + '" target="_blank" rel="noopener">View &rarr;</a>' +
     '</div>' +
   '</article>';
@@ -129,6 +143,25 @@ function updateSummary() {
     : 'Shopping list is empty &mdash; tap &#9734; on any piece to add it.';
 }
 
+// ── Pairs — full-screen in-page view ──
+function openPairs(id) {
+  const it = ((typeof SHOP !== "undefined") ? SHOP : []).find(s => s.id === id);
+  if (!it) return;
+  document.getElementById("pairs-content").innerHTML =
+    (typeof pairsViewHtml === "function") ? pairsViewHtml(it, { persona: it.persona }) : "";
+  document.getElementById("shop-view").style.display = "none";
+  document.getElementById("pairs-view").style.display = "block";
+  window.scrollTo(0, 0);
+}
+function closePairs() {
+  document.getElementById("pairs-view").style.display = "none";
+  document.getElementById("shop-view").style.display = "block";
+}
+document.getElementById("pairs-back").addEventListener("click", closePairs);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && document.getElementById("pairs-view").style.display !== "none") closePairs();
+});
+
 function renderShop() {
   const SRC = ((typeof SHOP !== "undefined") ? SHOP : []).slice()
     .sort((a,b) => (PRIO[a.priority]?.rank ?? 9) - (PRIO[b.priority]?.rank ?? 9));
@@ -141,6 +174,9 @@ function renderShop() {
   root.innerHTML = list.length ? list.map(cardHtml).join("") : '<div class="shop-empty">' + empty + '</div>';
   root.querySelectorAll(".list-btn").forEach(btn => {
     btn.addEventListener("click", () => { toggleList(btn.dataset.id); renderShop(); buildFilters(); });
+  });
+  root.querySelectorAll(".pair-btn").forEach(btn => {
+    btn.addEventListener("click", () => openPairs(btn.dataset.pair));
   });
   updateSummary();
 }

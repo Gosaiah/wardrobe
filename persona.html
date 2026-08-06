@@ -100,9 +100,9 @@
 
   /* ── PAGE CONTENT ── */
   .page {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 48px 120px;
+    max-width: var(--page-max);          /* full-bleed — matches the nav */
+    margin: 0;
+    padding: 0 24px 120px;
   }
 
   /* ── SECTION ── */
@@ -322,7 +322,7 @@
   /* Signature Kit */
   .sig-kit-head { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
   .sig-count { font-size:10px; letter-spacing:.1em; background:var(--surface2); color:var(--muted); border:1px solid var(--border); padding:2px 9px; border-radius:10px; font-weight:700; }
-  .sig-count.complete { background:var(--accent); color:#111; border-color:var(--accent); }
+  .sig-count.complete { background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
   .sig-kit-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
   .sig-slot { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
   .sig-thumb { aspect-ratio:1/1; background:var(--surface2); display:flex; align-items:center; justify-content:center; overflow:hidden; color:var(--muted); font-size:24px; }
@@ -343,7 +343,7 @@
   .pick-thumb { width:74px; min-width:74px; background:var(--surface2); position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; color:var(--muted); font-size:20px; }
   .pick-thumb img { width:100%; height:100%; object-fit:cover; object-position:center; }
   .pick-prio { position:absolute; bottom:5px; left:5px; font-size:7px; letter-spacing:.08em; text-transform:uppercase; font-weight:700; padding:2px 5px; border-radius:5px; }
-  .prio-list { background:var(--accent); color:#111; }
+  .prio-list { background:var(--accent); color:var(--on-accent); }
   .prio-high { background:rgba(217,160,102,.2); color:#d9a066; }
   .prio-medium { background:rgba(125,140,163,.18); color:#9aa8bd; }
   .prio-low { background:var(--surface2); color:var(--muted); }
@@ -994,22 +994,9 @@ function openOutfitModal(oid, img){
   const od = (typeof OUTFITS_DEFAULT !== 'undefined') ? OUTFITS_DEFAULT.find(x => x.id === oid) : null;
   if (!od) return;
   document.getElementById('photo-lightbox-img').src = img || '';
-  const piecesHtml = (od.pieces || []).map(function(p){
-    var pim = (typeof pieceImg === 'function') ? pieceImg(p) : '';
-    var pb = (typeof BRANDS !== 'undefined' && BRANDS[p.brand] && BRANDS[p.brand].label) || p.brand;
-    return "<div class='lb-piece-row'><div class='lb-piece-thumb'>" + (pim ? "<img src='" + pim + "' alt='" + p.name + "'>" : "") + "</div>" +
-      "<div class='lb-piece-info'><div class='lb-piece-role'>" + p.role + "</div><div class='lb-piece-name'>" + p.name + "</div><div class='lb-piece-brand'>" + pb + "</div></div></div>";
-  }).join("");
-  const st = (typeof effectiveOutfitStats === 'function') ? effectiveOutfitStats(od) : null;
+  // Shared outfit-detail builder (same as Outfits board + Proposals) — one source.
   document.getElementById('photo-lightbox-info').innerHTML =
-    "<div class='lb-outfit-num'>No. " + String(od.id).padStart(2,'0') + (od.source === 'detected' ? " &middot; Auto-detected" : "") + "</div>" +
-    "<div class='lb-outfit-name'>" + od.name + "</div>" +
-    "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px'>" +
-      "<div class='lb-outfit-vibe' style='margin-bottom:0'>" + (od.vibe || "") + "</div>" +
-      (od.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PLAB_MODAL[od.persona] || od.persona) + "</span>" : "") +
-    "</div>" +
-    (typeof outfitStatsCompareHtml === 'function' ? outfitStatsCompareHtml(od) : "") +
-    "<div class='lb-pieces-title'>Pieces</div>" + piecesHtml;
+    (typeof outfitDetailInfoHtml === 'function') ? outfitDetailInfoHtml(od, {}) : '';
   document.getElementById('photo-lightbox').style.display = 'flex';
 }
 function closeOutfitModal(){ var m = document.getElementById('photo-lightbox'); if (m) m.style.display = 'none'; }
@@ -1027,6 +1014,8 @@ function _resolveItem(name, brand){ return (typeof itemForPiece === 'function') 
 document.addEventListener('click', function(e){
   const chip = e.target.closest && e.target.closest('[data-outfit-id]');
   if (chip) { const id = parseInt(chip.dataset.outfitId, 10); closeItemModal(); openOutfitModal(id, chip.dataset.outfitPhoto || (outfitPhotoPath(id))); return; }
+  const odp = e.target.closest && e.target.closest('.outfit-detail-piece');
+  if (odp) { const it = _resolveItem(odp.dataset.name, odp.dataset.brand); if (it) { closeOutfitModal(); openItemModal(it); } return; }
   const pc = e.target.closest && e.target.closest('.pair-card');
   if (pc) { const it = _resolveItem(pc.dataset.name, pc.dataset.brand); if (it) openItemModal(it); return; }
   const mi = e.target.closest && e.target.closest('.mgr-item');

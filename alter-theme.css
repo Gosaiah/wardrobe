@@ -20,6 +20,7 @@
   --r-sm:  6px;  --r-md: 10px; --r-lg: 14px; --r-xl: 16px; --r-pill: 999px;
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
   --tr: 0.18s ease;
+  --page-max: none;                       /* full-bleed content — matches the full-width nav */
 
   /* ══ DARK THEME (default) ══ */
   --ink:      #0a0a0b;                    /* true black */
@@ -34,6 +35,9 @@
   --accent:   #e2d3b4;                    /* champagne — brand colour */
   --accent2:  #c9b98f;
   --accent-soft: rgba(226,211,180,0.10);
+  --buff:     #6ece80;                    /* styling-buff green (RPG base+buff viz) */
+  --buff-soft: rgba(110,206,128,0.10);
+  --buff-border: rgba(110,206,128,0.28);
   --card-grad: linear-gradient(160deg, #17171a, #101012);
   --card-shadow: 0 14px 34px -20px rgba(0,0,0,0.75);
   --splash-bg: radial-gradient(90% 60% at 50% 42%, #151414, #0a0a0b 75%);
@@ -73,6 +77,9 @@
   --accent:   #9c7b45;                    /* bronze — readable on cream, works as fill */
   --accent2:  #b89a63;
   --accent-soft: rgba(156,123,69,0.12);
+  --buff:     #3f9d55;                    /* deeper green — readable on cream */
+  --buff-soft: rgba(63,157,85,0.12);
+  --buff-border: rgba(63,157,85,0.30);
   --card-grad: linear-gradient(160deg, #ffffff, #f6f0e4);
   --card-shadow: 0 12px 28px -20px rgba(90,70,35,0.28);
   --splash-bg: radial-gradient(90% 60% at 50% 42%, #fbf8f1, #efe7d8 75%);
@@ -97,17 +104,43 @@
 
 /* stray hard-coded tints → token */
 .custom-badge       { background: var(--accent-soft) !important; border-color: var(--accent2) !important; }
-.filter-chip.active { background: var(--accent-soft) !important; }
 .move-type.ultimate { background: var(--accent-soft) !important; }
+
+/* ── Filter / context chips — ONE component, ONE styling for every page ────────
+   Used by Today (context chips), Shop, Proposals, and the Outfits board. All the
+   historical class names map to this single definition so there's no per-page drift. */
+.filter-chip, .filter-btn, .t-chip, .pf-btn {
+  background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--font-ui); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 7px 14px; border-radius: var(--r-pill); cursor: pointer; transition: all var(--tr); white-space: nowrap;
+}
+.filter-chip:hover, .filter-btn:hover, .t-chip:hover, .pf-btn:hover { color: var(--text); border-color: var(--muted); }
+.filter-chip.active, .filter-btn.active, .t-chip.active, .pf-btn.active {
+  background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 700;
+}
 
 /* ── Typography ── */
 html, body { font-family: var(--font-ui); }
 h1, h2, h3, .h2 { font-family: var(--font-display); }
 ::selection { background: rgba(226,211,180,0.28); color: var(--white); }
 
+/* ── Page shell — one content width + one header treatment for every page ──────
+   Wrap a page's main content in .app-page; put its title block in .page-header.
+   Fully responsive: the column caps at --page-max and centers, padding shrinks on
+   small screens, and the header stacks. Profile/Persona keep their hero as an
+   opt-in showcase (they still use .app-page for width). */
+.app-page { max-width: var(--page-max); margin: 0; padding: 32px 24px 90px; }
+.page-header { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 28px; }
+.page-title-wrap { min-width: 0; }
+/* Big, bold page title — same treatment as Profile's "Style Profile" hero. */
+.page-title { font-family: var(--font-display); font-size: clamp(48px, 8vw, 96px); font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1; margin: 0; }
+.page-sub { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.5; max-width: 640px; }
+.page-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+@media (max-width: 768px) { .app-page { padding: 22px 16px 72px; } }
+
 /* ── Buttons — one shared language ── */
 .picker-go-btn, .btn-add, .mgr-btn, .btn-cancel,
-.action-btn, .cal-nav-btn, .view-toggle-btn, .filter-chip, .picker-chip {
+.action-btn, .cal-nav-btn, .view-toggle-btn, .picker-chip {
   font-family: var(--font-ui) !important;
   letter-spacing: var(--tracking);
   transition: var(--tr) !important;
@@ -142,7 +175,7 @@ input:focus, textarea:focus, select:focus,
 .spec-card, .move-card, .chart-block, .numbers-cell,
 .persona-photo-wrap, .view-toggle { border-radius: var(--r-lg) !important; }
 
-.filter-chip, .builder-piece-row, .builder-outfit-piece-chip,
+.builder-piece-row, .builder-outfit-piece-chip,
 .picker-piece-chip, .piece-row, .drop-zone, .picker-textarea,
 .modal input, .modal textarea, .mgr-search, .mgr-select,
 .mgr-field input, .mgr-field select, .picker-field select,
@@ -195,6 +228,86 @@ input:focus, textarea:focus, select:focus,
   background: linear-gradient(135deg, #f3ead6 0%, var(--surface) 60%) !important;
 }
 
+/* ── Shared outfit card — CARD VIEW (used by Outfits board, Persona, Today) ────
+   One definition for every page. Loaded here (all pages link alter-theme.css) so
+   the Outfits page — which doesn't link components.css — shares it too. */
+.outfits-grid.card-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.outfit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+.outfit-card.card-view { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 8px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); transition: border-color 0.2s; }
+.outfit-card.card-view:hover { border-color: var(--accent2); }
+.outfit-card.card-view .cv-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.outfit-card.card-view .cv-no-img { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+.outfit-card.card-view .cv-gradient { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.0) 30%, rgba(0,0,0,0.75) 100%); pointer-events: none; }
+.outfit-card.card-view .cv-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; }
+.outfit-card.card-view .cv-number { font-size: 9px; letter-spacing: 0.14em; color: rgba(255,255,255,0.45); text-transform: uppercase; margin-bottom: 2px; }
+.outfit-card.card-view .cv-name { font-size: 14px; font-weight: 600; color: var(--white); line-height: 1.2; }
+.outfit-card.card-view .cv-vibe { font-size: 10px; color: var(--accent); font-style: italic; margin-top: 3px; }
+.outfit-card.card-view .cv-spider { display: block; margin-bottom: 6px; pointer-events: none; }
+.outfit-card.card-view .cv-actions { position: absolute; top: 8px; left: 8px; display: flex; gap: 4px; opacity: 0; transition: opacity 0.15s; }
+.outfit-card.card-view:hover .cv-actions { opacity: 1; }
+/* Card-view bottom row — text, with an optional thumbnail to its left (History's worn photo) */
+.outfit-card.card-view .cv-bottom-row { display: flex; align-items: flex-end; gap: 8px; }
+.outfit-card.card-view .cv-text { flex: 1; min-width: 0; }
+.outfit-card.card-view .cv-worn-thumb { position: relative; width: 34px; min-width: 34px; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.28); box-shadow: 0 2px 8px rgba(0,0,0,0.5); flex-shrink: 0; }
+.outfit-card.card-view .cv-worn-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+/* piece-image collage — fallback when an outfit has no generated photo (any view) */
+.cv-collage { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; }
+.cv-collage img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+/* Shared outfit card — GRID VIEW (photo + stats overlay + header + piece list) */
+.outfit-card .outfit-photo { width: 100%; aspect-ratio: 4/5; background: var(--surface2); overflow: hidden; position: relative; border-bottom: 1px solid var(--border); }
+.outfit-card .outfit-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.outfit-card .outfit-photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; min-height: 120px; }
+.outfit-photo-stats-overlay { position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 6px; pointer-events: none; backdrop-filter: blur(3px); }
+.outfit-photo-stats-overlay svg { display: block; }
+.outfit-card .outfit-card-header { padding: 14px 16px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.outfit-card .outfit-number { font-size: 9px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 2px; }
+.outfit-card .outfit-name { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 0.02em; }
+.outfit-card .outfit-vibe { font-size: 10px; color: var(--accent); margin-top: 4px; font-style: italic; }
+.outfit-card .outfit-pieces { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+.outfit-card .piece-row { display: flex; align-items: center; gap: 8px; }
+.outfit-card .piece-thumb { width: 30px; height: 38px; flex-shrink: 0; border-radius: 6px; overflow: hidden; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; transition: border-color 0.15s; }
+.outfit-card .piece-thumb:hover { border-color: var(--accent2); }
+.outfit-card .piece-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.outfit-card .piece-thumb-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--border); }
+.outfit-card .piece-role { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); width: 52px; flex-shrink: 0; }
+.outfit-card .piece-name { font-size: 11px; color: var(--text); flex: 1; }
+.piece-name-link { cursor: pointer; transition: color 0.12s; }
+.piece-name-link:hover { color: var(--white); text-decoration: underline; text-decoration-color: var(--accent); }
+
+/* Shared outfit card — EDITORIAL (horizontal) view + global h-piece item cards */
+.outfits-grid.horizontal { display: flex; flex-direction: column; gap: 16px; }
+.outfit-card.horizontal { display: flex; flex-direction: row; height: 480px; border-radius: 10px; overflow: hidden; cursor: pointer; }
+.outfit-card.horizontal .outfit-photo { width: 340px; min-width: 340px; max-width: 340px; aspect-ratio: auto; border-bottom: none; border-right: 1px solid var(--border); flex-shrink: 0; overflow: hidden; align-self: stretch; }
+.outfit-card.horizontal .outfit-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.outfit-card.horizontal .outfit-photo-empty { width: 100%; height: 100%; }
+.outfit-card-horizontal-right { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.outfit-card.horizontal .outfit-card-header { padding: 18px 20px 12px; border-bottom: 1px solid var(--border); }
+.outfit-card.horizontal .outfit-number { font-size: 10px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 3px; }
+.outfit-card.horizontal .outfit-name { font-size: 18px; font-weight: 600; color: var(--white); }
+.outfit-card.horizontal .outfit-vibe { font-size: 11px; color: var(--accent); font-style: italic; margin-top: 3px; }
+.h-pieces-row { display: flex; gap: 12px; padding: 16px 20px; flex: 1; overflow-x: auto; align-items: flex-start; }
+/* h-piece — a compact clothing-item card (global; used in editorial outfit cards + history) */
+.h-piece-card { flex-shrink: 0; width: 180px; cursor: pointer; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface2); transition: border-color 0.15s; }
+.h-piece-card:hover { border-color: var(--accent2); }
+.h-piece-img { width: 180px; height: 220px; overflow: hidden; background: var(--surface2); }
+.h-piece-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.h-piece-img-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--border); font-size: 24px; }
+.h-piece-info { padding: 8px 10px 10px; }
+.h-piece-role { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+.h-piece-name { font-size: 11px; color: var(--text); line-height: 1.3; }
+@media (max-width: 768px) {
+  .outfit-card.horizontal { flex-direction: column; height: auto; }
+  .outfit-card.horizontal .outfit-photo { width: 100%; min-width: unset; max-width: unset; aspect-ratio: 3/4; border-right: none; border-bottom: 1px solid var(--border); }
+  .outfit-card-horizontal-right { width: 100%; }
+  .outfit-card.horizontal .outfit-card-header { padding: 14px 16px 10px; }
+}
+
+/* View toggle (card / grid / editorial) — shared control */
+.view-toggle { display: flex; gap: 2px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+.view-toggle-btn { background: none; border: none; color: var(--muted); cursor: pointer; padding: 5px 9px; border-radius: 6px; font-size: 13px; transition: all 0.15s; line-height: 1; }
+.view-toggle-btn.active { background: var(--surface); color: var(--accent); }
+
 /* scrollbar */
 ::-webkit-scrollbar-thumb { background: var(--border) !important; border-radius: var(--r-pill) !important; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent2) !important; }
@@ -209,6 +322,13 @@ input:focus, textarea:focus, select:focus,
 
 /* logo marks follow the accent token (overrides the inline SVG stroke) */
 .nav-mark, #alter-splash .asp-mark { stroke: var(--accent) !important; }
+
+/* Shared "Pairs with your wardrobe" view (Shop full-screen view + Builder suggestions) */
+.pair-head { margin-bottom: 20px; }
+.pair-head .ph-kicker { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.pair-head .ph-name { font-size: 22px; color: var(--white); margin-top: 4px; }
+.pair-head .ph-sub { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5; max-width: 640px; }
+.pair-body { display: flex; flex-direction: column; gap: 16px; }
 
 /* data-viz (radar / spider charts) — theme-aware */
 .dv-axis  { stroke: var(--border) !important; }

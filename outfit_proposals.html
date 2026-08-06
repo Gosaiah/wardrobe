@@ -18,11 +18,9 @@
   .back-btn { display:none; }
 
   /* FILTER BAR */
-  .filter-bar { background:#0a0a0a; border-bottom:1px solid var(--border); padding:12px 32px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; position:sticky; top:48px; z-index:90; }
+  .filter-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
   .filter-label { font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-right:4px; }
-  .filter-chip { background:none; border:1px solid var(--border); color:var(--muted); font-family:inherit; font-size:9px; letter-spacing:.1em; text-transform:uppercase; padding:4px 12px; border-radius:8px; cursor:pointer; transition:all .15s; white-space:nowrap; }
-  .filter-chip:hover { border-color:var(--accent2); color:var(--text); }
-  .filter-chip.active { border-color:var(--accent); color:var(--accent); background:rgba(226, 211, 180,.07); }
+  /* .filter-chip styling is shared (alter-theme.css filter/context chip) */
   .filter-divider { width:1px; height:16px; background:var(--border); margin:0 4px; }
   .outfit-count { font-size:10px; color:var(--muted); letter-spacing:.06em; }
   .filter-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
@@ -31,88 +29,18 @@
   .view-toggle-btn:hover { color:var(--text); }
   .view-toggle-btn.active { background:var(--surface); color:var(--accent); }
 
-  /* ── CARD VIEW ── */
-  .proposals-list.card-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; flex-direction:unset; }
-  .proposal-card.card-view { min-height:unset; aspect-ratio:3/4; flex-direction:column; position:relative; overflow:hidden; background:var(--surface2); cursor:pointer; }
-  .proposal-card.card-view .proposal-photo { width:100%; min-width:unset; height:100%; border-right:none; position:absolute; inset:0; }
-  .proposal-card.card-view .proposal-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; }
-  .proposal-card.card-view .proposal-right { display:none; }
-  .proposal-card.card-view .cv-gradient { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(0,0,0,0) 30%,rgba(0,0,0,0.8) 100%); pointer-events:none; }
-  .proposal-card.card-view .cv-info { position:absolute; bottom:0; left:0; right:0; padding:14px; }
-  .proposal-card.card-view .cv-number { font-size:9px; letter-spacing:.14em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:2px; }
-  .proposal-card.card-view .cv-name { font-size:14px; font-weight:600; color:var(--white); line-height:1.2; }
-  .proposal-card.card-view .cv-vibe { font-size:10px; color:var(--accent); font-style:italic; margin-top:3px; }
-  .proposal-card.card-view .cv-spider { display:block; margin-bottom:6px; pointer-events:none; }
-
-  /* ── GRID VIEW ── */
-  .proposals-list.grid-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; flex-direction:unset; }
-  .proposal-card.grid-view { min-height:unset; flex-direction:column; }
-  .proposal-card.grid-view .proposal-photo { width:100%; min-width:unset; height:220px; border-right:none; border-bottom:1px solid var(--border); }
-  .proposal-card.grid-view .proposal-right { display:flex; }
-  .proposal-card.grid-view .proposal-stats,
-  .proposal-card.grid-view .proposal-pieces,
-  .proposal-card.grid-view .proposal-rationale { display:none; }
-  .proposal-card.grid-view .proposal-header { border-bottom:none; padding:14px 16px; }
-
-  /* ── CUSTOM PROPOSALS ── */
-  .custom-proposal { border-color: rgba(226, 211, 180,0.2); }
-  .custom-badge { background: rgba(226, 211, 180,0.15) !important; color: var(--accent) !important; border: 1px solid var(--accent2) !important; }
-  .custom-collage { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; width:100%; height:100%; gap:1px; background:var(--border); }
-  .custom-collage img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
-  .custom-delete-btn { background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; padding:4px 8px; transition:color 0.15s; flex-shrink:0; }
-  .custom-delete-btn:hover { color:var(--danger); }
-
-  /* MAIN */
-  .main { padding:28px 32px 80px; }
+  /* Card layout — proposals render the shared .outfit-card (data.js/alter-theme).
+     These containers just arrange them per view mode. */
   .proposals-list { display:flex; flex-direction:column; gap:16px; }
-  .proposal-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; display:flex; min-height:400px; transition:border-color .2s; }
-  .proposal-card:hover { border-color:var(--accent2); }
-  .proposal-card.best { border-color:var(--accent); }
-  .proposal-card[style*="display:none"] { display:none !important; }
+  .proposals-list.card-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; }
+  .proposals-list.grid-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
 
-  /* PHOTO */
-  .proposal-photo { width:360px; min-width:360px; background:var(--surface2); border-right:1px solid var(--border); display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; flex-shrink:0; }
-  .proposal-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
-  .proposal-photo-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:var(--muted); font-size:9px; letter-spacing:.12em; text-transform:uppercase; width:100%; min-height:400px; }
-  .proposal-photo-empty::before { content:"⊕"; font-size:24px; opacity:.2; }
-  .best-badge { position:absolute; top:12px; left:12px; background:var(--accent); color:#000; font-size:8px; letter-spacing:.14em; text-transform:uppercase; padding:3px 8px; border-radius:8px; font-weight:700; }
-  .session-badge { position:absolute; bottom:12px; left:12px; background:rgba(0,0,0,.6); color:var(--muted); font-size:8px; letter-spacing:.1em; text-transform:uppercase; padding:2px 7px; border-radius:8px; }
-  .approved-badge { position:absolute; top:12px; right:12px; background:rgba(0,180,100,0.85); color:#fff; font-size:8px; letter-spacing:.14em; text-transform:uppercase; padding:3px 8px; border-radius:8px; font-weight:700; }
-
-  /* RIGHT */
-  .proposal-right { flex:1; display:flex; flex-direction:column; min-width:0; }
-  .proposal-header { padding:18px 22px 14px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-  .proposal-num { font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
-  .proposal-name { font-size:20px; font-weight:600; color:var(--white); line-height:1.2; margin-bottom:4px; }
-  .proposal-vibe { font-size:10px; color:var(--accent); font-style:italic; }
-  .proposal-cat { font-size:8px; letter-spacing:.1em; text-transform:uppercase; padding:3px 9px; border:1px solid var(--border); color:var(--muted); border-radius:8px; flex-shrink:0; margin-top:2px; }
-
-  /* STATS */
-  .proposal-stats { display:flex; align-items:center; gap:14px; padding:12px 22px; border-bottom:1px solid var(--border); background:rgba(255,255,255,.02); }
-  .stat-bars { display:flex; flex-direction:column; gap:3px; }
-  .stat-row { display:flex; align-items:center; gap:6px; }
-  .stat-name { font-size:8px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); width:58px; }
-  .stat-track { width:80px; height:2px; background:var(--border); border-radius:8px; overflow:hidden; }
-  .stat-fill { height:100%; background:var(--accent); border-radius:8px; }
-  .stat-val { font-size:9px; color:var(--accent); width:18px; }
-
-  /* PIECES */
-  .proposal-pieces { display:flex; gap:10px; padding:14px 22px; overflow-x:auto; flex-shrink:0; }
-  .piece-card { flex-shrink:0; width:140px; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--surface2); cursor:pointer; transition:border-color .15s; }
-  .piece-card:hover { border-color:var(--accent2); }
-  .piece-img { width:140px; height:168px; overflow:hidden; background:var(--surface2); }
-  .piece-img img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
-  .piece-img-empty { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--border); font-size:20px; }
-  .piece-info { padding:7px 9px 9px; }
-  .piece-role { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
-  .piece-name { font-size:10px; color:var(--text); line-height:1.3; }
-  .piece-brand { font-size:9px; color:var(--accent2); margin-top:1px; }
-
-  /* RATIONALE */
-  .proposal-rationale { flex:1; padding:14px 22px; font-size:12px; line-height:1.7; color:var(--muted); border-top:1px solid var(--border); }
-  .proposal-notes { display:flex; flex-wrap:wrap; gap:8px; padding:0 22px 14px; }
-  .proposal-note { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); }
-  .note-dot { width:4px; height:4px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+  /* Card overlays: session / added / closet badges + custom delete button */
+  .custom-badge { background: rgba(226, 211, 180,0.15) !important; color: var(--accent) !important; border: 1px solid var(--accent2) !important; }
+  .session-badge { position:absolute; bottom:12px; left:12px; background:rgba(0,0,0,.6); color:var(--muted); font-size:8px; letter-spacing:.1em; text-transform:uppercase; padding:2px 7px; border-radius:8px; z-index:3; }
+  .approved-badge { position:absolute; top:12px; right:12px; background:rgba(0,180,100,0.85); color:#fff; font-size:8px; letter-spacing:.14em; text-transform:uppercase; padding:3px 8px; border-radius:8px; font-weight:700; z-index:3; }
+  .custom-delete-btn { background:rgba(0,0,0,.5); border:none; color:#fff; font-size:12px; cursor:pointer; padding:3px 7px; border-radius:8px; transition:color 0.15s; }
+  .custom-delete-btn:hover { color:var(--danger); }
 
   ::-webkit-scrollbar { width:4px; height:4px; }
   ::-webkit-scrollbar-track { background:transparent; }
@@ -124,55 +52,13 @@
     .back-btn { padding: 5px 10px; font-size: 9px; }
 
     /* FILTER BAR */
-    .filter-bar { padding: 10px 16px; overflow-x: auto; flex-wrap: nowrap; gap: 6px; top: 48px; }
+    .filter-bar { overflow-x: auto; flex-wrap: nowrap; gap: 6px; }
     .filter-chip { white-space: nowrap; flex-shrink: 0; }
     .outfit-count { display: none; }
-
-    /* MAIN */
-    .main { padding: 16px 12px 60px; }
-
-    /* PROPOSAL CARD — stack vertically */
-    .proposal-card { flex-direction: column; min-height: unset; }
-    .proposal-photo {
-      width: 100% !important; min-width: unset !important;
-      min-height: 320px; border-right: none;
-      border-bottom: 1px solid var(--border);
-    }
-    .proposal-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-    .best-badge { top: 10px; left: 10px; }
-    .session-badge { bottom: 10px; left: 10px; }
-
-    /* HEADER */
-    .proposal-header { padding: 14px 16px 12px; flex-wrap: wrap; gap: 8px; }
-    .proposal-name { font-size: 17px; }
-
-    /* STATS */
-    .proposal-stats { padding: 12px 16px; gap: 10px; }
-    .stat-bars { flex: 1; }
-    .stat-track { max-width: unset; flex: 1; }
-
-    /* PIECES */
-    .proposal-pieces { padding: 12px 14px; gap: 8px; }
-    .piece-card { width: 120px; }
-    .piece-img { width: 120px; height: 144px; }
-    .piece-name { font-size: 10px; }
-
-    /* RATIONALE */
-    .proposal-rationale { padding: 12px 16px; font-size: 12px; }
-    .proposal-notes { padding: 0 16px 12px; }
-
-    /* EVENT CONTEXT */
-    .event-context { padding: 14px 16px; }
-    .event-title { font-size: 18px; }
-  }
-
-  @media (max-width: 480px) {
-    .proposal-photo { min-height: 260px; }
-    .piece-card { width: 100px; }
-    .piece-img { width: 100px; height: 120px; }
   }
 
 </style>
+<link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="alter-theme.css">
 <script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 </head>
@@ -180,37 +66,65 @@
 
 <script src="nav.js"></script>
 
-<div class="filter-bar" id="filter-bar">
-  <span class="filter-label">Session</span>
-  <button class="filter-chip" data-session="all">All</button>
-  <!-- session chips injected by JS -->
-  <div class="filter-divider"></div>
-  <span class="filter-label">Category</span>
-  <button class="filter-chip active" data-cat="all">All</button>
-  <button class="filter-chip" data-cat="Dark / Minimal">Dark</button>
-  <button class="filter-chip" data-cat="Contrast">Contrast</button>
-  <button class="filter-chip" data-cat="Tonal">Tonal</button>
-  <button class="filter-chip" data-cat="Night Out">Night Out</button>
-  <div class="filter-right">
-    <span class="outfit-count" id="outfit-count"></span>
-    <div class="view-toggle">
-      <button class="view-toggle-btn active" id="vtoggle-card" title="Card view">&#9646;</button>
-      <button class="view-toggle-btn" id="vtoggle-grid" title="Grid view">&#9776;</button>
-      <button class="view-toggle-btn" id="vtoggle-editorial" title="Editorial view">&#9783;</button>
+<main class="app-page">
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <h1 class="page-title">Proposals</h1>
+      <div class="page-sub">Generated outfit ideas, grouped by session. Filter by character, then open any card for the full look.</div>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filter-bar">
+    <span class="filter-label">Session</span>
+    <button class="filter-chip" data-session="all">All</button>
+    <!-- session chips injected by JS -->
+    <div class="filter-divider"></div>
+    <span class="filter-label">Category</span>
+    <button class="filter-chip active" data-cat="all">All</button>
+    <button class="filter-chip" data-cat="Dark / Minimal">Dark</button>
+    <button class="filter-chip" data-cat="Contrast">Contrast</button>
+    <button class="filter-chip" data-cat="Tonal">Tonal</button>
+    <button class="filter-chip" data-cat="Night Out">Night Out</button>
+    <div class="filter-right">
+      <span class="outfit-count" id="outfit-count"></span>
+      <div class="view-toggle">
+        <button class="view-toggle-btn active" id="vtoggle-card" title="Card view">&#9646;</button>
+        <button class="view-toggle-btn" id="vtoggle-grid" title="Grid view">&#9776;</button>
+        <button class="view-toggle-btn" id="vtoggle-editorial" title="Editorial view">&#9783;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="proposals-list" id="proposals-list"></div>
+</main>
+
+<div class="item-detail-overlay" id="od-overlay" style="display:none" onclick="if(event.target===this)closeProposalOutfit()">
+  <div class="item-detail-panel">
+    <button class="item-detail-close" onclick="closeProposalOutfit()" aria-label="Close">&#x2715;</button>
+    <div class="item-detail-inner">
+      <div class="item-detail-photo-col" id="od-photo"></div>
+      <div class="item-detail-info-col" id="od-info"></div>
     </div>
   </div>
 </div>
 
-<main class="main">
-  <div class="proposals-list" id="proposals-list"></div>
-</main>
+<!-- Item detail popup (opens when a clothing item in an outfit is clicked) -->
+<div class="item-detail-overlay" id="item-overlay" style="display:none;z-index:1300" onclick="if(event.target===this)closeItemPopup()">
+  <div class="item-detail-panel">
+    <button class="item-detail-close" onclick="closeItemPopup()" aria-label="Close">&#x2715;</button>
+    <div class="item-detail-inner">
+      <div class="item-detail-photo-col" id="ip-photo"></div>
+      <div class="item-detail-info-col" id="ip-info"></div>
+    </div>
+  </div>
+</div>
 
 <script src="data.js"></script>
 <script>
 // IMAGES + getImg are provided by shared data.js
 
 // If a proposal photo file doesn't exist yet, fall back to the "Photo pending" placeholder.
-function _photoFallback(img){ img.onerror=null; var d=document.createElement('div'); d.className='proposal-photo-empty'; d.innerHTML='<span>Photo pending</span>'; img.replaceWith(d); }
+function _photoFallback(img){ img.onerror=null; if(img.parentElement) img.parentElement.innerHTML=''; }
 
 // drawSpider() consolidated into data.js — shared 8-spoke renderer
 
@@ -348,7 +262,7 @@ function setCatFilter(cat) {
 }
 
 function applyFilters() {
-  const cards = document.querySelectorAll(".proposal-card");
+  const cards = document.querySelectorAll(".outfit-card[data-session]");
   let visible = 0;
   cards.forEach(card => {
     const sessionMatch = activeSession==="all" || card.dataset.session===activeSession;
@@ -369,60 +283,23 @@ function renderAll() {
 
   const customProposals = JSON.parse(localStorage.getItem("CUSTOM_PROPOSALS") || "[]");
 
+  // Index every outfit (session + custom) by id so cards can open the shared detail popup.
+  PROPOSAL_INDEX = {};
+  SESSIONS.forEach(s => s.outfits.forEach(o => { PROPOSAL_INDEX[String(o.id)] = o; }));
+  customProposals.forEach(o => { PROPOSAL_INDEX[String(o.id)] = o; });
+
   list.innerHTML = SESSIONS.flatMap(session =>
-    session.outfits.map((outfit, i) => {
-      const photoHtml = outfit.photo
-        ? "<img src='" + outfit.photo + "' alt='" + outfit.name + "' loading='lazy' onerror='_photoFallback(this)'>"
-        : "<div class='proposal-photo-empty'><span>Photo pending</span></div>";
-
-      const piecesHtml = outfit.pieces.map(p => {
-        const img = p.img || getImg(p.name);
-        return "<div class='piece-card'>" +
-          "<div class='piece-img'>" + (img?"<img src='"+img+"' alt='"+p.name+"' loading='lazy'>":"<div class='piece-img-empty'>◈</div>") + "</div>" +
-          "<div class='piece-info'><div class='piece-role'>"+p.role+"</div><div class='piece-name'>"+p.name+"</div><div class='piece-brand'>"+p.brand+"</div></div>" +
-          "</div>";
-      }).join("");
-
-      const statsHtml = outfit.stats
-        ? "<div class='proposal-stats'>" +
-            drawSpider(outfit.stats, 80) +
-            "<div class='stat-bars'>" +
-            ["drama","edge","structure","skin","formality"].map(k=>
-              "<div class='stat-row'><div class='stat-name'>"+k+"</div><div class='stat-track'><div class='stat-fill' style='width:"+(outfit.stats[k]||0)*20+"%'></div></div><div class='stat-val'>"+(outfit.stats[k]||0)+"</div></div>"
-            ).join("") +
-            "</div></div>"
-        : "";
-
-      // Card view overlay (spider + info over image)
-      const cardOverlay = proposalViewMode === "card" && outfit.stats
-        ? "<div class='cv-gradient'></div><div class='cv-info'>" +
-            "<div class='cv-spider'>" + drawSpider(outfit.stats, 64) + "</div>" +
-            "<div class='cv-number'>#" + outfit.id + "</div>" +
-            "<div class='cv-name'>" + outfit.name + "</div>" +
-            "<div class='cv-vibe'>" + outfit.vibe + "</div>" +
-          "</div>"
-        : proposalViewMode === "card"
-        ? "<div class='cv-gradient'></div><div class='cv-info'>" +
-            "<div class='cv-number'>#" + outfit.id + "</div>" +
-            "<div class='cv-name'>" + outfit.name + "</div>" +
-            "<div class='cv-vibe'>" + outfit.vibe + "</div>" +
-          "</div>"
-        : "";
-
-      const cardClass = "proposal-card" + (proposalViewMode !== "editorial" ? " " + proposalViewMode + "-view" : "");
-
-      const approvedBadge = WARDROBE_IDS.has(outfit.id) ? "<div class='approved-badge'>✓ Added</div>" : "";
-      return "<div class='" + cardClass + "' data-session='"+session.id+"' data-cat='"+outfit.category+"'>" +
-        "<div class='proposal-photo'><div class='session-badge'>"+session.label+"</div>" + approvedBadge + photoHtml + cardOverlay + "</div>" +
-        "<div class='proposal-right'>" +
-          "<div class='proposal-header'>" +
-            "<div><div class='proposal-num'>#"+outfit.id+"</div><div class='proposal-name'>"+outfit.name+"</div><div class='proposal-vibe'>"+outfit.vibe+"</div></div>" +
-            "<div class='proposal-cat'>"+outfit.category+"</div>" +
-          "</div>" +
-          statsHtml +
-          "<div class='proposal-pieces'>"+piecesHtml+"</div>" +
-          (outfit.rationale?"<div class='proposal-rationale'>"+outfit.rationale+"</div>":"") +
-        "</div></div>";
+    session.outfits.map(outfit => {
+      // Shared outfit card (data.js) — same component as the Outfits page.
+      const badges = "<div class='session-badge'>" + session.label + "</div>" +
+        (WARDROBE_IDS.has(outfit.id) ? "<div class='approved-badge'>&#10003; Added</div>" : "");
+      return outfitCardHtml(outfit, {
+        view: proposalViewMode,
+        photo: outfit.photo || "",
+        kicker: "#" + outfit.id,
+        dataAttrs: "data-session='" + session.id + "' data-cat='" + outfit.category + "'",
+        badges: badges
+      });
     })
   ).join("") + (customProposals.length ? renderCustomProposals(customProposals) : "");
 
@@ -437,50 +314,57 @@ function renderAll() {
     });
   });
 
+  // wire card clicks → shared outfit-detail popup
+  document.querySelectorAll(".outfit-card[data-id]").forEach(card => {
+    card.addEventListener("click", e => {
+      if (e.target.closest(".custom-delete-btn") || e.target.closest(".piece-name-link")) return;
+      openProposalOutfit(card.dataset.id);
+    });
+  });
+
   applyFilters();
 }
 
+// ── Shared outfit-detail popup (uses data.js outfitDetailInfoHtml) ──
+let PROPOSAL_INDEX = {};
+function openProposalOutfit(id) {
+  const outfit = PROPOSAL_INDEX[String(id)];
+  if (!outfit || typeof outfitDetailInfoHtml !== "function") return;
+  const photoCol = document.getElementById("od-photo");
+  photoCol.innerHTML = outfit.photo
+    ? "<div class='item-detail-photo'><img src='" + outfit.photo + "' alt='" + outfit.name + "' onerror='_photoFallback && _photoFallback(this)'></div>"
+    : ((typeof outfitDetailPhotoHtml === "function") ? outfitDetailPhotoHtml(outfit) : "");
+  document.getElementById("od-info").innerHTML = outfitDetailInfoHtml(outfit, {});
+  document.getElementById("od-overlay").style.display = "flex";
+}
+function closeProposalOutfit() { document.getElementById("od-overlay").style.display = "none"; }
+
+// Item detail popup — shared builders; opens when a clothing item in an outfit is clicked.
+function openItemPopup(name, brand){
+  const it = (typeof itemForPiece === "function") ? itemForPiece({ name: name, brand: brand }) : null;
+  if (!it) return;
+  document.getElementById("ip-photo").innerHTML = (typeof itemDetailPhotoHtml === "function") ? itemDetailPhotoHtml(it) : "";
+  document.getElementById("ip-info").innerHTML = (typeof itemDetailInfoHtml === "function") ? itemDetailInfoHtml(it, {}) : "";
+  document.getElementById("item-overlay").style.display = "flex";
+}
+function closeItemPopup(){ document.getElementById("item-overlay").style.display = "none"; }
+document.addEventListener("click", e => {
+  const piece = e.target.closest(".outfit-detail-piece");
+  if (piece) openItemPopup(piece.dataset.name, piece.dataset.brand);
+});
+
 function renderCustomProposals(customs) {
   return customs.map(outfit => {
-    const cardClass = "proposal-card custom-proposal" + (proposalViewMode !== "editorial" ? " " + proposalViewMode + "-view" : "");
-
-    // Collage: up to 4 piece thumbnails
-    const imgs = outfit.pieces.slice(0,4).map(p => p.img).filter(Boolean);
-    let photoHtml;
-    if (imgs.length >= 2) {
-      photoHtml = "<div class='custom-collage'>" + imgs.map(src =>
-        "<img src='" + src + "' alt='' loading='lazy'>"
-      ).join("") + "</div>";
-    } else if (imgs.length === 1) {
-      photoHtml = "<img src='" + imgs[0] + "' alt='' loading='lazy' style='width:100%;height:100%;object-fit:cover;object-position:top center'>";
-    } else {
-      photoHtml = "<div class='proposal-photo-empty'><span>Custom Outfit</span></div>";
-    }
-
-    const cardOverlay = proposalViewMode === "card"
-      ? "<div class='cv-gradient'></div><div class='cv-info'>" +
-          "<div class='cv-number'>CUSTOM</div>" +
-          "<div class='cv-name'>" + outfit.name + "</div>" +
-          "<div class='cv-vibe'>" + outfit.date + "</div>" +
-        "</div>"
-      : "";
-
-    const piecesHtml = outfit.pieces.map(p =>
-      "<div class='piece-card'>" +
-        "<div class='piece-img'>" + (p.img ? "<img src='" + p.img + "' alt='" + p.name + "' loading='lazy'>" : "<div class='piece-img-empty'>◈</div>") + "</div>" +
-        "<div class='piece-info'><div class='piece-role'>" + p.role + "</div><div class='piece-name'>" + p.name + "</div><div class='piece-brand'>" + p.brand + "</div></div>" +
-      "</div>"
-    ).join("");
-
-    return "<div class='" + cardClass + "' data-session='custom' data-cat='custom'>" +
-      "<div class='proposal-photo'><div class='session-badge custom-badge'>Closet</div>" + photoHtml + cardOverlay + "</div>" +
-      "<div class='proposal-right'>" +
-        "<div class='proposal-header'>" +
-          "<div><div class='proposal-num'>CUSTOM</div><div class='proposal-name'>" + outfit.name + "</div><div class='proposal-vibe'>" + outfit.date + "</div></div>" +
-          "<button class='custom-delete-btn' data-id='" + outfit.id + "' title='Delete'>✕</button>" +
-        "</div>" +
-        "<div class='proposal-pieces'>" + piecesHtml + "</div>" +
-      "</div></div>";
+    // Shared outfit card; no photo → piece-image collage fallback (built into outfitCardHtml).
+    const badges = "<div class='session-badge custom-badge'>Closet</div>" +
+      "<button class='custom-delete-btn' data-id='" + outfit.id + "' title='Delete' style='position:absolute;top:10px;right:10px;z-index:3'>&#10005;</button>";
+    return outfitCardHtml(outfit, {
+      view: proposalViewMode,
+      photo: "",
+      kicker: "CUSTOM",
+      dataAttrs: "data-session='custom' data-cat='custom'",
+      badges: badges
+    });
   }).join("");
 }
 
@@ -505,6 +389,12 @@ document.getElementById("vtoggle-editorial").addEventListener("click", () => {
   document.getElementById("vtoggle-card").classList.remove("active");
   document.getElementById("vtoggle-grid").classList.remove("active");
   renderAll();
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key !== "Escape") return;
+  if (document.getElementById("item-overlay").style.display !== "none") closeItemPopup();
+  else closeProposalOutfit();
 });
 
 // Pre-select the most recent session before building chips
