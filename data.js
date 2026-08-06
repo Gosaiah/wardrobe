@@ -774,7 +774,7 @@ const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a
 function outfitPhotoPath(id){ return "outfits/outfit_" + String(id).padStart(2, "0") + ".jpg"; }
 // Outfit ids that have a curated board photo at outfits/outfit_XX.jpg — SINGLE source
 // (the Outfits board + Today both read this so they agree on which outfits have a photo).
-const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,64,65,66];
+const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,53,54,55,56,57,58,59,62,63,64,65,66];
 function outfitHasPhoto(id){ return OUTFIT_PHOTO_IDS.indexOf(id) >= 0; }
 // Best photo src for an outfit: an uploaded board photo (from the shared IndexedDB store,
 // passed in via `uploads`) wins, else the curated default path, else "" (renders "No photo").
@@ -813,9 +813,15 @@ function loadUploadedOutfitPhotos(){
 function outfitFilterTags(outfit){
   const t = new Set(outfit.tags || []);
   const v = (outfit.vibe || "").toLowerCase();
-  const p = outfit.persona || "";
-  if (/dark|minimal|goth|avant/.test(v) || p === "overlord") t.add("dark");
-  if (/tonal|layered|earth|linen|neutral|ease/.test(v) || p === "wanderer") t.add("tonal");
+  // Persona: explicit, else derived from the outfit's effective stats — so a builder-made
+  // outfit (no vibe/persona) still sorts into a filter instead of only showing under "All".
+  let p = outfit.persona || "";
+  if (!p && typeof effectiveOutfitStats === "function" && typeof getItemPersona === "function"){
+    const st = effectiveOutfitStats(outfit);
+    if (st) p = getItemPersona({ stats: st }) || "";
+  }
+  if (/dark|minimal|goth|avant/.test(v) || p === "overlord" || p === "viceroy") t.add("dark");
+  if (/tonal|layered|earth|linen|neutral|ease/.test(v) || p === "wanderer" || p === "civilian") t.add("tonal");
   if (/contrast|bold|\bpop\b/.test(v)) t.add("contrast");
   if (/night|going.?out|club|sequin|sheer|fringe/.test(v) || p === "night-shift") t.add("night");
   return t;
@@ -894,6 +900,7 @@ function outfitCardHtml(outfit, opts){
   const actionsHtml = opts.actions
     ? "<div class='cv-actions'><button class='action-btn " + (opts.saved ? "saved" : "") + "' data-action='save'>" + (opts.saved ? "&#9733;" : "&#9734;") + "</button><button class='action-btn' data-action='delete'>&#x2715;</button></div>"
     : "";
+  const title = (opts.title !== undefined) ? opts.title : outfit.name;   // headline (History overrides with the worn date)
   const numLine = (opts.kicker !== undefined)
     ? (opts.kicker ? "<div class='cv-number'>" + opts.kicker + "</div>" : "")
     : (typeof outfit.id === "number" ? "<div class='cv-number'>NO. " + String(outfit.id).padStart(2,"0") + "</div>" : "");
@@ -924,7 +931,7 @@ function outfitCardHtml(outfit, opts){
       }).join("");
       return "<div class='outfit-card" + extraCls + "'" + dataId + extraAttrs + " style='cursor:pointer'>" +
         photoBlock +
-        "<div class='outfit-card-header'><div>" + gridNum + "<div class='outfit-name'>" + outfit.name + "</div>" + headMeta + headerExtra + "</div>" + headerActions + "</div>" +
+        "<div class='outfit-card-header'><div>" + gridNum + "<div class='outfit-name'>" + title + "</div>" + headMeta + headerExtra + "</div>" + headerActions + "</div>" +
         "<div class='outfit-pieces'>" + pieceRows + "</div>" +
       "</div>";
     }
@@ -955,7 +962,7 @@ function outfitCardHtml(outfit, opts){
     return "<div class='outfit-card horizontal" + extraCls + "'" + dataId + extraAttrs + ">" +
       ePhoto +
       "<div class='outfit-card-horizontal-right'>" +
-        "<div class='outfit-card-header'><div style='flex:1'>" + eNum + "<div class='outfit-name'>" + outfit.name + "</div>" + eMeta + headerExtra + eStats + "</div>" + headerActions + "</div>" +
+        "<div class='outfit-card-header'><div style='flex:1'>" + eNum + "<div class='outfit-name'>" + title + "</div>" + eMeta + headerExtra + eStats + "</div>" + headerActions + "</div>" +
         "<div class='h-pieces-row'>" + hPieces + "</div>" +
       "</div>" +
     "</div>";
@@ -968,7 +975,7 @@ function outfitCardHtml(outfit, opts){
     "<div class='cv-info'>" + spiderHtml +
       "<div class='cv-bottom-row'>" + cvThumb +
         "<div class='cv-text'>" + numLine +
-          "<div class='cv-name'>" + outfit.name + "</div>" +
+          "<div class='cv-name'>" + title + "</div>" +
           "<div style='margin-top:4px'>" + leadingStatsHtml(stats, "rgba(255,255,255,0.45)") + "</div>" +
         "</div>" +
       "</div>" +

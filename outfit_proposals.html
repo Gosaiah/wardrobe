@@ -211,7 +211,9 @@ function hydrateSessions(SRC){
         // Shared effective-stats aggregator (8 facets + base + combos) — no local duplication.
         var stats=(typeof effectiveOutfitStats==="function")?effectiveOutfitStats(o):null;
         return { id:o.id, name:o.name, vibe:o.vibe, category:o.vibe,
-          photo:"outfits/outfit_"+o.id+".jpg",
+          // Shared photo resolver: real (zero-padded) path only when the outfit actually
+          // has a photo; otherwise "" so outfitCardHtml's piece-collage fallback kicks in.
+          photo:(typeof outfitHasPhoto==="function" && outfitHasPhoto(o.id)) ? outfitPhotoPath(o.id) : "",
           pieces:o.pieces.map(function(p){ return {role:p.role, name:p.name, brand:(BRANDS[p.brand]&&BRANDS[p.brand].label)||p.brand, img:pieceImg(p)}; }),
           stats:stats, rationale:ref.rationale||"", notes:ref.notes||[] };
       }).filter(Boolean)

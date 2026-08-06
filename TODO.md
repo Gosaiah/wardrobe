@@ -8,6 +8,7 @@ Last updated: 2026-08-05 · data.js at DATA_VERSION 147
 
 ## Open / Next up
 
+- [ ] **Stamp a stored `persona` on Builder-saved outfits.** `outfitFilterTags` now derives a persona from an outfit's stats at read time (so builder-made outfits sort into a category instead of only "All"), but the saved record still has no `persona` field — so the persona *chip* doesn't show on the card and it won't match the separate persona filter (`data-pfilter` / `currentPersonaFilter`, reads `o.persona` directly). Follow-up: at the builder save path, derive `persona` once (`getItemPersona({stats: effectiveOutfitStats(outfit)})`) and store it on the outfit. (Note: the "+ New Outfit" flow creates an empty outfit with no pieces, so derive/stamp when pieces are added/saved, not at creation.)
 - [ ] **Persist edits (needs a backend).** Everything is localStorage today; outfit edits, favorites, shopping-list, and wear-log state don't survive across devices. Parked until a real backend exists. (The shared stores in data.js are the seam — swap localStorage → API in one place.)
 - [ ] **Proposal → Outfits promotion flow.** Proposals 53–63 live on the Proposals page. Remaining: generate/add photos for the ones still missing, then promote the keepers to the main board (they stay on Proposals with the "Added" badge).
 - [ ] **Night Shift sleek shoe gap.** The one real hole in the signature kit — nothing sleek/going-out under ~$500 sourced yet. Rick Owens Temple ($1,956) is the dream-tier stand-in.
@@ -15,7 +16,13 @@ Last updated: 2026-08-05 · data.js at DATA_VERSION 147
 
 ## App structure
 
-- [ ] **Split the monolith into consistent standalone pages (option 3).** Today it's a hybrid: `wardrobe_v2_18.html` is a single-page app with 4 in-page tabs (Outfits / Wardrobe / Builder / History), while Proposals / Shop / Profile / Persona are separate files — so some destinations switch instantly and others full-reload. Target: break the 4 tabs into their own pages too, so every destination is a standalone page sharing `data.js` / `nav.js` / `alter-theme.css`. Best long-term structure (smaller, safer-to-edit files; no giant-file blank-out risk), but a real refactor — the 4 tabs currently share in-page state + render functions (builder selection, filters, wear-store wiring) that must be untangled first. Deferred. (Near-term: the "seamless hybrid" nav polish makes the hybrid feel like one app without the refactor.)
+- **Split the monolith into consistent standalone pages (option 3).** `wardrobe_v2_18.html` is the last SPA (4 in-page tabs: Outfits / Wardrobe / Builder / History); every other destination is already standalone. Decisions locked (2026-08-05): land on **Today**; adopt clean filenames (`outfits.html` / `wardrobe.html` / `builder.html` / `history.html`, retire the `wardrobe_v2_18` name); phase-by-phase with a commit + test between each. Plan:
+  - [x] **Phase 0 — extract the store (DONE 2026-08-05).** New `store.js`: `Store.load()` (version-checked merge of outfits/history/customItems/items), `Store.mergeItems`, `Store.persist`, `Store.safeParse`. Monolith now loads/persists through it (pure refactor — the live `let outfits/items/wornHistory` and all in-place mutations are unchanged; only load + localStorage writes are centralized). Verified byte-identical to the old inline logic across 5 scenarios (fresh / cached-valid / version-bump+user-added / invalid-cache / custom-item-merge). This is the shared read+write layer the split needs.
+  - [ ] **Phase 1 — extract shared modals** (item-detail / outfit-detail / photo-viewer / wear-detail markup + open/close wiring) into a shared `modals.js` so each peeled tab is thin. (Today/Proposals/Persona currently re-implement these.)
+  - [ ] **Phase 2 — peel tabs into standalone pages, least-coupled first, verify each:** History → Wardrobe → Builder → Outfits board. Each reads via `Store.load()` and writes via `Store.persist()`; nav.js flips each `data-tab` button to an anchor as it's peeled.
+  - [ ] **Phase 3 — retire the monolith:** `wardrobe_v2_18.html` → redirect; point `index.html` + nav brand at Today (the landing).
+  - [ ] **Phase 4 — finish consolidation:** collapse leftover inline card/modal CSS into the shared files (closes the components.css single-sourcing item).
+  - Tradeoff accepted: cross-tab state (Builder save → Outfits board) reflects on next load instead of instantly — already how Proposals/Shop/Profile behave.
 
 ## Cross-page consistency (Aug 2026)
 
@@ -86,7 +93,8 @@ Remaining / follow-ups:
 ## Data model & insights (future)
 
 - [ ] **Wear-log experiential layer (occasion · feeling · reactions).** Extend each wear entry with `occasion` (work / club-night / date / day-casual / party / shoot), `feelings` (powerful / confident / sexy / sharp / comfortable / playful; multi-tag), and `reactions` (free note + "got compliments" flag). Aggregate upward (computed on read): outfit popup → "Worn to: Club ×2 · Feels: Powerful, Confident"; item popup → across every look it's in. Subjective layer that complements the objective stats and powers better suggestions. Capture UI later; rating deferred.
-- [ ] **Rethink the Profile "Style Signature" — averaging is the wrong model.** Today it's the mean of every item's stats (`WARDROBE_STATS`); the whole closet of basics + accessories drags every axis to the middle, so the signature reads muted and under-sells the dark/edge identity. Explore: summarize from **worn/built outfits** not raw inventory; use **peaks/percentiles** (top-quartile per axis) not the mean; drop near-zero basics/accessories. Likely a blend — peak-weighted over worn outfits.
+- [ ] **Profile Signature: show multiple shapes.** Idea — instead of one spider, overlay a few readings on the same chart (e.g. worn vs saved, or "everyday" vs "at your boldest" cuts, or per-persona). The peak model already supports different quartiles/populations; just needs a multi-dataset spider + a small legend/toggle. (Deferred — noted 2026-08-05.)
+- [x] **Profile "Style Signature" reworked from mean → peak (2026-08-05); set to "bold" (top ~15% per axis).** Was the flat mean of every item (`WARDROBE_STATS`), which dragged every axis to the middle. Now `STYLE_SIGNATURE` reads the PEAK of your styled outfits: each outfit's `effectiveOutfitStats` (styling combos applied), worn looks weighted extra (each wear re-adds its outfit), then the top-quartile mean per axis. De-mutes the identity hard — e.g. edge 1.3→3.7, structure 1.7→3.5, presence 1.3→3.5, formality 2.0→3.4, while skin/ornament/movement/silhouette stay lower. Drives the main spider + stat pills. Falls back to the raw average if no outfits resolve. (Tunable: the 0.25 quartile and the worn-weighting.)
 
 ## Link rot / durability (product pages & images decay over time)
 
@@ -109,7 +117,7 @@ Remaining / follow-ups:
 
 ## Tech debt
 
-- [ ] **profile.html brand counts are hardcoded/stale** (`BRAND_BARS`: MINOAR 20, ORTTU 18, …). Compute from WARDROBE_DATA like WARDROBE_STATS does.
+- [x] **profile.html BRAND_BARS computed from WARDROBE_DATA** (done 2026-08-05) — was hardcoded/stale; now grouped live by normalized brand key → BRANDS label, top 10, bars scaled to the leader.
 
 ## Ideas / parking lot
 

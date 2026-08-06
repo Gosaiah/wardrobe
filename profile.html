@@ -128,9 +128,9 @@
 <section class="section">
   <div class="section-label">By The Numbers</div>
   <div class="numbers-row">
-    <div class="numbers-cell"><div class="numbers-value">88</div><div class="numbers-label">Total Pieces</div></div>
-    <div class="numbers-cell"><div class="numbers-value">39</div><div class="numbers-label">Outfits</div></div>
-    <div class="numbers-cell"><div class="numbers-value">15</div><div class="numbers-label">Brands</div></div>
+    <div class="numbers-cell"><div class="numbers-value" id="num-pieces">&ndash;</div><div class="numbers-label">Total Pieces</div></div>
+    <div class="numbers-cell"><div class="numbers-value" id="num-outfits">&ndash;</div><div class="numbers-label">Outfits</div></div>
+    <div class="numbers-cell"><div class="numbers-value" id="num-brands">&ndash;</div><div class="numbers-label">Brands</div></div>
   </div>
   <div class="charts-grid">
     <div class="chart-block">
@@ -253,7 +253,16 @@
 </div><!-- /page-content -->
 
 <script src="data.js"></script>
+<script src="store.js"></script>
 <script>
+// Live wardrobe/outfit data from the shared store (reflects edits + custom items),
+// falling back to the data.js defaults. Everything on this page derives from these.
+const _PROFILE = (typeof Store !== "undefined" && Store.load) ? Store.load()
+  : { items: (typeof WARDROBE_DATA !== "undefined" ? WARDROBE_DATA.slice() : []),
+      outfits: (typeof OUTFITS_DEFAULT !== "undefined" ? OUTFITS_DEFAULT.slice() : []) };
+const ITEMS = _PROFILE.items || [];
+const OUTFITS = (_PROFILE.outfits || []).filter(o => o && o.source !== "proposed");
+
 // ── Spider chart ──
 // drawSpider() consolidated into data.js — shared 8-spoke renderer
 
@@ -263,10 +272,31 @@ const WARDROBE_STATS = (function(){
   const K = (typeof SPIDER_KEYS!=='undefined') ? SPIDER_KEYS
           : ["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
   const t={}; K.forEach(k=>t[k]=0); let n=0;
-  (typeof WARDROBE_DATA!=='undefined'?WARDROBE_DATA:[]).forEach(i=>{
+  ITEMS.forEach(i=>{
     if(i&&i.stats){ K.forEach(k=>t[k]+=(i.stats[k]||0)); n++; }
   });
   const a={}; K.forEach(k=>a[k]= n? Math.round(t[k]/n*100)/100 : 0); return a;
+})();
+
+// ── Style Signature ──
+// The raw mean above muted the identity — a closet full of basics/accessories drags
+// every axis to the middle. The signature instead reads the PEAK of your styled
+// outfits: each outfit's effective stats (styling combos applied), worn looks weighted
+// extra, then the top-quartile mean per axis. "At your most expressive, this is you."
+const WORN = _PROFILE.wornHistory || [];
+const STYLE_SIGNATURE = (function(){
+  const pop = [];
+  OUTFITS.forEach(o => { const st = (typeof effectiveOutfitStats === "function") && effectiveOutfitStats(o); if (st) pop.push(st); });
+  WORN.forEach(w => { const o = OUTFITS.find(x => x.id === w.outfitId); const st = o && effectiveOutfitStats(o); if (st) pop.push(st); });
+  if (!pop.length) return WARDROBE_STATS;   // fallback to the raw average if no outfits resolve
+  const K = (typeof SPIDER_KEYS !== "undefined") ? SPIDER_KEYS : Object.keys(WARDROBE_STATS);
+  const sig = {};
+  K.forEach(k => {
+    const vals = pop.map(s => s[k] || 0).sort((a,b) => b - a);
+    const n = Math.max(1, Math.round(vals.length * 0.15));   // top ~15% per axis ("bold" — leans into the peak identity)
+    sig[k] = Math.round(vals.slice(0, n).reduce((a,b) => a + b, 0) / n * 100) / 100;
+  });
+  return sig;
 })();
 
 // Persona target profiles now live in data.js (PERSONA_TARGETS) — single source, 8-key facets.
@@ -282,7 +312,7 @@ const PERSONA_STATS = {
 // grouped by normalized brand key, labeled via BRANDS, top 10, bars scaled to the leader.
 const BRAND_BARS = (function(){
   const counts = {};
-  (typeof WARDROBE_DATA!=='undefined'?WARDROBE_DATA:[]).forEach(i=>{
+  ITEMS.forEach(i=>{
     if(!i || !i.brand) return;
     const key = (typeof bkey==='function') ? bkey(i.brand) : String(i.brand).toUpperCase();
     const label = (typeof BRANDS!=='undefined' && BRANDS[key] && BRANDS[key].label) ? BRANDS[key].label : i.brand;
@@ -297,16 +327,22 @@ const BRAND_BARS = (function(){
   return rows;
 })();
 
+// Vibe distribution computed from live outfits via the shared category tagger
+// (outfitFilterTags — same one the board/history filters use). Outfits can span
+// multiple categories, so counts need not sum to the total.
+const TOTAL_OUTFITS = OUTFITS.length;
 const VIBES = [
-  {label:"Dark / Minimal", count:15, color:"var(--cat-dark)"},
-  {label:"Tonal",           count:10, color:"var(--cat-tonal)"},
-  {label:"Contrast",        count:10, color:"var(--cat-contrast)"},
-  {label:"Night Out",       count:5,  color:"var(--cat-night)"},
-];
-const TOTAL_OUTFITS = 38;
+  {key:"dark",     label:"Dark / Minimal", color:"var(--cat-dark)"},
+  {key:"tonal",    label:"Tonal",          color:"var(--cat-tonal)"},
+  {key:"contrast", label:"Contrast",       color:"var(--cat-contrast)"},
+  {key:"night",    label:"Night Out",      color:"var(--cat-night)"},
+].map(d => ({
+  label: d.label, color: d.color,
+  count: (typeof outfitFilterTags === "function") ? OUTFITS.filter(o => outfitFilterTags(o).has(d.key)).length : 0
+}));
 
 // ── Render main spider ──
-document.getElementById("spider-main").innerHTML = drawSpider(WARDROBE_STATS, 200, "#e2d3b4");
+document.getElementById("spider-main").innerHTML = drawSpider(STYLE_SIGNATURE, 200, "#e2d3b4");
 
 // ── Render persona spiders ──
 ['p1','p2','p3','p4','p5'].forEach(id => {
@@ -316,7 +352,7 @@ document.getElementById("spider-main").innerHTML = drawSpider(WARDROBE_STATS, 20
 // ── Stat pills ──
 const pillsEl = document.getElementById("stat-pills-main");
 const STAT_LABELS = {formality:"Formality",structure:"Structure",presence:"Presence",edge:"Edge",skin:"Skin",ornament:"Ornament",movement:"Movement",silhouette:"Silhouette",drama:"Drama"};
-Object.entries(WARDROBE_STATS).forEach(([k,v]) => {
+Object.entries(STYLE_SIGNATURE).forEach(([k,v]) => {
   pillsEl.innerHTML += `<div class="stat-pill">
     <span class="stat-pill-label">${STAT_LABELS[k]}</span>
     <div class="stat-pill-bar"><div class="stat-pill-fill" style="width:${(v/5)*100}%"></div></div>
@@ -333,6 +369,12 @@ BRAND_BARS.forEach(b => {
     <span class="brand-count">${b.count}</span>
   </div>`;
 });
+
+// ── Headline numbers (live) ──
+document.getElementById("num-pieces").textContent = ITEMS.length;
+document.getElementById("num-outfits").textContent = OUTFITS.length;
+document.getElementById("num-brands").textContent =
+  new Set(ITEMS.map(i => (typeof bkey === "function" ? bkey(i.brand) : String(i.brand || "").toUpperCase()))).size;
 
 // ── Vibe chart ──
 const vibeEl = document.getElementById("vibe-chart");

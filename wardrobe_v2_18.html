@@ -255,7 +255,7 @@
   .closet-layout { flex:1; display:flex; overflow:hidden; }
 
   /* Left panel: spider + stats + save */
-  .closet-left { width:260px; flex-shrink:0; border-right:1px solid var(--border); display:flex; flex-direction:column; background:var(--surface); padding:24px 20px 20px; overflow-y:auto; }
+  .closet-left { flex:0 0 50%; min-width:380px; max-width:640px; border-right:1px solid var(--border); display:flex; flex-direction:column; background:var(--surface); padding:24px 26px 20px; overflow-y:auto; }
   .closet-spider-wrap { display:flex; justify-content:center; margin-bottom:20px; }
   .closet-stat-list { display:flex; flex-direction:column; gap:10px; flex:1; }
   .closet-stat { display:flex; align-items:center; gap:8px; }
@@ -269,34 +269,34 @@
   .closet-save-btn { background:var(--accent); border:none; color:#000; font-family:inherit; font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:13px; cursor:pointer; width:100%; transition:opacity 0.15s; }
   .closet-save-btn:hover { opacity:0.85; }
 
-  /* Right panel: clothing rows */
-  .closet-right { flex:1; display:flex; flex-direction:column; overflow-y:auto; gap:2px; background:var(--bg); padding:12px; }
-  .closet-row { display:flex; align-items:stretch; background:var(--surface); border:1px solid var(--border); flex-shrink:0; transition:border-color 0.2s, opacity 0.2s; }
-  .closet-row.primary { min-height:220px; }
-  .closet-row.secondary { min-height:130px; }
-  .closet-row.optional { opacity:0.45; }
-  .closet-row.optional.on { opacity:1; }
-  .closet-row-label-col { width:48px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:12px 0; border-right:1px solid var(--border); }
-  .closet-row-label { font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); writing-mode:vertical-rl; transform:rotate(180deg); }
+  /* Right panel: picker — primary (top/bottom) stacked & larger, supportive (outer/shoes) smaller beside */
+  /* Fill the available height so all four toggles are visible without scrolling:
+     columns stretch to the panel height, cards share their column's height. */
+  .closet-right { flex:1; display:flex; flex-direction:row; align-items:stretch; gap:14px; overflow:hidden; min-height:0; background:var(--bg); padding:14px; }
+  .closet-col { display:flex; flex-direction:column; gap:14px; min-width:0; min-height:0; }
+  .closet-col-primary { flex:1.6; }
+  .closet-col-support { flex:1; }
+  .closet-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; overflow:hidden; transition:border-color 0.2s, opacity 0.2s; flex:1 1 0; min-height:0; }
+  .closet-card.support.optional { opacity:0.5; }
+  .closet-card.support.optional.on { opacity:1; }
+  .closet-card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border-bottom:1px solid var(--border); }
+  .closet-card-role { font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); }
+  .closet-card-photo { position:relative; flex:1; min-height:110px; background:var(--surface2); }
+  .closet-card-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+  .cc-arrow { position:absolute; top:0; bottom:0; width:38px; display:flex; align-items:center; justify-content:center; border:none; color:#fff; font-size:22px; cursor:pointer; background:rgba(0,0,0,0.28); transition:background 0.15s; z-index:2; }
+  .cc-arrow:hover { background:rgba(0,0,0,0.5); }
+  .cc-arrow.left { left:0; } .cc-arrow.right { right:0; }
+  .cc-arrow:disabled { opacity:0.15; cursor:default; background:rgba(0,0,0,0.15); }
+  .closet-card-info { padding:10px 12px 12px; }
+  .cc-name { color:var(--white); font-weight:500; font-size:13px; line-height:1.25; margin-bottom:3px; }
+  .closet-card.support .cc-name { font-size:11px; }
+  .cc-brand { font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .cc-counter { font-size:9px; color:var(--muted); letter-spacing:0.06em; }
+  .closet-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--border); font-size:24px; }
   .closet-toggle { width:28px; height:16px; border-radius:8px; background:var(--surface2); border:1px solid var(--border); cursor:pointer; position:relative; transition:background 0.2s; flex-shrink:0; }
   .closet-toggle::after { content:''; position:absolute; top:3px; left:3px; width:8px; height:8px; border-radius:50%; background:var(--muted); transition:left 0.2s, background 0.2s; }
-  .closet-row.optional.on .closet-toggle { background:rgba(226, 211, 180,0.2); border-color:var(--accent); }
-  .closet-row.optional.on .closet-toggle::after { left:13px; background:var(--accent); }
-  .closet-carousel { flex:1; display:flex; align-items:center; }
-  .closet-arrow { background:none; border:none; color:var(--muted); font-size:28px; padding:0 14px; cursor:pointer; transition:color 0.15s; flex-shrink:0; align-self:stretch; display:flex; align-items:center; }
-  .closet-arrow:hover { color:var(--white); }
-  .closet-arrow:disabled { opacity:0.15; cursor:default; }
-  .closet-img-wrap { flex-shrink:0; overflow:hidden; background:var(--surface2); }
-  .closet-row.primary .closet-img-wrap { width:165px; aspect-ratio:3/4; }
-  .closet-row.secondary .closet-img-wrap { width:97px; aspect-ratio:3/4; }
-  .closet-img-wrap img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
-  .closet-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--border); font-size:24px; }
-  .closet-piece-info { flex:1; padding:0 20px; min-width:0; display:flex; flex-direction:column; justify-content:center; }
-  .closet-piece-name { color:var(--white); font-weight:500; margin-bottom:4px; }
-  .closet-row.primary .closet-piece-name { font-size:15px; }
-  .closet-row.secondary .closet-piece-name { font-size:12px; }
-  .closet-piece-brand { font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
-  .closet-piece-counter { font-size:9px; color:var(--border); letter-spacing:0.08em; }
+  .closet-card.optional.on .closet-toggle { background:rgba(226, 211, 180,0.2); border-color:var(--accent); }
+  .closet-card.optional.on .closet-toggle::after { left:13px; background:var(--accent); }
 
   /* ── BUILDER TAB ── */
   .builder-layout { display:flex; overflow:hidden; height:calc(100vh - 96px); }
@@ -688,8 +688,12 @@
     /* CLOSET VIEW — stack left panel above right */
     .closet-view { overflow: auto; }
     .closet-layout { flex-direction: column; overflow: visible; }
-    .closet-left { width: 100% !important; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 20px; }
-    .closet-right { padding: 12px; }
+    .closet-left { flex: 0 0 auto !important; width: 100% !important; min-width: 0 !important; max-width: none !important; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 20px; }
+    .closet-right { padding: 12px; flex-direction: column; overflow: visible; }
+    .closet-col-primary, .closet-col-support { flex: 1 1 auto; }
+    /* Stacked + scrolling on mobile: cards size by content, photos use their aspect ratio again */
+    .closet-card { flex: 0 0 auto; }
+    .closet-card-photo { flex: none; aspect-ratio: 3/4; min-height: 0; }
 
     /* ITEM DETAIL MODAL */
     .item-detail-panel { width: 100%; max-height: 100vh; height: 100vh; border-radius: 0; flex-direction: column; }
@@ -1009,6 +1013,7 @@
 </div>
 
 <script src="data.js"></script>
+<script src="store.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
 // DATA
@@ -1036,38 +1041,14 @@ const PIECE_STYLES = (() => {
 // in-app (outfits/wears not present in the bundled defaults) is preserved.
 
 // Safe parse — never throws even if localStorage has "undefined" or malformed JSON
-function _safeParse(key, fallback) {
-  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
-  catch(e) { return fallback; }
-}
-
-const _cachedOutfits = _safeParse("outfits", null);
-const _cachedHistory = _safeParse("worn-history", null);
-const _storedVersion = parseInt(localStorage.getItem("data-version") || "0", 10);
-
-// Cached data is only trustworthy if it's a non-empty valid array
-const _outfitsValid = Array.isArray(_cachedOutfits) && _cachedOutfits.length > 0 && _cachedOutfits.every(o => o && o.id);
-const _historyValid = Array.isArray(_cachedHistory) && _cachedHistory.every(w => w && w.date);
-
-let outfits, wornHistory;
-if (_storedVersion < DATA_VERSION || !_outfitsValid) {
-  const defaultOutfitIds = new Set(OUTFITS_DEFAULT.map(o => o.id));
-  const userAddedOutfits = (_outfitsValid ? _cachedOutfits : []).filter(o => o && !defaultOutfitIds.has(o.id));
-  outfits = [...OUTFITS_DEFAULT, ...userAddedOutfits];
-
-  const historySig = w => w.date + "|" + w.outfitId + "|" + (w.itemIds||[]).join(",");
-  const defaultSignatures = new Set(WORN_HISTORY_DEFAULT.map(historySig));
-  const userAddedHistory = (_historyValid ? _cachedHistory : []).filter(w => w && !defaultSignatures.has(historySig(w)));
-  wornHistory = [...WORN_HISTORY_DEFAULT, ...userAddedHistory];
-
-  localStorage.setItem("data-version", String(DATA_VERSION));
-} else {
-  outfits = _cachedOutfits;
-  wornHistory = _historyValid ? _cachedHistory : WORN_HISTORY_DEFAULT;
-}
-
-let customItems = _safeParse("custom-items", []);
-let items = [...WARDROBE_DATA, ...customItems.filter(c => !WARDROBE_DATA.find(w => w.id === c.id))];
+// Mutable wardrobe state — loaded/merged/persisted through the shared store (store.js).
+// These stay live `let`s mutated in place across tabs; the store only centralizes the
+// version-checked load and the localStorage writes.
+const _st = Store.load();
+let outfits     = _st.outfits;
+let wornHistory = _st.wornHistory;
+let customItems = _st.customItems;
+let items       = _st.items;
 
 
 let currentFilter = "all";
@@ -1076,11 +1057,8 @@ let sidebarSort   = "brand";
 let mgrEditingId  = null;
 
 function persist() {
-  localStorage.setItem("outfits", JSON.stringify(outfits));
-  localStorage.setItem("custom-items", JSON.stringify(customItems));
-  localStorage.setItem("worn-history", JSON.stringify(wornHistory));
-  localStorage.setItem("data-version", String(DATA_VERSION));
-  items = [...WARDROBE_DATA, ...customItems.filter(c => !WARDROBE_DATA.find(w => w.id === c.id))];
+  Store.persist({ outfits: outfits, customItems: customItems, wornHistory: wornHistory });
+  items = Store.mergeItems(customItems);
   document.getElementById("nav-stat").textContent = items.length + " pieces · " + outfits.filter(o => o.source !== "proposed").length + " outfits";
 }
 
@@ -1924,7 +1902,8 @@ function renderHistory() {
       return outfitCardHtml(wearAsOutfit(w), {
         view: "card",
         photo: bg || "",
-        kicker: fmtDate(w.date).toUpperCase(),
+        title: fmtDate(w.date),   // the worn date is the headline
+        kicker: "",               // no eyebrow — the date says it all
         dataAttrs: "data-idx='" + w._idx + "'",
         cvThumb: wornThumb,
         noDataId: true
@@ -1973,7 +1952,8 @@ function renderHistory() {
     return outfitCardHtml(wearAsOutfit(w), {
       view: "editorial",
       photo: feedBg || "",
-      kicker: fmtDate(w.date).toUpperCase() + (w.outfitSource === "detected" ? " &middot; AUTO-DETECTED" : ""),
+      title: fmtDate(w.date),   // the worn date is the headline
+      kicker: "",               // no eyebrow — the date says it all
       dataAttrs: "data-idx='" + w._idx + "'",
       badges: feedOverlay,
       headerActions: deleteBtn,
@@ -2177,7 +2157,6 @@ function openWearDetail(wornEntry) {
           "<div>" +
             "<div style='font-size:11px;color:var(--text);font-weight:600'>" + outfit.name + "</div>" +
             "<div style='font-size:9px;color:var(--accent);font-style:italic'>" + (outfit.vibe||"") + "</div>" +
-            (wornEntry.outfitSource === 'detected' ? "<div style='font-size:8px;color:var(--muted);margin-top:2px;letter-spacing:0.08em;text-transform:uppercase'>Auto-detected</div>" : "") +
           "</div>" +
           "<div style='margin-left:auto;font-size:14px;color:var(--muted)'>&#x2192;</div>" +
         "</div>"
@@ -2359,36 +2338,40 @@ function initCloset() {
   renderClosetStats();
 }
 
+function closetCardHtml(row) {
+  const pool = closetItemsFor(row.type);
+  const idx  = closetIdxs[row.key];
+  const item = pool[idx] || null;
+  const img  = item ? getItemImg(item) : null;
+  const cls  = row.optional ? "support optional" + (row.on ? " on" : "") : "primary";
+  const imgHtml = img ? `<img src="${img}" alt="${item.name}" loading="lazy">` : `<div class="closet-no-img">◈</div>`;
+  const brandLabel = item ? ((BRANDS[bkey(item.brand)] && BRANDS[bkey(item.brand)].label) || item.brand) : "";
+  return `<div class="closet-card ${cls}" data-key="${row.key}">
+    <div class="closet-card-head">
+      <span class="closet-card-role">${row.label}</span>
+      ${row.optional ? `<button class="closet-toggle" onclick="toggleClosetRow('${row.key}')" title="Include in look"></button>` : ""}
+    </div>
+    <div class="closet-card-photo">
+      <button class="cc-arrow left" onclick="shiftCloset('${row.key}',-1)" ${!pool.length ? "disabled" : ""}>&#8249;</button>
+      ${imgHtml}
+      <button class="cc-arrow right" onclick="shiftCloset('${row.key}',1)" ${!pool.length ? "disabled" : ""}>&#8250;</button>
+    </div>
+    <div class="closet-card-info">
+      <div class="cc-name">${item ? item.name : "—"}</div>
+      <div class="cc-brand">${brandLabel}</div>
+      <div class="cc-counter">${pool.length ? (idx + 1) + " / " + pool.length : "No items"}</div>
+    </div>
+  </div>`;
+}
+
 function renderClosetRows() {
   const container = document.getElementById("closet-rows");
-  container.innerHTML = CLOSET_ROWS.map(row => {
-    const pool = closetItemsFor(row.type);
-    const idx  = closetIdxs[row.key];
-    const item = pool[idx] || null;
-    const img  = item ? getItemImg(item) : null;
-    const isOn = row.on;
-    const isPrimary = !row.optional;
-    const imgHtml = img
-      ? `<img src="${img}" alt="${item.name}" loading="lazy">`
-      : `<div class="closet-no-img">◈</div>`;
-    const brandLabel = item ? ((BRANDS[bkey(item.brand)] && BRANDS[bkey(item.brand)].label) || item.brand) : "";
-    return `<div class="closet-row ${isPrimary ? "primary" : "secondary"}${row.optional ? " optional" + (isOn ? " on" : "") : ""}" data-key="${row.key}">
-      <div class="closet-row-label-col">
-        <span class="closet-row-label">${row.label}</span>
-        ${row.optional ? `<button class="closet-toggle" onclick="toggleClosetRow('${row.key}')"></button>` : ""}
-      </div>
-      <div class="closet-carousel">
-        <button class="closet-arrow" onclick="shiftCloset('${row.key}',-1)" ${!pool.length ? "disabled" : ""}>&#8249;</button>
-        <div class="closet-img-wrap">${imgHtml}</div>
-        <div class="closet-piece-info">
-          <div class="closet-piece-name">${item ? item.name : "—"}</div>
-          <div class="closet-piece-brand">${brandLabel}</div>
-          <div class="closet-piece-counter">${pool.length ? (idx + 1) + " / " + pool.length : "No items"}</div>
-        </div>
-        <button class="closet-arrow" onclick="shiftCloset('${row.key}',1)" ${!pool.length ? "disabled" : ""}>&#8250;</button>
-      </div>
-    </div>`;
-  }).join("");
+  // Primary articles (top/bottom) stacked & larger; supportive (outer/shoes) smaller, in a column beside them.
+  const primary = CLOSET_ROWS.filter(r => !r.optional).map(closetCardHtml).join("");
+  const support = CLOSET_ROWS.filter(r => r.optional).map(closetCardHtml).join("");
+  container.innerHTML =
+    `<div class="closet-col closet-col-primary">${primary}</div>` +
+    `<div class="closet-col closet-col-support">${support}</div>`;
 }
 
 function shiftCloset(key, dir) {
@@ -2419,27 +2402,28 @@ function getActiveClosetItems() {
 
 function renderClosetStats() {
   const activeItems = getActiveClosetItems();
-  const statKeys = ["drama","structure","skin","edge","formality"]; // headline bars
-  const allKeys = (typeof SPIDER_KEYS!=='undefined')
-    ? statKeys.concat(SPIDER_KEYS.filter(k => !statKeys.includes(k)))
-    : statKeys;
-  const avgs = {};
-  allKeys.forEach(k => {
-    avgs[k] = activeItems.length
-      ? activeItems.reduce((s, i) => s + (i.stats?.[k] || 0), 0) / activeItems.length
-      : 0;
-  });
-  // Spider chart in left panel
   const spiderWrap = document.getElementById("closet-spider-wrap");
-  if (spiderWrap) spiderWrap.innerHTML = activeItems.length ? drawSpider(avgs, 180, "#e2d3b4", "closet-live") : "";
-  // Stat bars
-  document.getElementById("closet-stats").innerHTML = statKeys.map(k =>
-    `<div class="closet-stat">
-      <span class="closet-stat-name">${k}</span>
-      <div class="closet-stat-track"><div class="closet-stat-fill" style="width:${avgs[k]/5*100}%"></div></div>
-      <span class="closet-stat-val">${avgs[k].toFixed(1)}</span>
-    </div>`
-  ).join("");
+  const statsEl = document.getElementById("closet-stats");
+  if (!activeItems.length) {
+    if (spiderWrap) spiderWrap.innerHTML = "";
+    if (statsEl) statsEl.innerHTML = "";
+    return;
+  }
+  // Pseudo-outfit from the live selection → shared base/effective stats, so the panel
+  // reflects the styling-combo BONUS (base gold + buff green), matching the outfit popup —
+  // not a plain average that ignores combos.
+  const pseudo = { pieces: activeItems.map(it => ({
+    role: (typeof pieceRole === "function" ? pieceRole(it) : it.type), id: it.id, name: it.name, brand: it.brand, stats: it.stats
+  })) };
+  const base = (typeof outfitBaseStats === "function") ? outfitBaseStats(pseudo) : null;
+  const eff  = (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(pseudo) : null;
+  if (spiderWrap) spiderWrap.innerHTML = eff ? drawSpiderCompare(base, eff, 180) : "";
+  const legend = "<div style='display:flex;gap:14px;margin-bottom:10px;font-size:9px;color:var(--muted)'>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--accent);margin-right:4px;vertical-align:middle'></span>base</span>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:" + SPIDER_BUFF + ";margin-right:4px;vertical-align:middle'></span>styling buff</span>" +
+  "</div>";
+  statsEl.innerHTML = legend + statCompareBarsHtml(base, eff) +
+    (typeof outfitStylingHtml === "function" ? outfitStylingHtml(pseudo) : "");
 }
 
 document.getElementById("closet-save-btn").addEventListener("click", () => {
