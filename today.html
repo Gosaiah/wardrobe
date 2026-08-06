@@ -21,8 +21,6 @@
   .t-toolbar-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .t-why { font-size: 12px; color: var(--muted); line-height: 1.5; max-width: 560px; margin: 0; }
   .t-actions { display: flex; gap: 10px; }
-  .t-wear-btn { font-size: 11px !important; text-transform: uppercase; padding: 10px 16px !important; border-radius: var(--r-md) !important; }
-  .t-wear-btn.done { color: var(--buff) !important; border-color: var(--buff-border) !important; }
   .t-shuffle-btn { font-size: 11px !important; text-transform: uppercase; padding: 10px 16px !important; }
 
   /* Results grid — card/grid views tile and STRETCH to fill the full width (auto-fit,
@@ -35,9 +33,6 @@
   .view-toggle-btn { padding: 7px 12px; font-size: 13px; background: none; border: none; color: var(--muted); line-height: 1; }
   .view-toggle-btn:hover { color: var(--text); }
 
-  .t-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--buff-border); color: var(--text); font-size: 12px; padding: 12px 20px; border-radius: var(--r-pill); box-shadow: var(--card-shadow); opacity: 0; pointer-events: none; transition: all .25s; z-index: 1500; }
-  .t-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
   @media (max-width: 560px) { .t-alts { grid-template-columns: 1fr; } }
 </style>
 <link rel="stylesheet" href="components.css">
@@ -47,6 +42,7 @@
 <body>
 <script src="nav.js"></script>
 <script src="data.js"></script>
+<script src="modals.js"></script>
 
 <main class="app-page">
   <div class="page-header">
@@ -60,28 +56,8 @@
   <div id="t-rec"></div>
 </main>
 
-<div class="item-detail-overlay" id="od-overlay" style="display:none" onclick="if(event.target===this)closeToday()">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" onclick="closeToday()" aria-label="Close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col" id="od-photo"></div>
-      <div class="item-detail-info-col" id="od-info"></div>
-    </div>
-  </div>
-</div>
+<!-- Detail popups (outfit + item) are injected + wired by the shared modals.js -->
 
-<!-- Item detail popup (opens when a clothing item in an outfit is clicked) -->
-<div class="item-detail-overlay" id="item-overlay" style="display:none;z-index:1300" onclick="if(event.target===this)closeItemPopup()">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" onclick="closeItemPopup()" aria-label="Close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col" id="ip-photo"></div>
-      <div class="item-detail-info-col" id="ip-info"></div>
-    </div>
-  </div>
-</div>
-
-<div class="t-toast" id="t-toast"></div>
 
 <script>
 // ── Config ───────────────────────────────────────────────────────────────────
@@ -183,10 +159,6 @@ function scoreOutfit(o, ctx, band){
 
 // ── Recommendation ───────────────────────────────────────────────────────────
 function savedPool(){ return (typeof _allOutfits === "function" ? _allOutfits() : (typeof OUTFITS_DEFAULT !== "undefined" ? OUTFITS_DEFAULT : [])).filter(o => o.pieces && o.pieces.length); }
-function wornToday(id){
-  const today = new Date().toISOString().slice(0,10);
-  return (typeof _wearHistory === "function") && _wearHistory().some(w => w.date === today && w.outfitId === id);
-}
 
 function buildContextCombo(ctx, band, offset){
   const def = CONTEXTS[ctx];
@@ -242,10 +214,9 @@ function viewToggleHtml(){
 function render(){
   const rec = getRecommendations();
 
-  // Toolbar: why + Wear this / Show another (act on the pick) + view toggle
-  const worn = rec.hero && wornToday(rec.hero.id);
+  // Toolbar: why + Show another + view toggle. (Wear logging is captured via the
+  // photo → Claude flow that seeds data.js, not a local button.)
   const actions =
-    (rec.hero ? "<button class='" + (worn ? "action-btn t-wear-btn done" : "btn-add t-wear-btn") + "' data-wear='" + rec.hero.id + "'>" + (worn ? "✓ Worn today" : "Wear this") + "</button>" : "") +
     ((rec.hero || rec.built) ? "<button class='action-btn t-shuffle-btn' id='t-shuffle'>Show another</button>" : "");
   let whyText;
   if (rec.hero){
@@ -289,69 +260,28 @@ function renderHead(){
   document.getElementById("t-greeting").textContent = greet + ", Zay · " + date;
 }
 
-// ── Popup (shared builder) ───────────────────────────────────────────────────
+// Detail popups now come from the shared modals.js — openOutfit passes Today's live
+// uploaded photos through so the outfit photo matches the board.
 function openTodayOutfit(outfit, opts){
-  if (!outfit) return;
-  const photoCol = document.getElementById("od-photo");
-  if (!outfit._built){
-    const src = outfitPhotoSrc(outfit.id, uploadedPhotos);
-    photoCol.innerHTML = src ? "<div class='item-detail-photo'><img src='" + src + "' alt='" + outfit.name + "' onerror=\"this.parentElement.innerHTML='';\"></div>" : (typeof outfitDetailPhotoHtml === "function" ? outfitDetailPhotoHtml(outfit) : "");
-  } else {
-    photoCol.innerHTML = (typeof outfitDetailPhotoHtml === "function") ? outfitDetailPhotoHtml(outfit) : "";
-  }
-  document.getElementById("od-info").innerHTML = outfitDetailInfoHtml(outfit, opts || {});
-  document.getElementById("od-overlay").style.display = "flex";
-}
-function closeToday(){ document.getElementById("od-overlay").style.display = "none"; }
-
-// Item detail popup — shared builders (same as the clothing page). Opens when a
-// clothing item within an outfit is clicked (piece clicks are global this way).
-function openItemPopup(name, brand){
-  const it = (typeof itemForPiece === "function") ? itemForPiece({ name: name, brand: brand }) : null;
-  if (!it) return;
-  document.getElementById("ip-photo").innerHTML = (typeof itemDetailPhotoHtml === "function") ? itemDetailPhotoHtml(it) : "";
-  document.getElementById("ip-info").innerHTML = (typeof itemDetailInfoHtml === "function") ? itemDetailInfoHtml(it, {}) : "";
-  document.getElementById("item-overlay").style.display = "flex";
-}
-function closeItemPopup(){ document.getElementById("item-overlay").style.display = "none"; }
-
-// ── Wear logging ─────────────────────────────────────────────────────────────
-function logWear(outfitId){
-  const o = savedPool().find(x => x.id === outfitId); if (!o) return;
-  const today = new Date().toISOString().slice(0,10);
-  const itemIds = (o.pieces||[]).map(p => { const it = itemForPiece(p); return it && it.id; }).filter(Boolean);
-  const added = (typeof addWear === "function") && addWear({ date: today, outfitId: outfitId, itemIds: itemIds });
-  toast(added ? "Logged — worn today ✓" : "Already logged for today");
-  render();
-}
-let _toastT;
-function toast(msg){
-  const el = document.getElementById("t-toast");
-  el.textContent = msg; el.classList.add("show");
-  clearTimeout(_toastT); _toastT = setTimeout(() => el.classList.remove("show"), 2200);
+  opts = opts || {}; opts.uploads = uploadedPhotos;
+  Modals.openOutfit(outfit, opts);
 }
 
 // ── Events ───────────────────────────────────────────────────────────────────
 document.addEventListener("click", function(e){
   const piece = e.target.closest(".outfit-detail-piece, .piece-name-link");
-  if (piece){ e.stopPropagation(); openItemPopup(piece.dataset.name, piece.dataset.brand); return; }
+  if (piece){ e.stopPropagation(); Modals.openItem(piece.dataset.name, piece.dataset.brand); return; }
   const chip = e.target.closest(".t-chip");
   if (chip){ currentContext = chip.dataset.ctx; recOffset = 0; renderChips(); render(); return; }
   const vbtn = e.target.closest(".view-toggle-btn[data-view]");
   if (vbtn){ todayView = vbtn.dataset.view; render(); return; }
   if (e.target.id === "t-shuffle"){ e.stopPropagation(); recOffset++; render(); return; }
-  const wearBtn = e.target.closest("[data-wear]");
-  if (wearBtn){ e.stopPropagation(); logWear(parseInt(wearBtn.dataset.wear, 10)); return; }
   const builtCard = e.target.closest(".today-built");
   if (builtCard){ openTodayOutfit(builtCache, { kicker: "Built for today" }); return; }
   const card = e.target.closest(".outfit-card[data-id]");
   if (card){ const o = savedPool().find(x => x.id === parseInt(card.dataset.id, 10)); if (o) openTodayOutfit(o); return; }
 });
-document.addEventListener("keydown", function(e){
-  if (e.key !== "Escape") return;
-  if (document.getElementById("item-overlay").style.display !== "none") closeItemPopup();
-  else closeToday();
-});
+// Escape/backdrop close handled by the shared modals.js.
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 renderHead();

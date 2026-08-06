@@ -1018,20 +1018,9 @@ function fmtDate(iso){
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
 }
-// Shared wear WRITER — append a wear entry to the localStorage store the History
-// page reads. Any page that logs a wear (e.g. Today's "Wear this") should use this
-// instead of writing localStorage directly. Returns false if that outfit is already
-// logged for that date. (The wardrobe page has its own live `wornHistory` writer.)
-function addWear(entry){
-  if (!entry || !entry.date) return false;
-  let hist;
-  try { const v = JSON.parse(localStorage.getItem("worn-history") || "null"); hist = Array.isArray(v) ? v : _wearHistory().slice(); }
-  catch(e){ hist = _wearHistory().slice(); }
-  if (hist.some(w => w.date === entry.date && w.outfitId === entry.outfitId)) return false;
-  hist.push(entry);
-  try { localStorage.setItem("worn-history", JSON.stringify(hist)); } catch(e){}
-  return true;
-}
+// (Wear entries are captured via the photo → Claude flow that seeds WORN_HISTORY_DEFAULT,
+// not a client-side localStorage writer — a manual localStorage log wouldn't survive across
+// devices and duplicated the durable path, so it was removed.)
 /* Shared wear-history block. One builder for every popup.
    opts.interactive → renders the clickable "Last worn" card with a unified
    `.wear-last-worn-link` class (+ data-idx into wornHistory); a single delegated
@@ -1128,7 +1117,9 @@ function itemDetailPhotoHtml(item){
   if (!item) return "";
   const bk = bkey(item.brand || "");
   const img = (typeof IMAGES !== "undefined" && IMAGES[item.name]) || item.img || "";
-  return img ? "<img src='" + img + "' alt='" + item.name + "'>" : "<div class='item-detail-photo-empty'>" + bk.slice(0,2) + "</div>";
+  // Wrap in .item-detail-photo so the shared object-fit:cover sizing applies — a bare
+  // <img> in the photo column renders at natural size and looks zoomed/cropped.
+  return img ? "<div class='item-detail-photo'><img src='" + img + "' alt='" + item.name + "'></div>" : "<div class='item-detail-photo-empty'>" + bk.slice(0,2) + "</div>";
 }
 function itemDetailInfoHtml(item, opts){
   if (!item) return "";
