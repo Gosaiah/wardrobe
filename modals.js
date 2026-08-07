@@ -138,12 +138,10 @@ const Modals = (function(){
     var pieces = (wornEntry.itemIds || []).map(function(id){
       var it = (typeof itemById === "function") ? itemById(id) : null;
       if (!it) return "";
-      var img = (typeof pieceImg === "function") ? pieceImg({ name: it.name, brand: it.brand, id: it.id }) : "";
-      var brandLbl = (typeof BRANDS !== "undefined" && BRANDS[bkey(it.brand)] && BRANDS[bkey(it.brand)].label) || it.brand;
-      return "<div class='piece-name-link' data-name=\"" + it.name + "\" data-brand=\"" + it.brand + "\" style='display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px;padding:5px;margin-bottom:4px'>" +
-        "<div style='width:38px;height:48px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--surface2)'>" + (img ? "<img src='" + img + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" : "") + "</div>" +
-        "<div style='min-width:0'><div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)'>" + (roleMap[it.type] || "Piece") + "</div><div style='font-size:12px;color:var(--text)'>" + it.name + "</div><div style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)'>" + brandLbl + "</div></div>" +
-      "</div>";
+      // Shared piece card (row view) — clickable, gold hover, one source with the suggestions.
+      return (typeof pieceCardHtml === "function")
+        ? pieceCardHtml({ name: it.name, brand: it.brand, role: roleMap[it.type] || "Piece" }, { view: "row" })
+        : "";
     }).join("");
 
     var statsHtml = (outfit && typeof outfitStatsCompareHtml === "function") ? outfitStatsCompareHtml(outfit) : "";
@@ -157,7 +155,8 @@ const Modals = (function(){
     el("m-wear-info").innerHTML =
       "<div class='item-detail-name'>" + (typeof fmtDate === "function" ? fmtDate(wornEntry.date) : wornEntry.date) + "</div>" +
       linkHtml + statsHtml +
-      "<div class='item-detail-section-title'>Pieces worn</div>" + pieces;
+      "<div class='item-detail-section-title'>Pieces worn</div>" +
+      "<div style='display:flex;flex-direction:column;gap:5px'>" + pieces + "</div>";
 
     var linkEl = el("m-wear-info").querySelector(".wear-outfit-link");
     if (linkEl && outfit) linkEl.addEventListener("click", function(){ openOutfit(outfit); });   // swaps (openOutfit closes m-wear)

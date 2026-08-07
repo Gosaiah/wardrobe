@@ -1494,20 +1494,31 @@ function buildPairings(anchor, opts){
     return { pieces };
   });
 }
-// One horizontal chip (thumbnail + role + name inline) for a suggestion piece.
-// Horizontal reads much better than a narrow vertical thumbnail — names stay legible.
-function pairingPieceChip(p){
-  const img = pieceImg(p);
-  const role = p.role ? "<span style='font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block'>" + p.role + "</span>" : "";
-  // Clickable piece link (data-name/data-brand) so pages with a .piece-name-link handler
-  // open the item detail on click — same hook the outfit-card pieces use.
-  return "<div class='piece-name-link' data-name=\"" + (p.name || "") + "\" data-brand=\"" + (p.brand || "") + "\" style='display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--text);cursor:pointer'>" +
-    "<div style='width:32px;height:42px;flex-shrink:0;overflow:hidden;border-radius:6px;background:var(--surface)'>" +
-      (img ? "<img src='" + img + "' loading='lazy' style='width:100%;height:100%;object-fit:cover;object-position:top;display:block'>" : "") +
-    "</div>" +
-    "<span style='min-width:0'>" + role + p.name + "</span>" +
+/* Shared clickable clothing-item piece card — one component for the small piece
+   renderers. The whole card is a `.piece-name-link` (opens item detail wherever a page
+   wires that handler) with the gold hover from `.piece-card` (matches .mgr-item/.outfit-card).
+   opts.view: "chip" (compact horizontal, pairing suggestions) | "row" (thumb + role + name + brand). */
+function pieceCardHtml(piece, opts){
+  opts = opts || {};
+  const view = (opts.view === "row") ? "row" : "chip";
+  const img = pieceImg(piece);
+  const name = piece.name || "";
+  const brand = piece.brand || "";
+  const roleHtml = piece.role ? "<span class='pc-role'>" + piece.role + "</span>" : "";
+  const thumb = "<div class='pc-thumb'>" + (img ? "<img src='" + img + "' loading='lazy' alt=\"" + name + "\">" : "") + "</div>";
+  const attrs = " data-name=\"" + name + "\" data-brand=\"" + brand + "\"";
+  if (view === "row"){
+    const brandLbl = (typeof BRANDS !== "undefined" && BRANDS[bkey(brand)] && BRANDS[bkey(brand)].label) || brand;
+    return "<div class='piece-card pc-row piece-name-link'" + attrs + ">" + thumb +
+      "<div style='min-width:0'>" + roleHtml + "<div class='pc-name'>" + name + "</div><div class='pc-brand'>" + brandLbl + "</div></div>" +
+    "</div>";
+  }
+  return "<div class='piece-card pc-chip piece-name-link'" + attrs + ">" + thumb +
+    "<span style='min-width:0'>" + roleHtml + "<span class='pc-name'>" + name + "</span></span>" +
   "</div>";
 }
+// Suggestion chip → the shared piece card (chip view).
+function pairingPieceChip(p){ return pieceCardHtml(p, { view: "chip" }); }
 // Full shared "Pairs" VIEW: header (kicker/name/subtitle + gold/green legend) + the
 // cards grid. One component for the Shop full-screen view and the Builder Suggestions
 // panel. Copy is overridable via opts.kicker / opts.title / opts.subtitle.

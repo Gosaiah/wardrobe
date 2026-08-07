@@ -725,6 +725,7 @@
   .lb-piece-name { font-size: 12px; color: var(--text); line-height: 1.3; }
   .lb-piece-brand { font-size: 10px; color: var(--accent2); margin-top: 1px; }
 </style>
+<link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="alter-theme.css">
 <script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 </head>
@@ -800,57 +801,11 @@
 </div>
 
 
-<!-- Item Detail Modal -->
-<div class="item-detail-overlay" id="item-detail-overlay" style="display:none">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" id="item-detail-close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col">
-        <div class="item-detail-photo" id="item-detail-photo"></div>
-      </div>
-      <div class="item-detail-info-col" id="item-detail-info"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Photo Lightbox -->
-<div class="item-detail-overlay" id="photo-lightbox" style="display:none">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" id="photo-lightbox-close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col">
-        <div class="item-detail-photo"><img id="photo-lightbox-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
-      </div>
-      <div class="item-detail-info-col" id="photo-lightbox-info"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Photo file inputs -->
-
-
-<!-- Wear Detail Modal -->
-<div class="item-detail-overlay" id="wear-detail-overlay" style="display:none">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" id="wear-detail-close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col" id="wear-detail-photo-col">
-        <div class="item-detail-photo" id="wear-detail-photo"></div>
-      </div>
-      <div class="item-detail-info-col popup-info-col" id="wear-detail-info"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Shared photo viewer — top-most; used anywhere a full photo opens over another popup -->
-<div class="photo-viewer-overlay" id="photo-viewer">
-  <button class="photo-viewer-close" id="photo-viewer-close">&#x2715;</button>
-  <img id="photo-viewer-img" src="" alt="">
-  <div class="photo-viewer-caption" id="photo-viewer-caption"></div>
-</div>
+<!-- Detail popups (item + outfit + wear + photo viewer) are injected + wired by the shared modals.js -->
 
 <script src="data.js"></script>
 <script src="store.js"></script>
+<script src="modals.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
 // DATA
@@ -1006,50 +961,18 @@ document.querySelectorAll(".nav-tab[data-tab]").forEach(btn => {
 // ═══════════════════════════════════════════════════
 // ITEM DETAIL MODAL
 // ═══════════════════════════════════════════════════
+// ── ITEM POPUP (via modals.js) ──
+// renderGrid's grid piece/card clicks (+ the delegated popup handler below) call this.
 function openItemDetail(name, brand) {
-  const bk = bkey(brand || "");
-  const item = items.find(i => i.name === name);
-  const b = BRANDS[bk] || { label: brand || "" };
-  const imgUrl = IMAGES[name] || (item && item.img) || "";
-
-  // Photo (shared builder)
-  document.getElementById("item-detail-photo").innerHTML =
-    (item && typeof itemDetailPhotoHtml === "function")
-      ? itemDetailPhotoHtml(item)
-      : (imgUrl ? "<img src='" + imgUrl + "' alt='" + name + "'>" : "<div class='item-detail-photo-empty'>" + (bk.slice(0,2)||"") + "</div>");
-
-  // Outfits-containing + pairings + tags are now computed inside the shared itemDetailInfoHtml (data.js).
-
-  const wearHtml = item ? wearBlockHtml("item", item.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (outfitPhotoPath(id)); } }) : "";
-
-  document.getElementById("item-detail-info").innerHTML = (item && typeof itemDetailInfoHtml === "function")
-    ? itemDetailInfoHtml(item, {
-        persona: getItemPersona(item),
-        wearHtml: wearHtml,
-        outfitPhoto: function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (outfitPhotoPath(id)); }
-      })
-    : "";
-
-  // Wire outfit chip clicks → open outfit detail
-  document.getElementById("item-detail-info").querySelectorAll("[data-outfit-id]").forEach(function(chip) {
-    chip.addEventListener("click", function() {
-      closeItemDetail();
-      openOutfitDetail(parseInt(chip.dataset.outfitId));
-    });
+  const it = items.find(i=>i.name===name) || itemForPiece({name,brand});
+  const wearHtml = it
+    ? wearBlockHtml('item', it.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (typeof outfitPhotoPath==='function'?outfitPhotoPath(id):''); } })
+    : '';
+  Modals.openItem(name, brand, {
+    persona: it ? getItemPersona(it) : null,
+    wearHtml: wearHtml,
+    outfitPhoto: function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || outfitPhotoPath(id); }
   });
-
-  // Wire pair card clicks
-  document.getElementById("item-detail-info").querySelectorAll(".pair-card").forEach(function(card) {
-    card.addEventListener("click", function() { openItemDetail(card.dataset.name, card.dataset.brand); });
-  });
-
-  // Wire last worn link
-  // Last-worn link handled by the shared delegated handler (.wear-last-worn-link).
-  document.getElementById("item-detail-overlay").style.display = "flex";
-}
-
-function closeItemDetail() {
-  document.getElementById("item-detail-overlay").style.display = "none";
 }
 
 // One delegated handler for every shared wear block (.wear-last-worn-link) — no per-popup wiring.
@@ -1058,92 +981,33 @@ document.addEventListener("click", function(e){
   if (!el) return;
   const w = wornHistory[parseInt(el.dataset.idx)];
   if (!w) return;
-  document.getElementById("item-detail-overlay").style.display = "none";
-  document.getElementById("photo-lightbox").style.display = "none";
-  openWearDetail(w);
+  Modals.openWear(w, { uploads: OUTFIT_PHOTOS });
 });
 
+// ── Popup sub-click wiring ──
+// The detail popups are injected by modals.js (outside #outfits-grid). One delegated listener
+// opens the follow-on popup: outfit chips → outfit detail; pair cards / outfit-popup pieces /
+// piece links → item detail. Grid piece (.piece-name-link) + card clicks keep their per-element
+// handlers in renderGrid and call e.stopPropagation(), so grid pieces never double-fire here;
+// the wear popup's own .piece-name-link rows (no per-element handler) resolve through this listener.
+document.addEventListener("click", function(e){
+  const chip = e.target.closest("[data-outfit-id]");
+  if (chip){ openOutfitDetail(parseInt(chip.dataset.outfitId, 10)); return; }
+  const pieceOrPair = e.target.closest(".pair-card, .outfit-detail-piece, .piece-name-link");
+  if (pieceOrPair){ openItemDetail(pieceOrPair.dataset.name, pieceOrPair.dataset.brand); return; }
+});
+
+// ── OUTFIT POPUP (via modals.js) ──
 function openOutfitDetail(outfitId) {
-  // If outfit has a photo, use the lightbox
-  if (OUTFIT_PHOTOS[outfitId]) {
-    openLightbox(outfitId);
-    return;
-  }
-  // Otherwise show outfit info in the item-detail-overlay panel
-  var outfit = outfits.find(function(o){ return o.id === outfitId; });
-  if (!outfit) return;
-
-  // Photo side + info side from the shared builders (data.js)
-  document.getElementById("item-detail-photo").innerHTML = outfitDetailPhotoHtml(outfit);
-  const wearHtml = wearBlockHtml("outfit", outfit.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (outfitPhotoPath(id)); } });
-  document.getElementById("item-detail-info").innerHTML = outfitDetailInfoHtml(outfit, { wearHtml: wearHtml, note: "Click the photo slot on the card to add an outfit photo." });
-
-  // Wire piece clicks within the panel
-  document.getElementById("item-detail-info").querySelectorAll(".outfit-detail-piece").forEach(function(el) {
-    el.addEventListener("click", function() { openItemDetail(el.dataset.name, el.dataset.brand); });
-  });
-
-  document.getElementById("item-detail-overlay").style.display = "flex";
+  const o = outfits.find(x=>x.id===outfitId);
+  if (o) Modals.openOutfit(o, { uploads: OUTFIT_PHOTOS });
 }
 
 function showPreview(name, brand) { openItemDetail(name, brand); }
 
-document.getElementById("item-detail-close").addEventListener("click", closeItemDetail);
-document.getElementById("item-detail-overlay").addEventListener("click", function(e) {
-  if (e.target === document.getElementById("item-detail-overlay")) closeItemDetail();
-});
+// New Outfit modal (#modal) still closes on Escape; the detail popups handle their own Escape in modals.js.
 document.addEventListener("keydown", function(e) {
-  if (e.key === "Escape") {
-    closeItemDetail();
-    document.getElementById("modal").classList.remove("open");
-    document.getElementById("photo-lightbox").style.display = "none";
-  }
-});
-
-function openLightbox(outfitId) {
-  var outfit = outfits.find(function(o){ return o.id === outfitId; });
-  if (!outfit || !OUTFIT_PHOTOS[outfitId]) return;
-  document.getElementById("photo-lightbox-img").src = OUTFIT_PHOTOS[outfitId];
-  var piecesHtml = outfit.pieces.map(function(p) {
-    var img = pieceImg(p);
-    var pb = BRANDS[bkey(p.brand)] || { label: p.brand };
-    return "<div class='lb-piece-row'>" +
-      "<div class='lb-piece-thumb'>" + (img ? "<img src='"+img+"' alt='"+p.name+"'>" : "") + "</div>" +
-      "<div class='lb-piece-info'><div class='lb-piece-role'>"+p.role+"</div><div class='lb-piece-name'>"+p.name+"</div><div class='lb-piece-brand'>"+pb.label+"</div></div>" +
-      "</div>";
-  }).join("");
-  const lbStats = getOutfitStats(outfit);
-  const lbWearHtml = wearBlockHtml("outfit", outfit.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (outfitPhotoPath(id)); } });
-  document.getElementById("photo-lightbox-info").innerHTML =
-    "<div class='lb-outfit-num'>No. " + String(outfit.id).padStart(2,"0") + (outfit.source==="detected"?" &middot; Auto-detected":"") + "</div>" +
-    "<div class='lb-outfit-name'>" + outfit.name + "</div>" +
-    "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px'>" +
-      "<div class='lb-outfit-vibe' style='margin-bottom:0'>" + (outfit.vibe||"") + "</div>" +
-      (outfit.persona ? "<span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>" + (PERSONA_LABELS[outfit.persona]||outfit.persona) + "</span>" : "") +
-    "</div>" +
-    lbWearHtml +
-    outfitStatsCompareHtml(outfit) +
-    "<div class='lb-pieces-title'>Pieces</div>" + piecesHtml;
-  document.getElementById("photo-lightbox").style.display = "flex";
-  // Last-worn link handled by the shared delegated handler (.wear-last-worn-link).
-  // Wire piece clicks in lightbox
-  document.getElementById("photo-lightbox-info").querySelectorAll(".lb-piece-row").forEach(function(row) {
-    row.style.cursor = "pointer";
-    row.addEventListener("click", function() {
-      document.getElementById("photo-lightbox").style.display = "none";
-      var name = row.querySelector(".lb-piece-name") && row.querySelector(".lb-piece-name").textContent;
-      var brand = row.querySelector(".lb-piece-brand") && row.querySelector(".lb-piece-brand").textContent;
-      if (name) openItemDetail(name, brand);
-    });
-    row.addEventListener("mouseover", function() { row.style.background = "rgba(255,255,255,0.04)"; });
-    row.addEventListener("mouseout",  function() { row.style.background = ""; });
-  });
-}
-document.getElementById("photo-lightbox-close").addEventListener("click", function() {
-  document.getElementById("photo-lightbox").style.display = "none";
-});
-document.getElementById("photo-lightbox").addEventListener("click", function(e) {
-  if (e.target === document.getElementById("photo-lightbox")) e.target.style.display = "none";
+  if (e.key === "Escape") document.getElementById("modal").classList.remove("open");
 });
 
 
@@ -1420,107 +1284,7 @@ function getEntryPhotos(w) {
 }
 
 
-function openWearDetail(wornEntry) {
-  const outfit = wornEntry.outfitId != null ? outfits.find(o => o.id === wornEntry.outfitId) : null;
-  const photos = getEntryPhotos(wornEntry);
-  const stats = outfit ? getOutfitStats(outfit) : null;
-
-  // Left panel — generated photo with submitted overlay in corner
-  const generatedPhoto = outfit ? (OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || null) : null;
-  const submittedPhoto = wornEntry.photo || null;
-  const photoEl = document.getElementById("wear-detail-photo");
-  if (generatedPhoto) {
-    const overlayHtml = submittedPhoto
-      ? "<div style='position:absolute;bottom:16px;left:16px;width:22%;max-width:150px;aspect-ratio:3/4;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,0.35);box-shadow:0 4px 16px rgba(0,0,0,0.7);z-index:5' class='wear-submitted-overlay'>" +
-          "<img src='" + submittedPhoto + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" +
-          "<div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);padding:3px 5px;text-align:center'>Worn</div>" +
-        "</div>"
-      : "";
-    photoEl.innerHTML = "<div style='position:relative;width:100%;height:100%'>" +
-      "<img src='" + generatedPhoto + "' alt='" + (outfit ? outfit.name : 'Outfit') + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" +
-      overlayHtml +
-      "</div>";
-  } else if (submittedPhoto) {
-    photoEl.innerHTML = "<img src='" + submittedPhoto + "' alt='Submitted photo'>";
-  } else {
-    photoEl.innerHTML = "<div class='item-detail-photo-empty'><span>No photo</span></div>";
-  }
-
-  // Pieces
-  const roleMap = {top:"Top",bottom:"Bottom",outer:"Outer",shoes:"Shoes",accessory:"Accessory"};
-  const piecesHtml = wornEntry.itemIds.map(function(id) {
-    const it = items.find(i => i.id === id);
-    if (!it) return "";
-    const img = IMAGES[it.name] || getImg(it.name) || "";
-    return "<div class='lb-piece-row piece-name-link' data-name='" + it.name + "' data-brand='" + it.brand + "' style='cursor:pointer;border-radius:8px;padding:4px;transition:background 0.12s'>" +
-      "<div class='lb-piece-thumb'>" + (img ? "<img src='" + img + "' alt='" + it.name + "'>" : "") + "</div>" +
-      "<div class='lb-piece-info'>" +
-        "<div class='lb-piece-role'>" + (roleMap[it.type] || "Piece") + "</div>" +
-        "<div class='lb-piece-name'>" + it.name + "</div>" +
-        "<div class='lb-piece-brand'>" + (BRANDS[bkey(it.brand)] && BRANDS[bkey(it.brand)].label || it.brand) + "</div>" +
-      "</div></div>";
-  }).join("");
-
-  // Stats spider
-  const statsHtml = outfit ? outfitStatsCompareHtml(outfit) : "";
-
-  // Confidence placeholder
-  const ratingHtml = wornEntry.confidence
-    ? "<div style='margin-bottom:16px;padding:10px 14px;background:var(--surface2);border-radius:8px'>" +
-        "<div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px'>Confidence</div>" +
-        "<div style='font-size:18px;color:var(--accent)'>" + "★".repeat(wornEntry.confidence) + "☆".repeat(5 - wornEntry.confidence) + "</div>" +
-      "</div>"
-    : "";
-
-  document.getElementById("wear-detail-info").innerHTML =
-    "<div class='item-detail-name'>" + fmtDate(wornEntry.date) + "</div>" +
-    (outfit
-      ? "<div style='display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;padding:8px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)' class='wear-outfit-link' data-outfit-id='" + outfit.id + "'>" +
-          (generatedPhoto ? "<img src='" + generatedPhoto + "' style='width:44px;height:54px;object-fit:cover;object-position:top;border-radius:8px;flex-shrink:0'>" : "") +
-          "<div>" +
-            "<div style='font-size:11px;color:var(--text);font-weight:600'>" + outfit.name + "</div>" +
-            "<div style='font-size:9px;color:var(--accent);font-style:italic'>" + (outfit.vibe||"") + "</div>" +
-          "</div>" +
-          "<div style='margin-left:auto;font-size:14px;color:var(--muted)'>&#x2192;</div>" +
-        "</div>"
-      : "<div style='font-size:12px;color:var(--muted);margin-bottom:12px'>Items Only</div>") +
-    ratingHtml +
-    statsHtml +
-    "<div class='item-detail-section-title'>Pieces Worn</div>" +
-    piecesHtml;
-
-  // Wire outfit link click
-  document.getElementById("wear-detail-info").querySelectorAll(".wear-outfit-link").forEach(function(el) {
-    el.addEventListener("click", function() {
-      closeWearDetail();
-      openOutfitDetail(parseInt(el.dataset.outfitId));
-    });
-  });
-
-  // Wire submitted overlay click
-  const overlayEl = document.getElementById("wear-detail-photo").querySelector(".wear-submitted-overlay");
-  if (overlayEl && submittedPhoto) {
-    overlayEl.addEventListener("click", function() { openWearPhoto(submittedPhoto, "Submitted photo"); });
-  }
-  // Wire piece clicks
-  document.getElementById("wear-detail-info").querySelectorAll(".piece-name-link").forEach(function(el) {
-    el.addEventListener("click", function() {
-      closeWearDetail();
-      openItemDetail(el.dataset.name, el.dataset.brand);
-    });
-  });
-
-  document.getElementById("wear-detail-overlay").style.display = "flex";
-}
-
-function closeWearDetail() {
-  document.getElementById("wear-detail-overlay").style.display = "none";
-}
-
-document.getElementById("wear-detail-close").addEventListener("click", closeWearDetail);
-document.getElementById("wear-detail-overlay").addEventListener("click", function(e) {
-  if (e.target === document.getElementById("wear-detail-overlay")) closeWearDetail();
-});
+// Wear-detail popup is now provided by the shared modals.js (Modals.openWear).
 
 
 // ═══════════════════════════════════════════════════
