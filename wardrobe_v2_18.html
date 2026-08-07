@@ -379,44 +379,6 @@
   .picker-note { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
   .picker-note-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
-  /* ── WORN HISTORY ── */
-  .history-empty { color: var(--muted); font-size: 12px; padding: 40px 0; text-align: center; }
-  .h-supportive-row { margin-top: 12px; }
-  .h-supportive-label { font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .h-supportive-thumbs { display: flex; gap: 6px; flex-wrap: wrap; }
-  .h-supportive-thumb {
-    width: 40px; height: 53px; border-radius:8px; overflow: hidden;
-    border: 1px solid var(--border); cursor: pointer; background: var(--surface2);
-    transition: border-color 0.15s;
-  }
-  .h-supportive-thumb:hover { border-color: var(--accent2); }
-  .h-supportive-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-  /* ── WORN HISTORY: CARD VIEW ── */
-  /* Card + feed views now use the shared outfit card (data.js outfitCardHtml);
-     these containers just lay the shared cards out. */
-  .history-card-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,220px)); gap:10px; justify-content:start; }
-  .history-feed-view { display:flex; flex-direction:column; gap:20px; }
-
-  /* ── WORN HISTORY: CALENDAR VIEW ── */
-  .cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); }
-  .cal-month-label { font-size: 20px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text); }
-  .cal-nav-btn { background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer; padding: 9px 20px; border-radius:8px; font-family: inherit; font-size: 14px; letter-spacing: 0.06em; }
-  .cal-nav-btn:hover { color: var(--accent); border-color: var(--accent2); }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .cal-weekday { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; padding-bottom: 6px; }
-  .cal-day {
-    aspect-ratio: 1; border: 1px solid var(--border); border-radius:8px;
-    background: var(--surface); position: relative; overflow: hidden;
-    display: flex; align-items: flex-start; justify-content: flex-start;
-  }
-  .cal-day.empty { border-color: transparent; background: transparent; }
-  .cal-day.today { border-color: var(--accent); }
-  .cal-day-num { font-size: 9px; color: var(--muted); padding: 4px 5px; position: relative; z-index: 2; }
-  .cal-day.has-wear .cal-day-num { color: var(--white); text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
-  .cal-day-photo { position: absolute; inset: 0; cursor: pointer; }
-  .cal-day-photo img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
-  .cal-day-photo:hover img { opacity: 1; }
 
   /* ── OUTFITS TAB — no sidebar ── */
   #tab-board .sidebar { display: none !important; }
@@ -914,26 +876,6 @@
 </div>
 
 
-<div class="tab-panel" id="tab-history">
-  <header class="board-header">
-    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-      <button class="filter-btn active" data-hfilter="all">All</button>
-      <button class="filter-btn" data-hfilter="dark">Dark / Minimal</button>
-      <button class="filter-btn" data-hfilter="tonal">Tonal</button>
-      <button class="filter-btn" data-hfilter="contrast">Contrast</button>
-      <button class="filter-btn" data-hfilter="night">Night Out</button>
-    </div>
-    <div class="view-toggle" style="margin-left:auto">
-      <button class="view-toggle-btn active" id="htoggle-card" title="Card view">&#9646;</button>
-      <button class="view-toggle-btn" id="htoggle-feed" title="Feed view">&#9776;</button>
-      <button class="view-toggle-btn" id="htoggle-cal" title="Calendar view">&#9783;</button>
-    </div>
-  </header>
-  <div class="container" style="display:block;overflow-y:auto">
-    <div class="history-list history-card-view" id="history-list" style="width:100%;padding:16px 20px 60px"></div>
-    <div class="cal-wrap" id="history-calendar" style="display:none;width:100%;padding:16px 20px 60px"></div>
-  </div>
-</div>
 
 
 <!-- PREVIEW PANEL (shared, same as original) -->
@@ -1157,13 +1099,8 @@ document.getElementById("photo-file-input").addEventListener("change", async fun
 // ═══════════════════════════════════════════════════
 // TAB SWITCHING
 // ═══════════════════════════════════════════════════
-document.querySelectorAll(".nav-tab").forEach(btn => {
+document.querySelectorAll(".nav-tab[data-tab]").forEach(btn => {
   btn.addEventListener("click", () => {
-    // Reset history filter when leaving history tab
-    if (btn.dataset.tab !== "history" && typeof historyFilter !== "undefined") {
-      historyFilter = "all";
-      document.querySelectorAll("[data-hfilter]").forEach(b => b.classList.toggle("active", b.dataset.hfilter === "all"));
-    }
     document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
     btn.classList.add("active");
@@ -1842,260 +1779,6 @@ function getEntryPhotos(w) {
   return { main: main, attached: attached, outfit: outfit };
 }
 
-function getSupportivePhotos(w, mainSrc) {
-  // All personal photos submitted for this outfit (across every logged wear), excluding whichever is used as main
-  if (w.outfitId == null) {
-    return w.photo && w.photo !== mainSrc ? [{ src: w.photo, date: w.date }] : [];
-  }
-  return wornHistory
-    .filter(e => e.outfitId === w.outfitId && e.photo && e.photo !== mainSrc)
-    .map(e => ({ src: e.photo, date: e.date }))
-    .filter((e, i, arr) => arr.findIndex(x => x.src === e.src) === i);
-}
-
-// Shape a wear entry as an outfit-like object so the shared outfitCardHtml renderer
-// can draw it — the worn card and the outfit card are the same component, just fed
-// the worn context (date, worn photo, worn items) instead of the catalog outfit.
-function wearAsOutfit(w) {
-  const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
-  const roleMap = { top:"Top", bottom:"Bottom", outer:"Outer", shoes:"Shoes", accessory:"Accessory" };
-  const pieces = (w.itemIds || []).map(function(id) {
-    const it = items.find(i => i.id === id);
-    if (!it) return null;
-    return { name: it.name, brand: it.brand || "", role: roleMap[it.type] || "Piece" };
-  }).filter(Boolean);
-  return {
-    id: outfit ? outfit.id : undefined,
-    name: outfit ? outfit.name : "Items Only",
-    vibe: outfit ? (outfit.vibe || "") : "",
-    pieces: pieces,
-    stats: outfit ? getOutfitStats(outfit) : null
-  };
-}
-
-function renderHistory() {
-  const list = document.getElementById("history-list");
-  const tagMap = { dark:["dark"], tonal:["tonal"], contrast:["contrast"], night:["night"] };
-  const filtered = (typeof historyFilter === "undefined" || historyFilter === "all") ? wornHistory : wornHistory.filter(w => {
-    const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
-    if (!outfit) return false;
-    return outfitFilterTags(outfit).has(historyFilter);
-  });
-  if (!filtered.length) {
-    list.innerHTML = "<div class='history-empty'>No wears logged yet. Send a photo to Claude in chat to get started.</div>";
-    return;
-  }
-  const sorted = [...filtered].map((w) => ({...w, _idx: wornHistory.indexOf(w)})).sort((a,b) => b.date.localeCompare(a.date));
-
-  // ── Card view — shared outfit card-view tile, fed the worn context ──
-  if (historyViewMode === "card") {
-    list.className = "history-list history-card-view";
-    list.innerHTML = sorted.map(function(w) {
-      const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
-      const feedGenerated = outfit ? (OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || null) : null;
-      const feedSubmitted = w.photo || null;
-      const bg = feedGenerated || feedSubmitted || null;
-      // Your submitted photo as a corner badge when there's also a generated photo.
-      const wornThumb = (feedSubmitted && feedGenerated)
-        ? "<div class='cv-worn-thumb'><img src='" + feedSubmitted + "' alt='your photo'></div>"
-        : "";
-      return outfitCardHtml(wearAsOutfit(w), {
-        view: "card",
-        photo: bg || "",
-        title: fmtDate(w.date),   // the worn date is the headline
-        kicker: "",               // no eyebrow — the date says it all
-        dataAttrs: "data-idx='" + w._idx + "'",
-        cvThumb: wornThumb,
-        noDataId: true
-      });
-    }).join("");
-    list.querySelectorAll(".outfit-card[data-idx]").forEach(el => {
-      el.addEventListener("click", () => {
-        const w = wornHistory[parseInt(el.dataset.idx)];
-        if (w) openWearDetail(w);
-      });
-    });
-    return;
-  }
-
-  // ── Feed view — shared editorial outfit card, fed the worn context ──
-  list.className = "history-list history-feed-view";
-  list.innerHTML = sorted.map(function(w) {
-    const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
-    const photos = getEntryPhotos(w);
-    const supportive = getSupportivePhotos(w, photos.main);
-
-    const feedGenerated = w.outfitId != null
-      ? (OUTFIT_PHOTOS[w.outfitId] || PROPOSAL_PHOTO_PATHS[w.outfitId] || null)
-      : null;
-    const feedSubmitted = w.photo || null;
-    const feedBg = feedGenerated || feedSubmitted || null;
-    // Your submitted photo, pinned over the generated one.
-    const feedOverlay = (feedGenerated && feedSubmitted)
-      ? "<div style='position:absolute;bottom:12px;left:12px;width:20%;max-width:100px;aspect-ratio:3/4;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,0.35);box-shadow:0 4px 12px rgba(0,0,0,0.7);z-index:2'>" +
-          "<img src='" + feedSubmitted + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" +
-          "<div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:6px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);padding:2px 3px;text-align:center'>Worn</div>" +
-        "</div>"
-      : "";
-
-    const supportiveHtml = supportive.length
-      ? "<div class='h-supportive-row'>" +
-          "<div class='h-supportive-label'>" + (outfit && OUTFIT_PHOTOS[outfit.id] ? "Your photos" : "Also worn") + "</div>" +
-          "<div class='h-supportive-thumbs'>" + supportive.map(function(s) {
-            return "<div class='h-supportive-thumb' data-src='" + s.src + "' data-caption='" + fmtDate(s.date) + " &middot; submitted photo' title='" + fmtDate(s.date) + "'><img src='" + s.src + "' alt=''></div>";
-          }).join("") + "</div>" +
-        "</div>"
-      : "";
-
-    const deleteBtn = "<button class='action-btn' data-remove-idx='" + w._idx + "' title='Remove entry'>&#x2715;</button>";
-
-    return outfitCardHtml(wearAsOutfit(w), {
-      view: "editorial",
-      photo: feedBg || "",
-      title: fmtDate(w.date),   // the worn date is the headline
-      kicker: "",               // no eyebrow — the date says it all
-      dataAttrs: "data-idx='" + w._idx + "'",
-      badges: feedOverlay,
-      headerActions: deleteBtn,
-      headerExtra: supportiveHtml,
-      noDataId: true
-    });
-  }).join("");
-
-  // Click history card → open wear detail
-  list.querySelectorAll(".outfit-card[data-idx]").forEach(card => {
-    card.addEventListener("click", function(e) {
-      if (e.target.closest(".piece-name-link") ||
-          e.target.closest("[data-remove-idx]") ||
-          e.target.closest(".h-supportive-thumb")) return;
-      const idx = parseInt(card.dataset.idx);
-      openWearDetail(wornHistory[idx]);
-    });
-  });
-  list.querySelectorAll(".piece-name-link").forEach(el => {
-    el.addEventListener("click", () => openItemDetail(el.dataset.name, el.dataset.brand));
-  });
-  list.querySelectorAll(".outfit-photo[data-src], .h-supportive-thumb[data-src]").forEach(el => {
-    el.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const idx = parseInt(el.closest("[data-idx]") && el.closest("[data-idx]").dataset.idx);
-      const w = !isNaN(idx) ? wornHistory[idx] : null;
-      if (w) openWearDetail(w);
-      else if (el.dataset.src) openWearPhoto(el.dataset.src, el.dataset.caption);
-    });
-  });
-  list.querySelectorAll("[data-remove-idx]").forEach(el => {
-    el.addEventListener("click", () => {
-      if (!confirm("Remove this wear entry? This will lower the wear count for its items.")) return;
-      wornHistory.splice(parseInt(el.dataset.removeIdx), 1);
-      persist();
-      renderHistory();
-      renderCalendar();
-    });
-  });
-}
-
-// Shared top-most photo viewer — appears above any open detail popup.
-function openPhotoViewer(src, caption) {
-  if (!src) return;
-  document.getElementById("photo-viewer-img").src = src;
-  document.getElementById("photo-viewer-caption").textContent = caption || "";
-  document.getElementById("photo-viewer").style.display = "flex";
-}
-function closePhotoViewer() { const v = document.getElementById("photo-viewer"); if (v) v.style.display = "none"; }
-function openWearPhoto(src, caption) { openPhotoViewer(src, caption); } // shared alias
-document.getElementById("photo-viewer-close").addEventListener("click", closePhotoViewer);
-document.getElementById("photo-viewer").addEventListener("click", function(e) { if (e.target === document.getElementById("photo-viewer")) closePhotoViewer(); });
-document.addEventListener("keydown", function(e) { if (e.key === "Escape") closePhotoViewer(); });
-
-/// ── History view toggle: Card / Feed / Calendar ──
-let historyViewMode = "card";
-function setHistoryView(mode) {
-  historyViewMode = mode;
-  document.getElementById("htoggle-card").classList.toggle("active", mode === "card");
-  document.getElementById("htoggle-feed").classList.toggle("active", mode === "feed");
-  document.getElementById("htoggle-cal").classList.toggle("active", mode === "cal");
-  document.getElementById("history-calendar").style.display = mode === "cal" ? "block" : "none";
-  if (mode === "cal") { document.getElementById("history-list").style.display = "none"; renderCalendar(); return; }
-  document.getElementById("history-list").style.display = "";
-  renderHistory();
-}
-document.getElementById("htoggle-card").addEventListener("click", () => setHistoryView("card"));
-document.getElementById("htoggle-feed").addEventListener("click", () => setHistoryView("feed"));
-document.getElementById("htoggle-cal").addEventListener("click", () => setHistoryView("cal"));
-
-// ── Calendar view ──
-let calMonthOffset = 0; // 0 = current real-world month
-function renderCalendar() {
-  const wrap = document.getElementById("history-calendar");
-  const now = new Date();
-  const base = new Date(now.getFullYear(), now.getMonth() + calMonthOffset, 1);
-  const year = base.getFullYear(), month = base.getMonth();
-  const monthLabel = base.toLocaleDateString("en-US", { month: "long", year: "numeric" });
-  const firstWeekday = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const todayStr = now.toISOString().slice(0,10);
-
-  const byDate = {};
-  const tagMap = { dark:["dark"], tonal:["tonal"], contrast:["contrast"], night:["night"] };
-  const calFiltered = (typeof historyFilter === "undefined" || historyFilter === "all") ? wornHistory : wornHistory.filter(w => {
-    const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
-    if (!outfit) return false;
-    return outfitFilterTags(outfit).has(historyFilter);
-  });
-  calFiltered.forEach((w, i) => { (byDate[w.date] = byDate[w.date] || []).push({...w, _idx: wornHistory.indexOf(w)}); });
-
-  const weekdayLabels = ["S","M","T","W","T","F","S"].map(d => "<div class='cal-weekday'>"+d+"</div>").join("");
-
-  let cells = "";
-  for (let i = 0; i < firstWeekday; i++) cells += "<div class='cal-day empty'></div>";
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = year + "-" + String(month+1).padStart(2,"0") + "-" + String(d).padStart(2,"0");
-    const entries = byDate[dateStr] || [];
-    const isToday = dateStr === todayStr;
-    let photoHtml = "";
-    if (entries.length) {
-      const photos = getEntryPhotos(entries[0]);
-      const calGenerated = entries[0].outfitId != null
-        ? (OUTFIT_PHOTOS[entries[0].outfitId] || PROPOSAL_PHOTO_PATHS[entries[0].outfitId] || null)
-        : null;
-      const calSubmitted = entries[0].photo || null;
-      if (calGenerated || calSubmitted) {
-        const bgImg = calGenerated || calSubmitted;
-        const overlayHtml = (calGenerated && calSubmitted)
-          ? "<div style='position:absolute;bottom:4px;left:4px;width:28%;aspect-ratio:3/4;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.4);z-index:2'><img src='" + calSubmitted + "' style='width:100%;height:100%;object-fit:cover;object-position:top'></div>"
-          : "";
-        photoHtml = "<div class='cal-day-photo' data-idx='" + entries[0]._idx + "'>" +
-          "<img src='" + bgImg + "' alt=''>" +
-          overlayHtml +
-          "</div>";
-      }
-    }
-    cells += "<div class='cal-day" + (isToday?" today":"") + (entries.length?" has-wear":"") + "'>" +
-      "<div class='cal-day-num'>" + d + "</div>" + photoHtml +
-    "</div>";
-  }
-
-  wrap.innerHTML =
-    "<div class='cal-header'>" +
-      "<button class='cal-nav-btn' id='cal-prev'>&#8592; Prev</button>" +
-      "<div class='cal-month-label'>" + monthLabel + "</div>" +
-      "<button class='cal-nav-btn' id='cal-next'>Next &#8594;</button>" +
-    "</div>" +
-    "<div class='cal-grid'>" + weekdayLabels + cells + "</div>";
-
-  document.getElementById("cal-prev").addEventListener("click", () => { calMonthOffset--; renderCalendar(); });
-  document.getElementById("cal-next").addEventListener("click", () => { calMonthOffset++; renderCalendar(); });
-  wrap.querySelectorAll(".cal-day-photo[data-idx]").forEach(el => {
-    el.addEventListener("click", () => {
-      const w = wornHistory[parseInt(el.dataset.idx)];
-      if (w) openWearDetail(w);
-    });
-  });
-}
-
-
-
 
 function openWearDetail(wornEntry) {
   const outfit = wornEntry.outfitId != null ? outfits.find(o => o.id === wornEntry.outfitId) : null;
@@ -2288,7 +1971,7 @@ function renderBuilderOutfits() {
 document.getElementById("builder-search").addEventListener("input", renderBuilderPieces);
 
 // Init builder when tab opens
-document.querySelectorAll(".nav-tab").forEach(btn => {
+document.querySelectorAll(".nav-tab[data-tab]").forEach(btn => {
   if (btn.dataset.tab === "picker") {
     btn.addEventListener("click", () => { setTimeout(renderBuilderPieces, 50); });
   }
@@ -2457,17 +2140,6 @@ document.getElementById("closet-save-btn").addEventListener("click", () => {
   setTimeout(() => toast.classList.remove("show"), 2200);
 });
 
-// ── HISTORY FILTER ──
-let historyFilter = "all";
-
-document.querySelectorAll("[data-hfilter]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    historyFilter = btn.dataset.hfilter;
-    document.querySelectorAll("[data-hfilter]").forEach(b => b.classList.toggle("active", b.dataset.hfilter === historyFilter));
-    renderHistory();
-    if (document.getElementById("history-calendar").style.display !== "none") renderCalendar();
-  });
-});
 
 // ═══════════════════════════════════════════════════
 // INIT
@@ -2478,7 +2150,6 @@ buildSidebar();
 renderGrid();
 persist();
 initPhotos();
-renderHistory();
 renderBuilderPieces();
 
 

@@ -542,6 +542,7 @@
 
 <script src="nav.js"></script>
 <script src="data.js"></script>
+<script src="modals.js"></script>
 
 <div id="persona-root"></div>
 
@@ -988,69 +989,28 @@ function render() {
 
 render();
 
-// ── Outfit detail popup — identical markup + shared builders as the outfits page ──
-const PLAB_MODAL = { overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy" };
+// ── Detail popups — shared modals.js (outfit + item). Persona keeps its own click
+//    triggers (persona chips, pair cards, mgr items) and just calls the shared API. ──
 function openOutfitModal(oid, img){
-  const od = (typeof OUTFITS_DEFAULT !== 'undefined') ? OUTFITS_DEFAULT.find(x => x.id === oid) : null;
-  if (!od) return;
-  document.getElementById('photo-lightbox-img').src = img || '';
-  // Shared outfit-detail builder (same as Outfits board + Proposals) — one source.
-  document.getElementById('photo-lightbox-info').innerHTML =
-    (typeof outfitDetailInfoHtml === 'function') ? outfitDetailInfoHtml(od, {}) : '';
-  document.getElementById('photo-lightbox').style.display = 'flex';
+  const pool = (typeof _allOutfits === 'function') ? _allOutfits() : (typeof OUTFITS_DEFAULT !== 'undefined' ? OUTFITS_DEFAULT : []);
+  const od = pool.find(x => x.id === oid);
+  if (od) Modals.openOutfit(od, img ? { photoSrc: img } : {});
 }
-function closeOutfitModal(){ var m = document.getElementById('photo-lightbox'); if (m) m.style.display = 'none'; }
-
-// ── Item detail popup — shared builders (same as the clothing page item popup) ──
-function openItemModal(item){
-  if (!item) return;
-  document.getElementById('item-detail-photo').innerHTML = (typeof itemDetailPhotoHtml === 'function') ? itemDetailPhotoHtml(item) : '';
-  document.getElementById('item-detail-info').innerHTML = (typeof itemDetailInfoHtml === 'function') ? itemDetailInfoHtml(item, {}) : '';
-  document.getElementById('item-detail-overlay').style.display = 'flex';
-}
-function closeItemModal(){ var m = document.getElementById('item-detail-overlay'); if (m) m.style.display = 'none'; }
-function _resolveItem(name, brand){ return (typeof itemForPiece === 'function') ? itemForPiece({ name: name, brand: brand }) : null; }
-
 document.addEventListener('click', function(e){
   const chip = e.target.closest && e.target.closest('[data-outfit-id]');
-  if (chip) { const id = parseInt(chip.dataset.outfitId, 10); closeItemModal(); openOutfitModal(id, chip.dataset.outfitPhoto || (outfitPhotoPath(id))); return; }
+  if (chip) { const id = parseInt(chip.dataset.outfitId, 10); openOutfitModal(id, chip.dataset.outfitPhoto || outfitPhotoPath(id)); return; }
   const odp = e.target.closest && e.target.closest('.outfit-detail-piece');
-  if (odp) { const it = _resolveItem(odp.dataset.name, odp.dataset.brand); if (it) { closeOutfitModal(); openItemModal(it); } return; }
+  if (odp) { Modals.openItem(odp.dataset.name, odp.dataset.brand); return; }
   const pc = e.target.closest && e.target.closest('.pair-card');
-  if (pc) { const it = _resolveItem(pc.dataset.name, pc.dataset.brand); if (it) openItemModal(it); return; }
+  if (pc) { Modals.openItem(pc.dataset.name, pc.dataset.brand); return; }
   const mi = e.target.closest && e.target.closest('.mgr-item');
-  if (mi && mi.dataset.id) { const it = (typeof itemById === 'function') ? itemById(mi.dataset.id) : null; if (it) openItemModal(it); return; }
+  if (mi && mi.dataset.id) { const it = (typeof itemById === 'function') ? itemById(mi.dataset.id) : null; if (it) Modals.openItem(it.name, it.brand); return; }
   const oc = e.target.closest && e.target.closest('.outfit-card');
   if (oc) { openOutfitModal(parseInt(oc.dataset.id, 10), oc.dataset.img); return; }
-  if (e.target.id === 'photo-lightbox-close' || e.target.id === 'photo-lightbox') closeOutfitModal();
-  if (e.target.id === 'item-detail-close' || e.target.id === 'item-detail-overlay') closeItemModal();
 });
-document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeOutfitModal(); closeItemModal(); } });
 </script>
 
-<!-- Outfit detail modal — identical markup to the outfits page popup -->
-<div class="item-detail-overlay" id="photo-lightbox" style="display:none">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" id="photo-lightbox-close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col">
-        <div class="item-detail-photo"><img id="photo-lightbox-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block"></div>
-      </div>
-      <div class="item-detail-info-col" id="photo-lightbox-info"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Item detail modal — identical markup to the clothing page item popup -->
-<div class="item-detail-overlay" id="item-detail-overlay" style="display:none">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" id="item-detail-close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col"><div class="item-detail-photo" id="item-detail-photo"></div></div>
-      <div class="item-detail-info-col" id="item-detail-info"></div>
-    </div>
-  </div>
-</div>
+<!-- Detail popups (outfit + item) are injected + wired by the shared modals.js -->
 
 </body>
 </html>

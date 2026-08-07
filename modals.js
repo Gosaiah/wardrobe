@@ -20,8 +20,8 @@
    NOTE: the History wear-detail popup will move here during the tab split. */
 const Modals = (function(){
   var injected = false;
-  // z-order: outfit (base) < item (over outfit) < photo viewer (top-most)
-  var Z = { "m-outfit": 1200, "m-item": 1300, "m-photo": 1500 };
+  // z-order: outfit (base) < wear < item (over both) < photo viewer (top-most)
+  var Z = { "m-outfit": 1200, "m-wear": 1250, "m-item": 1300, "m-photo": 1500 };
 
   function el(id){ return document.getElementById(id); }
 
@@ -50,6 +50,7 @@ const Modals = (function(){
     var wrap = document.createElement("div");
     wrap.innerHTML =
       detailOverlay("m-outfit", "m-outfit-photo", "m-outfit-info") +
+      detailOverlay("m-wear",   "m-wear-photo",   "m-wear-info") +
       detailOverlay("m-item",   "m-item-photo",   "m-item-info") +
       photoViewer();
     document.body.appendChild(wrap);
@@ -69,6 +70,7 @@ const Modals = (function(){
     // highest z first
     if (isOpen("m-photo")) return close("m-photo");
     if (isOpen("m-item"))  return close("m-item");
+    if (isOpen("m-wear"))  return close("m-wear");
     if (isOpen("m-outfit")) return close("m-outfit");
   }
 
@@ -84,6 +86,7 @@ const Modals = (function(){
   function openOutfit(outfit, opts){
     inject();
     if (!outfit) return;
+    close("m-item"); close("m-wear");   // the base outfit modal replaces any popup layered above it
     opts = opts || {};
     // Photo: explicit opts.photoSrc wins; else the generated/uploaded photo (unless a built
     // combo with no id); else the shared piece-collage / no-photo builder.
@@ -104,7 +107,65 @@ const Modals = (function(){
     var o = el("m-photo"); if (o) o.style.display = "flex";
   }
 
+  // Wear-detail popup (a logged wear). Self-contained via shared data.js helpers; the
+  // outfit link swaps to the outfit modal, the submitted photo opens the viewer, and
+  // piece clicks are handled by the page's own .piece-name-link listener (stacks over this).
+  function openWear(wornEntry, opts){
+    inject();
+    if (!wornEntry) return;
+    opts = opts || {};
+    var outfit = (wornEntry.outfitId != null && typeof _allOutfits === "function")
+      ? _allOutfits().find(function(o){ return o.id === wornEntry.outfitId; }) : null;
+    var gen = (outfit && typeof outfitPhotoSrc === "function") ? outfitPhotoSrc(outfit.id, opts.uploads) : "";
+    var sub = wornEntry.photo || "";
+    var photoHtml;
+    if (gen){
+      var overlay = sub
+        ? "<div class='wear-submitted-overlay' style='position:absolute;bottom:16px;left:16px;width:22%;max-width:150px;aspect-ratio:3/4;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,0.35);box-shadow:0 4px 16px rgba(0,0,0,0.7);z-index:5;cursor:pointer'>" +
+            "<img src='" + sub + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" +
+            "<div style='position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);padding:3px 5px;text-align:center'>Worn</div>" +
+          "</div>" : "";
+      photoHtml = "<div style='position:relative;width:100%;height:100%'><img src='" + gen + "' alt='" + (outfit ? outfit.name : "Outfit") + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" + overlay + "</div>";
+    } else if (sub){
+      photoHtml = "<div class='item-detail-photo'><img src='" + sub + "' alt='Submitted photo'></div>";
+    } else {
+      photoHtml = "<div class='item-detail-photo-empty'><span>No photo</span></div>";
+    }
+    el("m-wear-photo").innerHTML = photoHtml;
+
+    var roleMap = { top:"Top", bottom:"Bottom", outer:"Outer", shoes:"Shoes", accessory:"Accessory" };
+    var pieces = (wornEntry.itemIds || []).map(function(id){
+      var it = (typeof itemById === "function") ? itemById(id) : null;
+      if (!it) return "";
+      var img = (typeof pieceImg === "function") ? pieceImg({ name: it.name, brand: it.brand, id: it.id }) : "";
+      var brandLbl = (typeof BRANDS !== "undefined" && BRANDS[bkey(it.brand)] && BRANDS[bkey(it.brand)].label) || it.brand;
+      return "<div class='piece-name-link' data-name=\"" + it.name + "\" data-brand=\"" + it.brand + "\" style='display:flex;align-items:center;gap:10px;cursor:pointer;border-radius:8px;padding:5px;margin-bottom:4px'>" +
+        "<div style='width:38px;height:48px;flex-shrink:0;border-radius:6px;overflow:hidden;background:var(--surface2)'>" + (img ? "<img src='" + img + "' style='width:100%;height:100%;object-fit:cover;object-position:top center;display:block'>" : "") + "</div>" +
+        "<div style='min-width:0'><div style='font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)'>" + (roleMap[it.type] || "Piece") + "</div><div style='font-size:12px;color:var(--text)'>" + it.name + "</div><div style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)'>" + brandLbl + "</div></div>" +
+      "</div>";
+    }).join("");
+
+    var statsHtml = (outfit && typeof outfitStatsCompareHtml === "function") ? outfitStatsCompareHtml(outfit) : "";
+    var linkHtml = outfit
+      ? "<div class='wear-outfit-link' data-outfit-id='" + outfit.id + "' style='display:flex;align-items:center;gap:10px;margin-bottom:12px;cursor:pointer;padding:8px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)'>" +
+          (gen ? "<img src='" + gen + "' style='width:44px;height:54px;object-fit:cover;object-position:top;border-radius:8px;flex-shrink:0'>" : "") +
+          "<div><div style='font-size:11px;color:var(--text);font-weight:600'>" + outfit.name + "</div><div style='font-size:9px;color:var(--accent);font-style:italic'>" + (outfit.vibe || "") + "</div></div>" +
+          "<div style='margin-left:auto;font-size:14px;color:var(--muted)'>&#x2192;</div>" +
+        "</div>"
+      : "<div style='font-size:12px;color:var(--muted);margin-bottom:12px'>Items Only</div>";
+    el("m-wear-info").innerHTML =
+      "<div class='item-detail-name'>" + (typeof fmtDate === "function" ? fmtDate(wornEntry.date) : wornEntry.date) + "</div>" +
+      linkHtml + statsHtml +
+      "<div class='item-detail-section-title'>Pieces worn</div>" + pieces;
+
+    var linkEl = el("m-wear-info").querySelector(".wear-outfit-link");
+    if (linkEl && outfit) linkEl.addEventListener("click", function(){ openOutfit(outfit); });   // swaps (openOutfit closes m-wear)
+    var ov = el("m-wear-photo").querySelector(".wear-submitted-overlay");
+    if (ov && sub) ov.addEventListener("click", function(){ openPhoto(sub, "Submitted photo"); });
+    show("m-wear");
+  }
+
   document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeTop(); });
 
-  return { openItem: openItem, openOutfit: openOutfit, openPhoto: openPhoto, close: close, closeTop: closeTop };
+  return { openItem: openItem, openOutfit: openOutfit, openPhoto: openPhoto, openWear: openWear, close: close, closeTop: closeTop };
 })();

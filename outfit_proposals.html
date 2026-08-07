@@ -98,34 +98,12 @@
   <div class="proposals-list" id="proposals-list"></div>
 </main>
 
-<div class="item-detail-overlay" id="od-overlay" style="display:none" onclick="if(event.target===this)closeProposalOutfit()">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" onclick="closeProposalOutfit()" aria-label="Close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col" id="od-photo"></div>
-      <div class="item-detail-info-col" id="od-info"></div>
-    </div>
-  </div>
-</div>
-
-<!-- Item detail popup (opens when a clothing item in an outfit is clicked) -->
-<div class="item-detail-overlay" id="item-overlay" style="display:none;z-index:1300" onclick="if(event.target===this)closeItemPopup()">
-  <div class="item-detail-panel">
-    <button class="item-detail-close" onclick="closeItemPopup()" aria-label="Close">&#x2715;</button>
-    <div class="item-detail-inner">
-      <div class="item-detail-photo-col" id="ip-photo"></div>
-      <div class="item-detail-info-col" id="ip-info"></div>
-    </div>
-  </div>
-</div>
+<!-- Detail popups (outfit + item) are injected + wired by the shared modals.js -->
 
 <script src="data.js"></script>
+<script src="modals.js"></script>
 <script>
 // IMAGES + getImg are provided by shared data.js
-
-// If a proposal photo file doesn't exist yet, fall back to the "Photo pending" placeholder.
-function _photoFallback(img){ img.onerror=null; if(img.parentElement) img.parentElement.innerHTML=''; }
-
 // drawSpider() consolidated into data.js — shared 8-spoke renderer
 
 // ── ALL PROPOSALS — append new sessions below ──
@@ -329,30 +307,15 @@ function renderAll() {
 
 // ── Shared outfit-detail popup (uses data.js outfitDetailInfoHtml) ──
 let PROPOSAL_INDEX = {};
+// Detail popups now come from the shared modals.js. Proposals pass the pre-resolved
+// photo path (empty → outfitCardHtml's collage fallback kicks in).
 function openProposalOutfit(id) {
   const outfit = PROPOSAL_INDEX[String(id)];
-  if (!outfit || typeof outfitDetailInfoHtml !== "function") return;
-  const photoCol = document.getElementById("od-photo");
-  photoCol.innerHTML = outfit.photo
-    ? "<div class='item-detail-photo'><img src='" + outfit.photo + "' alt='" + outfit.name + "' onerror='_photoFallback && _photoFallback(this)'></div>"
-    : ((typeof outfitDetailPhotoHtml === "function") ? outfitDetailPhotoHtml(outfit) : "");
-  document.getElementById("od-info").innerHTML = outfitDetailInfoHtml(outfit, {});
-  document.getElementById("od-overlay").style.display = "flex";
+  if (outfit) Modals.openOutfit(outfit, { photoSrc: outfit.photo || "" });
 }
-function closeProposalOutfit() { document.getElementById("od-overlay").style.display = "none"; }
-
-// Item detail popup — shared builders; opens when a clothing item in an outfit is clicked.
-function openItemPopup(name, brand){
-  const it = (typeof itemForPiece === "function") ? itemForPiece({ name: name, brand: brand }) : null;
-  if (!it) return;
-  document.getElementById("ip-photo").innerHTML = (typeof itemDetailPhotoHtml === "function") ? itemDetailPhotoHtml(it) : "";
-  document.getElementById("ip-info").innerHTML = (typeof itemDetailInfoHtml === "function") ? itemDetailInfoHtml(it, {}) : "";
-  document.getElementById("item-overlay").style.display = "flex";
-}
-function closeItemPopup(){ document.getElementById("item-overlay").style.display = "none"; }
 document.addEventListener("click", e => {
   const piece = e.target.closest(".outfit-detail-piece");
-  if (piece) openItemPopup(piece.dataset.name, piece.dataset.brand);
+  if (piece) Modals.openItem(piece.dataset.name, piece.dataset.brand);
 });
 
 function renderCustomProposals(customs) {
@@ -393,11 +356,7 @@ document.getElementById("vtoggle-editorial").addEventListener("click", () => {
   renderAll();
 });
 
-document.addEventListener("keydown", e => {
-  if (e.key !== "Escape") return;
-  if (document.getElementById("item-overlay").style.display !== "none") closeItemPopup();
-  else closeProposalOutfit();
-});
+// Escape/backdrop close handled by the shared modals.js.
 
 // Pre-select the most recent session before building chips
 const lastSession = SESSIONS[SESSIONS.length - 1];
