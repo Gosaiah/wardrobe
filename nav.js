@@ -73,34 +73,28 @@
   document.head.appendChild(style);
 
   // ── Determine current page ───────────────────────────────────────────────
-  const page = location.pathname.split('/').pop() || 'wardrobe_v2_18.html';
-  const isWardrobe  = page === 'wardrobe_v2_18.html';
+  const page = location.pathname.split('/').pop() || 'today.html';
+  const isOutfits   = page === 'outfits.html';
   const isProposals = page === 'outfit_proposals.html';
   const isShop      = page === 'shop.html';
   const isProfile   = page === 'profile.html';
   const isToday     = page === 'today.html';
   const isHistory   = page === 'history.html';
   const isClothing  = page === 'wardrobe.html';   // standalone clothing manager
+  const isBuilder   = page === 'builder.html';
 
-  // Tabs still living inside the monolith (wardrobe_v2_18.html) are buttons there,
-  // anchors elsewhere. Peeled-off tabs (Wardrobe, History) are their own pages —
-  // links everywhere. Visual order stays Outfits · Wardrobe · Builder · History.
-  const outfitsTab = isWardrobe
-    ? `<button class="nav-tab" data-tab="board">Outfits</button>`
-    : `<a href="wardrobe_v2_18.html" class="nav-tab">Outfits</a>`;
-  const builderTab = isWardrobe
-    ? `<button class="nav-tab" data-tab="picker">Builder</button>`
-    : `<a href="wardrobe_v2_18.html" class="nav-tab">Builder</a>`;
-  const tabsHtml = `${outfitsTab}
+  // Every destination is now its own standalone page — links everywhere.
+  // Visual order stays Outfits · Wardrobe · Builder · History.
+  const tabsHtml = `<a href="outfits.html" class="nav-tab${isOutfits ? ' active' : ''}">Outfits</a>
        <a href="wardrobe.html" class="nav-tab${isClothing ? ' active' : ''}">Wardrobe</a>
-       ${builderTab}
+       <a href="builder.html" class="nav-tab${isBuilder ? ' active' : ''}">Builder</a>
        <a href="history.html" class="nav-tab${isHistory ? ' active' : ''}">History</a>`;
 
   // ── Build nav ────────────────────────────────────────────────────────────
   const nav = document.createElement('nav');
   nav.className = 'app-nav';
   nav.innerHTML = `
-    <a href="wardrobe_v2_18.html" class="nav-brand" aria-label="Alter">
+    <a href="today.html" class="nav-brand" aria-label="Alter">
       <svg class="nav-mark" viewBox="0 0 100 100" fill="none" stroke="#e2d3b4" stroke-linecap="round" stroke-linejoin="round">
         <path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="5" opacity="0.3" transform="translate(9 6)"/>
         <path d="M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z" stroke-width="5" opacity="0.6" transform="translate(3 2)"/>

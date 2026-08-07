@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<title>Alter · Builder</title>
+<style>
+  /* Builder is a FULL-HEIGHT app (two-pane suggestions + a closet view), not a
+     scrolling .app-page. body is a flex column: nav (injected by nav.js, 48px) on
+     top, then .builder-page fills the rest; the two views' inner panes scroll, the
+     page itself does not. Shared components (.pair-*, .item-detail-*, .outfit-card,
+     view toggle, buttons) come from components.css / alter-theme.css — only the
+     Builder/Closet-specific rules are declared here. */
+  html { height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-ui); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  /* ── FULL-HEIGHT SHELL ── */
+  .builder-page { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  .builder-topbar { flex-shrink: 0; }
+  .builder-topbar-head { padding: 14px 24px 10px; }
+  .builder-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--white); margin: 0; letter-spacing: 0.02em; line-height: 1; }
+  /* The two mode views each fill the remaining height (only one is shown at a time). */
+  #builder-suggest-view, #builder-closet-view { min-height: 0; }
+
+  /* ── BUILDER SEARCH INPUT (reuses .mgr-search) ── */
+  .mgr-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 7px 11px; outline: none; border-radius:8px; flex: 1; min-width: 140px; }
+
+  /* ── BUILDER MODE TOGGLE ── */
+  .builder-mode-bar { display:flex; border-bottom:1px solid var(--border); background:#000; flex-shrink:0; }
+  .builder-mode-btn { background:none; border:none; border-bottom:2px solid transparent; color:var(--muted); font-family:inherit; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; padding:0 20px; height:40px; cursor:pointer; transition:all 0.15s; }
+  .builder-mode-btn:hover { color:var(--text); }
+  .builder-mode-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* ── CLOSET VIEW ── */
+  .closet-view { flex:1; display:flex; flex-direction:column; overflow:hidden; min-height:0; }
+  .closet-layout { flex:1; display:flex; overflow:hidden; min-height:0; }
+
+  /* Left panel: spider + stats + save */
+  .closet-left { flex:0 0 50%; min-width:380px; max-width:640px; border-right:1px solid var(--border); display:flex; flex-direction:column; background:var(--surface); padding:24px 26px 20px; overflow-y:auto; }
+  .closet-spider-wrap { display:flex; justify-content:center; margin-bottom:20px; }
+  .closet-stat-list { display:flex; flex-direction:column; gap:10px; flex:1; }
+  .closet-stat { display:flex; align-items:center; gap:8px; }
+  .closet-stat-name { font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); min-width:68px; }
+  .closet-stat-track { flex:1; height:2px; background:var(--surface2); border-radius:6px; overflow:hidden; }
+  .closet-stat-fill { height:100%; background:var(--accent); border-radius:6px; transition:width 0.35s; }
+  .closet-stat-val { font-size:10px; color:var(--accent); font-weight:600; min-width:20px; text-align:right; }
+  .closet-left-footer { margin-top:24px; display:flex; flex-direction:column; gap:10px; }
+  .closet-saved-toast { font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:var(--accent); opacity:0; transition:opacity 0.3s; text-align:center; }
+  .closet-saved-toast.show { opacity:1; }
+  .closet-save-btn { background:var(--accent); border:none; color:#000; font-family:inherit; font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:13px; cursor:pointer; width:100%; transition:opacity 0.15s; }
+  .closet-save-btn:hover { opacity:0.85; }
+
+  /* Right panel: picker — primary (top/bottom) stacked & larger, supportive (outer/shoes) smaller beside */
+  /* Fill the available height so all four toggles are visible without scrolling:
+     columns stretch to the panel height, cards share their column's height. */
+  .closet-right { flex:1; display:flex; flex-direction:row; align-items:stretch; gap:14px; overflow:hidden; min-height:0; background:var(--bg); padding:14px; }
+  .closet-col { display:flex; flex-direction:column; gap:14px; min-width:0; min-height:0; }
+  .closet-col-primary { flex:1.6; }
+  .closet-col-support { flex:1; }
+  .closet-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; display:flex; flex-direction:column; overflow:hidden; transition:border-color 0.2s, opacity 0.2s; flex:1 1 0; min-height:0; }
+  .closet-card.support.optional { opacity:0.5; }
+  .closet-card.support.optional.on { opacity:1; }
+  .closet-card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border-bottom:1px solid var(--border); }
+  .closet-card-role { font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); }
+  .closet-card-photo { position:relative; flex:1; min-height:110px; background:var(--surface2); }
+  .closet-card-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+  .cc-arrow { position:absolute; top:0; bottom:0; width:38px; display:flex; align-items:center; justify-content:center; border:none; color:#fff; font-size:22px; cursor:pointer; background:rgba(0,0,0,0.28); transition:background 0.15s; z-index:2; }
+  .cc-arrow:hover { background:rgba(0,0,0,0.5); }
+  .cc-arrow.left { left:0; } .cc-arrow.right { right:0; }
+  .cc-arrow:disabled { opacity:0.15; cursor:default; background:rgba(0,0,0,0.15); }
+  .closet-card-info { padding:10px 12px 12px; }
+  .cc-name { color:var(--white); font-weight:500; font-size:13px; line-height:1.25; margin-bottom:3px; }
+  .closet-card.support .cc-name { font-size:11px; }
+  .cc-brand { font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .cc-counter { font-size:9px; color:var(--muted); letter-spacing:0.06em; }
+  .closet-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--border); font-size:24px; }
+  .closet-toggle { width:28px; height:16px; border-radius:8px; background:var(--surface2); border:1px solid var(--border); cursor:pointer; position:relative; transition:background 0.2s; flex-shrink:0; }
+  .closet-toggle::after { content:''; position:absolute; top:3px; left:3px; width:8px; height:8px; border-radius:50%; background:var(--muted); transition:left 0.2s, background 0.2s; }
+  .closet-card.optional.on .closet-toggle { background:rgba(226, 211, 180,0.2); border-color:var(--accent); }
+  .closet-card.optional.on .closet-toggle::after { left:13px; background:var(--accent); }
+
+  /* ── BUILDER (SUGGESTIONS) ── */
+  /* height comes from the flex shell above (was a hard-coded calc in the monolith). */
+  .builder-layout { display:flex; overflow:hidden; flex:1; min-height:0; }
+  .builder-left { width:260px; flex-shrink:0; border-right:1px solid var(--border); display:flex; flex-direction:column; padding:12px; overflow:hidden; background:var(--surface); gap:8px; height:100%; }
+  .builder-section-title { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .builder-piece-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; min-height:0; }
+  .builder-piece-row { display:flex; align-items:center; gap:10px; padding:6px 8px; border-radius:8px; cursor:pointer; border:1px solid transparent; transition:all 0.15s; }
+  .builder-piece-row:hover { background:var(--surface2); border-color:var(--border); }
+  .builder-piece-row.selected { border-color:var(--accent); background:rgba(226, 211, 180,0.08); }
+  .builder-piece-thumb { width:44px; height:56px; flex-shrink:0; border-radius:6px; overflow:hidden; background:var(--surface2); border:1px solid var(--border); }
+  .builder-piece-thumb img { width:100%; height:100%; object-fit:cover; object-position:top center; }
+  .builder-piece-info { flex:1; min-width:0; }
+  .builder-piece-name { font-size:11px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .builder-piece-brand { font-size:9px; color:var(--muted); margin-top:1px; }
+  .builder-right { flex:1; overflow-y:auto; padding:24px; height:100%; min-width:0; }
+  .builder-empty { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--muted); text-align:center; font-size:13px; }
+  .builder-results-title { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+  .builder-outfit-group { margin-bottom:28px; }
+  .builder-group-label { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+  .builder-outfit-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; margin-bottom:14px; cursor:pointer; transition:border-color 0.15s; overflow:hidden; }
+  .builder-outfit-card:hover { border-color:var(--accent2); }
+  .builder-outfit-name { font-size:16px; font-weight:600; color:var(--white); margin-bottom:6px; }
+  .builder-outfit-pieces { display:flex; gap:6px; flex-wrap:wrap; }
+  .builder-outfit-piece-chip { display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:11px; color:var(--text); }
+  .builder-outfit-piece-img { width:32px; height:42px; flex-shrink:0; overflow:hidden; border-radius:6px; background:var(--surface); }
+  .builder-outfit-piece-img img { width:100%; height:100%; object-fit:cover; object-position:top; }
+  .builder-new-section { margin-top:28px; padding-top:20px; border-top:1px solid var(--border); }
+  .builder-new-title { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+  @media (max-width: 768px) {
+    /* On small screens the page scrolls; panes stack top-to-bottom. */
+    body { height: auto; min-height: 100vh; overflow: auto; }
+    .builder-page { overflow: visible; }
+    .mgr-search { font-size: 14px; } /* prevent iOS zoom */
+
+    /* BUILDER — stack left panel above right */
+    .builder-layout { flex-direction: column; height: auto; min-height: unset; overflow: visible; }
+    #builder-suggest-view { flex-direction: column; overflow: visible; }
+    .builder-left { width: 100% !important; height: auto; max-height: 220px; border-right: none; border-bottom: 1px solid var(--border); overflow: hidden; }
+    .builder-piece-list { overflow-y: auto; }
+    .builder-right { height: auto; min-height: 50vh; overflow-y: auto; padding: 16px; }
+
+    /* CLOSET VIEW — stack left panel above right */
+    .closet-view { overflow: auto; }
+    .closet-layout { flex-direction: column; overflow: visible; }
+    .closet-left { flex: 0 0 auto !important; width: 100% !important; min-width: 0 !important; max-width: none !important; border-right: none; border-bottom: 1px solid var(--border); padding: 16px 20px; }
+    .closet-right { padding: 12px; flex-direction: column; overflow: visible; }
+    .closet-col-primary, .closet-col-support { flex: 1 1 auto; }
+    /* Stacked + scrolling on mobile: cards size by content, photos use their aspect ratio again */
+    .closet-card { flex: 0 0 auto; }
+    .closet-card-photo { flex: none; aspect-ratio: 3/4; min-height: 0; }
+  }
+</style>
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<script src="nav.js"></script>
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script src="modals.js"></script>
+
+<div class="builder-page">
+  <header class="builder-topbar">
+    <div class="builder-topbar-head">
+      <h1 class="builder-title">Builder</h1>
+    </div>
+    <!-- Mode toggle -->
+    <div class="builder-mode-bar">
+      <button class="builder-mode-btn active" id="mode-btn-suggest">Suggestions</button>
+      <button class="builder-mode-btn" id="mode-btn-closet">Closet</button>
+    </div>
+  </header>
+
+  <!-- SUGGESTIONS VIEW -->
+  <div id="builder-suggest-view" style="display:flex;flex:1;overflow:hidden;">
+    <div class="builder-layout" style="width:100%;">
+      <div class="builder-left">
+        <div class="builder-section-title">Choose a piece to build around</div>
+        <input class="mgr-search" id="builder-search" placeholder="Search pieces&#8230;" type="text" style="flex:0;flex-shrink:0;width:100%;box-sizing:border-box;">
+        <div class="builder-piece-list" id="builder-piece-list"></div>
+      </div>
+      <div class="builder-right" id="builder-right">
+        <div class="builder-empty">
+          <div style="font-size:32px;opacity:0.1">&#x25C8;</div>
+          <p>Select a piece on the left to see outfit options built around it</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSET VIEW -->
+  <div id="builder-closet-view" style="display:none;flex:1;overflow:hidden;flex-direction:column;" class="closet-view">
+    <div class="closet-layout">
+      <div class="closet-left">
+        <div class="closet-spider-wrap" id="closet-spider-wrap"></div>
+        <div class="closet-stat-list" id="closet-stats"></div>
+        <div class="closet-left-footer">
+          <span class="closet-saved-toast" id="closet-toast">Saved to Proposals</span>
+          <button class="closet-save-btn" id="closet-save-btn">+ Save as Proposal</button>
+        </div>
+      </div>
+      <div class="closet-right" id="closet-rows">
+        <!-- rows injected by JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail popups (outfit + item + wear + photo viewer) are injected + wired by the shared modals.js -->
+
+<script>
+// ── State (shared store) ─────────────────────────────────────────────────────
+// The builder reads items (suggestions + closet) and outfits (existing-outfit group
+// in renderBuilderOutfits). Read-only — the store is never written back; the closet
+// save writes its own CUSTOM_PROPOSALS key (below), which the Proposals page reads.
+const _S = Store.load();
+const items = _S.items;
+const outfits = _S.outfits;
+
+// Effective stats (base + styling modifiers + combos). Engine lives in data.js.
+function getOutfitStats(o){ return (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(o) : null; }
+
+// ── OUTFIT PHOTOS ──
+// Proposal (board) outfit photos keyed by outfit id; uploaded board photos are merged
+// in after DOM load via loadUploadedOutfitPhotos() (same IndexedDB store), then re-render.
+const PROPOSAL_PHOTO_PATHS = {};
+OUTFIT_PHOTO_IDS.forEach(id => { PROPOSAL_PHOTO_PATHS[id] = outfitPhotoPath(id); });
+let OUTFIT_PHOTOS = {};
+Object.entries(PROPOSAL_PHOTO_PATHS).forEach(([id, p]) => { if (!OUTFIT_PHOTOS[parseInt(id)]) OUTFIT_PHOTOS[parseInt(id)] = p; });
+
+// ═══════════════════════════════════════════════════
+// BUILDER — SUGGESTIONS
+// ═══════════════════════════════════════════════════
+let builderSelectedId = null;
+
+function renderBuilderPieces() {
+  const search = document.getElementById("builder-search").value.toLowerCase();
+  const clothing = items.filter(i => i.type !== "accessory");
+  const filtered = search ? clothing.filter(i => i.name.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search)) : clothing;
+
+  document.getElementById("builder-piece-list").innerHTML = filtered.map(item => {
+    const img = item.img || IMAGES[item.name] || getImg(item.name) || "";
+    const bk = bkey(item.brand);
+    const bl = (BRANDS[bk] && BRANDS[bk].label) || item.brand;
+    return "<div class='builder-piece-row" + (item.id === builderSelectedId ? " selected" : "") + "' data-id='" + item.id + "'>" +
+      "<div class='builder-piece-thumb'>" + (img ? "<img src='" + img + "' alt='" + item.name + "' loading='lazy'>" : "") + "</div>" +
+      "<div class='builder-piece-info'>" +
+        "<div class='builder-piece-name'>" + item.name + "</div>" +
+        "<div class='builder-piece-brand'>" + bl + "</div>" +
+      "</div></div>";
+  }).join("");
+
+  document.querySelectorAll(".builder-piece-row").forEach(row => {
+    row.addEventListener("click", () => {
+      builderSelectedId = row.dataset.id;
+      renderBuilderPieces();
+      renderBuilderOutfits();
+    });
+  });
+}
+
+function renderBuilderOutfits() {
+  const right = document.getElementById("builder-right");
+  const item = items.find(i => i.id === builderSelectedId);
+  if (!item) return;
+
+  // Find existing outfits with this piece
+  const existingOutfits = outfits.filter(o => o.pieces.some(p => (p.id ? p.id === item.id : p.name === item.name)));
+
+  const bk = bkey(item.brand);
+  const bl = (BRANDS[bk] && BRANDS[bk].label) || item.brand;
+
+  let html = "<div class='builder-results-title'>" + bl + " — " + item.name + "</div>";
+
+  // Existing outfits
+  if (existingOutfits.length) {
+    html += "<div class='builder-outfit-group'><div class='builder-group-label'>In " + existingOutfits.length + " existing outfit" + (existingOutfits.length !== 1 ? "s" : "") + "</div>";
+    html += existingOutfits.map(o => {
+      const photoSrc = OUTFIT_PHOTOS[o.id] || PROPOSAL_PHOTO_PATHS[o.id] || "";
+      const stats = getOutfitStats(o);
+      const piecesHtml = o.pieces.map(p => {
+        const pimg = pieceImg(p);
+        return "<div class='builder-outfit-piece-chip'>" +
+          "<div class='builder-outfit-piece-img'>" + (pimg ? "<img src='" + pimg + "' loading='lazy'>" : "") + "</div>" +
+          "<span>" + p.name + "</span>" +
+        "</div>";
+      }).join("");
+      return "<div class='builder-outfit-card' data-outfit-id='" + o.id + "' style='display:flex;gap:0;padding:0;overflow:hidden'>" +
+        (photoSrc ? "<div style='width:140px;min-height:160px;flex-shrink:0;overflow:hidden;border-right:1px solid var(--border)'><img src='" + photoSrc + "' style='width:100%;height:100%;object-fit:cover;object-position:top;display:block'></div>" : "") +
+        "<div style='flex:1;padding:12px;min-width:0'>" +
+          "<div class='builder-outfit-name'>" + o.name + "</div>" +
+          "<div style='font-size:9px;color:var(--accent);font-style:italic;margin-bottom:8px'>" + (o.vibe||"") + "</div>" +
+          "<div class='builder-outfit-pieces'>" + piecesHtml + "</div>" +
+        "</div>" +
+      "</div>";
+    }).join("");
+    html += "</div>";
+  }
+
+  const suggestHtml = (typeof pairsViewHtml === "function")
+    ? pairsViewHtml(item, { pool: items, kicker: "Suggested combinations", title: "",
+        subtitle: "Full looks you could build around this piece — base <span style=\"color:var(--accent)\">gold</span>, styling buff <span style=\"color:var(--buff)\">green</span>." })
+    : "";
+  if (suggestHtml) html += "<div class='builder-new-section'>" + suggestHtml + "</div>";
+
+  right.innerHTML = html;
+  // Existing-outfit cards, pair cards and piece links are opened by the single
+  // delegated document listener at the bottom → Modals.openOutfit / Modals.openItem.
+}
+
+// buildSuggestions was replaced by the shared buildPairings/pairingCardsHtml (data.js).
+
+document.getElementById("builder-search").addEventListener("input", renderBuilderPieces);
+
+// ═══════════════════════════════════════════════════
+// BUILDER MODE TOGGLE
+// ═══════════════════════════════════════════════════
+document.getElementById("mode-btn-suggest").addEventListener("click", () => {
+  document.getElementById("mode-btn-suggest").classList.add("active");
+  document.getElementById("mode-btn-closet").classList.remove("active");
+  document.getElementById("builder-suggest-view").style.display = "flex";
+  document.getElementById("builder-closet-view").style.display = "none";
+});
+document.getElementById("mode-btn-closet").addEventListener("click", () => {
+  document.getElementById("mode-btn-closet").classList.add("active");
+  document.getElementById("mode-btn-suggest").classList.remove("active");
+  document.getElementById("builder-suggest-view").style.display = "none";
+  document.getElementById("builder-closet-view").style.display = "flex";
+  initCloset();
+});
+
+// ═══════════════════════════════════════════════════
+// CLOSET VIEW
+// ═══════════════════════════════════════════════════
+function getItemImg(item) {
+  return item.img || IMAGES[item.name] || null;
+}
+
+const CLOSET_ROWS = [
+  { key: "outer",  label: "Outer",  type: "outer",  optional: true,  on: false },
+  { key: "top",    label: "Top",    type: "top",    optional: false, on: true  },
+  { key: "bottom", label: "Bottom", type: "bottom", optional: false, on: true  },
+  { key: "shoes",  label: "Shoes",  type: "shoes",  optional: true,  on: false }
+];
+
+let closetIdxs = { outer: 0, top: 0, bottom: 0, shoes: 0 };
+let closetInited = false;
+
+function closetItemsFor(type) {
+  return items.filter(i => i.type === type && getItemImg(i));
+}
+
+function initCloset() {
+  if (!closetInited) { closetInited = true; }
+  renderClosetRows();
+  renderClosetStats();
+}
+
+function closetCardHtml(row) {
+  const pool = closetItemsFor(row.type);
+  const idx  = closetIdxs[row.key];
+  const item = pool[idx] || null;
+  const img  = item ? getItemImg(item) : null;
+  const cls  = row.optional ? "support optional" + (row.on ? " on" : "") : "primary";
+  const imgHtml = img ? `<img src="${img}" alt="${item.name}" loading="lazy">` : `<div class="closet-no-img">◈</div>`;
+  const brandLabel = item ? ((BRANDS[bkey(item.brand)] && BRANDS[bkey(item.brand)].label) || item.brand) : "";
+  return `<div class="closet-card ${cls}" data-key="${row.key}">
+    <div class="closet-card-head">
+      <span class="closet-card-role">${row.label}</span>
+      ${row.optional ? `<button class="closet-toggle" onclick="toggleClosetRow('${row.key}')" title="Include in look"></button>` : ""}
+    </div>
+    <div class="closet-card-photo">
+      <button class="cc-arrow left" onclick="shiftCloset('${row.key}',-1)" ${!pool.length ? "disabled" : ""}>&#8249;</button>
+      ${imgHtml}
+      <button class="cc-arrow right" onclick="shiftCloset('${row.key}',1)" ${!pool.length ? "disabled" : ""}>&#8250;</button>
+    </div>
+    <div class="closet-card-info">
+      <div class="cc-name">${item ? item.name : "—"}</div>
+      <div class="cc-brand">${brandLabel}</div>
+      <div class="cc-counter">${pool.length ? (idx + 1) + " / " + pool.length : "No items"}</div>
+    </div>
+  </div>`;
+}
+
+function renderClosetRows() {
+  const container = document.getElementById("closet-rows");
+  // Primary articles (top/bottom) stacked & larger; supportive (outer/shoes) smaller, in a column beside them.
+  const primary = CLOSET_ROWS.filter(r => !r.optional).map(closetCardHtml).join("");
+  const support = CLOSET_ROWS.filter(r => r.optional).map(closetCardHtml).join("");
+  container.innerHTML =
+    `<div class="closet-col closet-col-primary">${primary}</div>` +
+    `<div class="closet-col closet-col-support">${support}</div>`;
+}
+
+function shiftCloset(key, dir) {
+  const row  = CLOSET_ROWS.find(r => r.key === key);
+  const pool = closetItemsFor(row.type);
+  if (!pool.length) return;
+  closetIdxs[key] = (closetIdxs[key] + dir + pool.length) % pool.length;
+  renderClosetRows();
+  renderClosetStats();
+}
+
+function toggleClosetRow(key) {
+  const row = CLOSET_ROWS.find(r => r.key === key);
+  row.on = !row.on;
+  renderClosetRows();
+  renderClosetStats();
+}
+
+function getActiveClosetItems() {
+  return CLOSET_ROWS
+    .filter(row => !row.optional || row.on)
+    .map(row => {
+      const pool = closetItemsFor(row.type);
+      return pool[closetIdxs[row.key]] || null;
+    })
+    .filter(Boolean);
+}
+
+function renderClosetStats() {
+  const activeItems = getActiveClosetItems();
+  const spiderWrap = document.getElementById("closet-spider-wrap");
+  const statsEl = document.getElementById("closet-stats");
+  if (!activeItems.length) {
+    if (spiderWrap) spiderWrap.innerHTML = "";
+    if (statsEl) statsEl.innerHTML = "";
+    return;
+  }
+  // Pseudo-outfit from the live selection → shared base/effective stats, so the panel
+  // reflects the styling-combo BONUS (base gold + buff green), matching the outfit popup —
+  // not a plain average that ignores combos.
+  const pseudo = { pieces: activeItems.map(it => ({
+    role: (typeof pieceRole === "function" ? pieceRole(it) : it.type), id: it.id, name: it.name, brand: it.brand, stats: it.stats
+  })) };
+  const base = (typeof outfitBaseStats === "function") ? outfitBaseStats(pseudo) : null;
+  const eff  = (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(pseudo) : null;
+  if (spiderWrap) spiderWrap.innerHTML = eff ? drawSpiderCompare(base, eff, 180) : "";
+  const legend = "<div style='display:flex;gap:14px;margin-bottom:10px;font-size:9px;color:var(--muted)'>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--accent);margin-right:4px;vertical-align:middle'></span>base</span>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:" + SPIDER_BUFF + ";margin-right:4px;vertical-align:middle'></span>styling buff</span>" +
+  "</div>";
+  statsEl.innerHTML = legend + statCompareBarsHtml(base, eff) +
+    (typeof outfitStylingHtml === "function" ? outfitStylingHtml(pseudo) : "");
+}
+
+document.getElementById("closet-save-btn").addEventListener("click", () => {
+  const activeItems = getActiveClosetItems();
+  if (!activeItems.length) return;
+
+  const pieces = activeItems.map(item => {
+    const row = CLOSET_ROWS.find(r => closetItemsFor(r.type).includes(item));
+    return {
+      role:  row ? (row.label === "Outer" ? "Outer" : row.label === "Top" ? "Top" : row.label === "Bottom" ? "Bottom" : "Shoes") : "Piece",
+      name:  item.name,
+      brand: item.brand,
+      img:   getItemImg(item)
+    };
+  });
+
+  const existing = JSON.parse(localStorage.getItem("CUSTOM_PROPOSALS") || "[]");
+  const newProposal = {
+    id:     "custom_" + Date.now(),
+    name:   pieces.map(p => p.name.split(" ").slice(0,2).join(" ")).join(" + "),
+    date:   new Date().toISOString().split("T")[0],
+    vibe:   "Custom",
+    pieces
+  };
+  existing.push(newProposal);
+  localStorage.setItem("CUSTOM_PROPOSALS", JSON.stringify(existing));
+
+  // Toast
+  const toast = document.getElementById("closet-toast");
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2200);
+});
+
+// ── Popup wiring (one delegated listener) ────────────────────────────────────
+// Existing-outfit cards + suggested pair cards / piece links all open through the
+// shared modals (replaces the monolith's per-render outfit-detail click wiring).
+document.addEventListener('click', function(e){
+  const oc = e.target.closest('[data-outfit-id]');
+  if (oc){ const o = outfits.find(x=>x.id===parseInt(oc.dataset.outfitId,10)); if(o) Modals.openOutfit(o, { uploads: OUTFIT_PHOTOS }); return; }
+  const pp = e.target.closest('.pair-card, .outfit-detail-piece, .piece-name-link');
+  if (pp){ Modals.openItem(pp.dataset.name, pp.dataset.brand); return; }
+});
+
+// ── Init ──
+// Default to Suggestions mode; the closet is rendered lazily on first switch (initCloset).
+renderBuilderPieces();
+// Merge in the board's uploaded photos (same IndexedDB store) so existing-outfit cards
+// show the same generated images the Outfits board does, then re-render if a piece is up.
+if (typeof loadUploadedOutfitPhotos === "function") {
+  loadUploadedOutfitPhotos().then(function(m) {
+    Object.assign(OUTFIT_PHOTOS, m || {});
+    if (builderSelectedId != null) renderBuilderOutfits();
+  });
+}
+</script>
+</body>
+</html>

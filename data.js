@@ -1,5 +1,5 @@
 /* ALTER — shared core data: catalog, images, brands, outfits, resolvers.
-   Loaded by wardrobe_v2_18.html (Outfits) and outfit_proposals.html (Proposals).
+   Loaded by every page (outfits.html, today.html, wardrobe.html, builder.html, history.html, proposals, shop, profile, persona).
    SINGLE SOURCE OF TRUTH — edit items and outfits here; both pages read this file.
    Bump DATA_VERSION whenever WARDROBE_DATA or OUTFITS_DEFAULT change so caches refresh. */
 
@@ -1499,7 +1499,9 @@ function buildPairings(anchor, opts){
 function pairingPieceChip(p){
   const img = pieceImg(p);
   const role = p.role ? "<span style='font-size:8px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block'>" + p.role + "</span>" : "";
-  return "<div style='display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--text)'>" +
+  // Clickable piece link (data-name/data-brand) so pages with a .piece-name-link handler
+  // open the item detail on click — same hook the outfit-card pieces use.
+  return "<div class='piece-name-link' data-name=\"" + (p.name || "") + "\" data-brand=\"" + (p.brand || "") + "\" style='display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--text);cursor:pointer'>" +
     "<div style='width:32px;height:42px;flex-shrink:0;overflow:hidden;border-radius:6px;background:var(--surface)'>" +
       (img ? "<img src='" + img + "' loading='lazy' style='width:100%;height:100%;object-fit:cover;object-position:top;display:block'>" : "") +
     "</div>" +

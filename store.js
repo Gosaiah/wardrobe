@@ -10,7 +10,7 @@
    (they read a page's live globals if present, else localStorage); this module is the
    canonical LOAD (version-checked merge) + WRITE side that the Outfits/Wardrobe/Builder/
    History pages share. Behavior here is intentionally byte-identical to the logic that
-   used to live inline in wardrobe_v2_18.html. */
+   used to live inline in the monolith (now outfits.html). */
 const Store = (function(){
   function safeParse(key, fallback){
     try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
