@@ -80,17 +80,21 @@
   const isProfile   = page === 'profile.html';
   const isToday     = page === 'today.html';
   const isHistory   = page === 'history.html';
+  const isClothing  = page === 'wardrobe.html';   // standalone clothing manager
 
-  // On wardrobe page: real buttons (existing JS handles tab switching).
-  // On other pages: anchors that link back to wardrobe.
-  // History is now its own standalone page (history.html) — a link everywhere.
-  const tabsHtml = isWardrobe
-    ? `<button class="nav-tab" data-tab="board">Outfits</button>
-       <button class="nav-tab" data-tab="wardrobe">Wardrobe</button>
-       <button class="nav-tab" data-tab="picker">Builder</button>`
-    : `<a href="wardrobe_v2_18.html" class="nav-tab">Outfits</a>
-       <a href="wardrobe_v2_18.html" class="nav-tab">Wardrobe</a>
-       <a href="wardrobe_v2_18.html" class="nav-tab">Builder</a>`;
+  // Tabs still living inside the monolith (wardrobe_v2_18.html) are buttons there,
+  // anchors elsewhere. Peeled-off tabs (Wardrobe, History) are their own pages —
+  // links everywhere. Visual order stays Outfits · Wardrobe · Builder · History.
+  const outfitsTab = isWardrobe
+    ? `<button class="nav-tab" data-tab="board">Outfits</button>`
+    : `<a href="wardrobe_v2_18.html" class="nav-tab">Outfits</a>`;
+  const builderTab = isWardrobe
+    ? `<button class="nav-tab" data-tab="picker">Builder</button>`
+    : `<a href="wardrobe_v2_18.html" class="nav-tab">Builder</a>`;
+  const tabsHtml = `${outfitsTab}
+       <a href="wardrobe.html" class="nav-tab${isClothing ? ' active' : ''}">Wardrobe</a>
+       ${builderTab}
+       <a href="history.html" class="nav-tab${isHistory ? ' active' : ''}">History</a>`;
 
   // ── Build nav ────────────────────────────────────────────────────────────
   const nav = document.createElement('nav');
@@ -106,7 +110,6 @@
     </a>
     <a href="today.html" class="nav-tab${isToday ? ' active' : ''}">Today</a>
     ${tabsHtml}
-    <a href="history.html" class="nav-tab${isHistory ? ' active' : ''}">History</a>
     <div class="nav-divider"></div>
     <a href="outfit_proposals.html" class="nav-link${isProposals ? ' active' : ''}">Proposals</a>
     <a href="shop.html" class="nav-link${isShop ? ' active' : ''}">Shop</a>

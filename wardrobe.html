@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<title>Alter · Wardrobe</title>
+<style>
+  body { background: var(--bg); color: var(--text); font-family: var(--font-ui); margin: 0; }
+  /* page width/padding + header come from shared .app-page / .page-header (alter-theme.css).
+     The shared item card (.mgr-item / .mgr-item-cv / .mgr-tag / .mgr-items base + card-view)
+     lives in components.css — only the Wardrobe-manager chrome (toolbar, search/select,
+     body layout, editorial-view, slide-in form panel, buttons) is declared here. */
+
+  /* ── WARDROBE MANAGER (rules not already in components.css) ── */
+  .mgr-toolbar { padding: 14px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; background: #111; flex-shrink: 0; }
+  .mgr-toolbar .view-toggle { margin-left: auto; }
+  /* item editorial view */
+  .mgr-items.editorial-view { grid-template-columns: 1fr; gap: 8px; }
+  .mgr-items.editorial-view .mgr-item { flex-direction: row; }
+  .mgr-items.editorial-view .mgr-item-img { width: 120px; min-width: 120px; height: 150px; flex-shrink: 0; border-right: 1px solid var(--border); }
+  .mgr-items.editorial-view .mgr-item-cv { display: none; }
+  .mgr-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 7px 11px; outline: none; border-radius:8px; flex: 1; min-width: 140px; }
+  .mgr-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 11px; padding: 7px 10px; border-radius:8px; outline: none; }
+  .mgr-body { flex: 1; display: flex; overflow: hidden; }
+  .mgr-grid-wrap { flex: 1; overflow-y: auto; padding: 16px 20px 40px; }
+  .mgr-form-panel { width: 300px; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+  .mgr-form-header { padding: 16px 18px 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .mgr-form-title { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white); }
+  .mgr-form-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; font-family: inherit; }
+  .mgr-form-body { flex: 1; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .mgr-preview-img { height: 160px; background: var(--surface2); border-radius:8px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  .mgr-preview-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .mgr-field { display: flex; flex-direction: column; gap: 5px; }
+  .mgr-field label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+  .mgr-field input, .mgr-field select { background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 8px 10px; outline: none; border-radius:6px; }
+  .mgr-field input:focus, .mgr-field select:focus { border-color: var(--accent); }
+  .mgr-form-footer { padding: 14px 18px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+  .mgr-btn { border: none; font-family: inherit; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; padding: 9px 14px; cursor: pointer; border-radius:6px; }
+  .mgr-btn-save { background: var(--accent); color: #000; }
+  .mgr-btn-ghost { background: none; border: 1px solid var(--border); color: var(--muted); }
+  .mgr-btn-danger { background: var(--danger-tint); border: 1px solid var(--danger-strong); color: var(--danger); }
+
+  @media (max-width: 768px) {
+    .mgr-toolbar { padding: 10px 14px; gap: 8px; }
+    .mgr-search { font-size: 14px; } /* prevent iOS zoom */
+    .mgr-items { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    .mgr-item-img { height: 200px; }
+    .mgr-form-panel { position: fixed; inset: 0; width: 100%; z-index: 500; border-radius: 0; }
+  }
+  @media (max-width: 480px) {
+    .mgr-items { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  }
+</style>
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<script src="nav.js"></script>
+<script src="data.js"></script>
+<script src="store.js"></script>
+<script src="modals.js"></script>
+
+<main class="app-page">
+  <div class="page-header">
+    <div class="page-title-wrap">
+      <h1 class="page-title">Wardrobe</h1>
+    </div>
+  </div>
+
+  <!-- Toolbar: search + filters + add + view toggle -->
+  <div class="mgr-toolbar">
+    <input class="mgr-search" id="mgr-search" placeholder="Search pieces&#8230;" type="text">
+    <select class="mgr-select" id="mgr-filter-type">
+      <option value="">All types</option>
+      <option value="top">Top</option>
+      <option value="bottom">Bottom</option>
+      <option value="outer">Outer</option>
+      <option value="shoes">Shoes</option>
+      <option value="accessory">Accessory</option>
+    </select>
+    <select class="mgr-select" id="mgr-filter-brand"></select>
+    <button class="btn-add" id="mgr-add-btn">+ Add Piece</button>
+    <div class="view-toggle">
+      <button class="view-toggle-btn active" id="itoggle-card" title="Card view">&#9646;</button>
+      <button class="view-toggle-btn" id="itoggle-grid" title="Grid view">&#9776;</button>
+      <button class="view-toggle-btn" id="itoggle-editorial" title="Editorial view">&#9783;</button>
+    </div>
+  </div>
+
+  <!-- Body: grid + slide-in edit form -->
+  <div class="mgr-body">
+    <div class="mgr-grid-wrap">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:12px" id="mgr-count"></div>
+      <div class="mgr-items" id="mgr-items"></div>
+    </div>
+    <div class="mgr-form-panel" id="mgr-form-panel" style="display:none">
+      <div class="mgr-form-header">
+        <div class="mgr-form-title" id="mgr-form-title">Edit Piece</div>
+        <button class="mgr-form-close" id="mgr-form-close">&#x2715;</button>
+      </div>
+      <div class="mgr-form-body">
+        <div class="mgr-preview-img" id="mgr-preview-img"><span style="color:var(--muted);font-size:22px">&#x25C8;</span></div>
+        <div class="mgr-field"><label>Name</label><input id="mf-name" placeholder="Brunello Pants"></div>
+        <div class="mgr-field"><label>Brand</label><input id="mf-brand" placeholder="ORTTU"></div>
+        <div class="mgr-field"><label>Type</label>
+          <select id="mf-type"><option value="top">Top</option><option value="bottom">Bottom</option><option value="outer">Outer</option><option value="shoes">Shoes</option><option value="accessory">Accessory</option></select>
+        </div>
+        <div class="mgr-field"><label>Color</label><input id="mf-color" placeholder="Black"></div>
+        <div class="mgr-field"><label>Size</label><input id="mf-size" placeholder="M"></div>
+        <div class="mgr-field"><label>Product URL</label><input id="mf-url" placeholder="https://&#8230;"></div>
+        <div class="mgr-field"><label>Image URL</label><input id="mf-img" placeholder="https://&#8230;"></div>
+      </div>
+      <div class="mgr-form-footer">
+        <button class="mgr-btn mgr-btn-danger" id="mf-delete" style="display:none">Remove</button>
+        <div style="flex:1"></div>
+        <button class="mgr-btn mgr-btn-ghost" id="mf-cancel">Cancel</button>
+        <button class="mgr-btn mgr-btn-save" id="mf-save">Save</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Detail popups (item + outfit + wear + photo viewer) are injected + wired by the shared modals.js -->
+
+<script>
+// ── State (shared store) ─────────────────────────────────────────────────────
+// The manager only mutates customItems; outfits + wornHistory are needed read-only
+// by the item popup ("appears in outfits" + wear block).
+const _S = Store.load();
+let items = _S.items;
+let customItems = _S.customItems;
+const outfits = _S.outfits;
+const wornHistory = _S.wornHistory;
+let mgrEditingId = null;
+let itemViewMode = "card";
+
+// ── OUTFIT PHOTOS ──
+// Proposal (board) outfit photos keyed by outfit id; uploaded board photos are merged
+// in after DOM load via loadUploadedOutfitPhotos() (same IndexedDB store), then re-render.
+const PROPOSAL_PHOTO_PATHS = {};
+OUTFIT_PHOTO_IDS.forEach(id => { PROPOSAL_PHOTO_PATHS[id] = outfitPhotoPath(id); });
+let OUTFIT_PHOTOS = {};
+Object.entries(PROPOSAL_PHOTO_PATHS).forEach(([id, p]) => { if (!OUTFIT_PHOTOS[parseInt(id)]) OUTFIT_PHOTOS[parseInt(id)] = p; });
+
+// ── PERSIST ──
+// The manager only changes customItems — write that slice, re-merge items, refresh stat.
+function persist(){
+  Store.persist({ customItems: customItems });
+  items = Store.mergeItems(customItems);
+  const s = document.getElementById('nav-stat');
+  if (s) s.textContent = items.length + ' pieces · ' + outfits.filter(o=>o.source!=='proposed').length + ' outfits';
+}
+
+// ── ITEM POPUP (via modals.js) ──
+// renderMgr's card clicks (+ the delegated piece/pair handler below) call this.
+function openItemDetail(name, brand) {
+  const it = items.find(i=>i.name===name) || itemForPiece({name,brand});
+  const wearHtml = it
+    ? wearBlockHtml('item', it.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || (typeof outfitPhotoPath==='function'?outfitPhotoPath(id):''); } })
+    : '';
+  Modals.openItem(name, brand, {
+    persona: it ? getItemPersona(it) : null,
+    wearHtml: wearHtml,
+    outfitPhoto: function(id){ return OUTFIT_PHOTOS[id] || outfitPhotoPath(id); }
+  });
+}
+
+// ── Popup sub-click wiring ──
+// The item popup contains outfit chips, pair cards, piece links + a last-worn link.
+// One delegated listener opens the follow-on popup (replaces the monolith's per-render wiring).
+document.addEventListener('click', function(e){
+  const chip = e.target.closest('[data-outfit-id]');
+  if (chip){ const o = _allOutfits().find(x=>x.id===parseInt(chip.dataset.outfitId,10)); if(o) Modals.openOutfit(o, { uploads: OUTFIT_PHOTOS }); return; }
+  const last = e.target.closest('.wear-last-worn-link');
+  if (last){ const w = wornHistory[parseInt(last.dataset.idx)]; if(w) Modals.openWear(w, { uploads: OUTFIT_PHOTOS }); return; }
+  const pieceOrPair = e.target.closest('.pair-card, .outfit-detail-piece, .piece-name-link');
+  if (pieceOrPair){ Modals.openItem(pieceOrPair.dataset.name, pieceOrPair.dataset.brand); return; }
+});
+
+// ── Grid render (also (re)populates the brand filter) ──
+function renderMgr() {
+  const search = document.getElementById("mgr-search").value.toLowerCase();
+  const typeF  = document.getElementById("mgr-filter-type").value;
+  const brandF = document.getElementById("mgr-filter-brand").value;
+
+  const brands = [...new Set(items.map(i => i.brand))].sort();
+  const brandSel = document.getElementById("mgr-filter-brand");
+  const curBrand = brandSel.value;
+  brandSel.innerHTML = "<option value=''>All brands</option>" + brands.map(b => {
+    const bk = bkey(b);
+    return "<option value='" + b + "'" + (b===curBrand?" selected":"") + ">" + (BRANDS[bk]&&BRANDS[bk].label||b) + "</option>";
+  }).join("");
+
+  const visible = items.filter(i => {
+    if (typeF && i.type !== typeF) return false;
+    if (brandF && i.brand !== brandF) return false;
+    if (search && !i.name.toLowerCase().includes(search) && !i.brand.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  document.getElementById("mgr-count").textContent = visible.length + " piece" + (visible.length!==1?"s":"") + (items.length!==visible.length?" of "+items.length:"");
+
+  const mgrEl = document.getElementById("mgr-items");
+  mgrEl.className = "mgr-items" + (itemViewMode !== "grid" ? " " + itemViewMode + "-view" : "");
+
+  mgrEl.innerHTML = visible.map(item => {
+    const bk = bkey(item.brand);
+    const bc = BCOLS[bk] || "#888";
+    const img = item.img || IMAGES[item.name] || "";
+    const isCustom = customItems.find(c => c.id === item.id);
+    const outfitCount = outfits.filter(o => o.pieces.some(p => (p.id ? p.id === item.id : p.name === item.name))).length;
+    return "<div class='mgr-item" + (item.id===mgrEditingId?" selected":"") + "' data-id='" + item.id + "'>" +
+      "<div class='mgr-item-img'>" + (img ? "<img src='" + img + "' alt='" + item.name + "' loading='lazy'>" : "<div style='display:flex;align-items:center;justify-content:center;height:100%;font-size:32px;color:var(--muted)'>&#x25C8;</div>") + "</div>" +
+      "<div class='mgr-item-cv'><div class='mgr-item-cv-brand'>" + (BRANDS[bk]&&BRANDS[bk].label||item.brand) + "</div><div class='mgr-item-cv-name'>" + item.name + "</div>" + (getItemPersona(item)?"<div style='margin-top:5px'><span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>"+PERSONA_LABELS[getItemPersona(item)]+"</span></div>":"") + "</div>" +
+      "<div class='mgr-item-info'>" +
+        "<div class='mgr-item-brand' style='color:" + bc + "'>" + (BRANDS[bk]&&BRANDS[bk].label||item.brand) + "</div>" +
+        "<div class='mgr-item-name'>" + item.name + "</div>" +
+        "<div style='display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px'>" +
+          "<span class='mgr-tag'>" + (item.type||item.cat||"—") + "</span>" +
+          (item.color&&item.color!=="—"?"<span class='mgr-tag'>"+item.color+"</span>":"") +
+          (item.size&&item.size!=="—"?"<span class='mgr-tag'>"+item.size+"</span>":"") +
+          (isCustom?"<span class='mgr-tag' style='color:var(--accent)'>custom</span>":"") +
+          (getItemPersona(item)?"<span class='mgr-tag' style='background:var(--accent);color:#111;font-weight:600'>"+PERSONA_LABELS[getItemPersona(item)]+"</span>":"") +
+        "</div>" +
+        (outfitCount > 0
+          ? "<div style='font-size:10px;color:var(--accent);letter-spacing:0.06em'>In " + outfitCount + " outfit" + (outfitCount!==1?"s":"") + "</div>"
+          : "<div style='font-size:10px;color:var(--muted)'>Not in any outfits</div>") +
+      "</div></div>";
+  }).join("")
+
+  document.querySelectorAll(".mgr-item").forEach(el => {
+    el.addEventListener("click", () => {
+      const it = items.find(i => i.id === el.dataset.id);
+      if (it) openItemDetail(it.name, it.brand);
+    });
+  });
+}
+
+// ── Edit form: open (existing) / new / preview ──
+function openMgrForm(id) {
+  const item = items.find(i => i.id === id);
+  mgrEditingId = id;
+  document.getElementById("mgr-form-panel").style.display = "flex";
+  document.getElementById("mgr-form-title").textContent = item ? "Edit Piece" : "New Piece";
+  document.getElementById("mf-name").value  = item ? item.name  : "";
+  document.getElementById("mf-brand").value = item ? item.brand : "";
+  document.getElementById("mf-type").value  = item ? (item.type||"top") : "top";
+  document.getElementById("mf-color").value = item ? (item.color||"") : "";
+  document.getElementById("mf-size").value  = item ? (item.size||"") : "";
+  document.getElementById("mf-url").value   = item ? (item.url||"") : "";
+  document.getElementById("mf-img").value   = item ? (item.img||"") : "";
+  document.getElementById("mf-delete").style.display = customItems.find(c=>c.id===id) ? "block" : "none";
+  updateMgrPreview();
+  renderMgr();
+}
+
+function openMgrNew() {
+  mgrEditingId = null;
+  document.getElementById("mgr-form-panel").style.display = "flex";
+  document.getElementById("mgr-form-title").textContent = "New Piece";
+  ["mf-name","mf-brand","mf-color","mf-size","mf-url","mf-img"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("mf-type").value = "top";
+  document.getElementById("mf-delete").style.display = "none";
+  updateMgrPreview();
+}
+
+function updateMgrPreview() {
+  const imgVal  = document.getElementById("mf-img").value.trim();
+  const nameVal = document.getElementById("mf-name").value.trim();
+  const url = imgVal || IMAGES[nameVal] || "";
+  document.getElementById("mgr-preview-img").innerHTML = url
+    ? "<img src='" + url + "' alt='preview'>"
+    : "<span style='color:var(--muted);font-size:22px'>&#x25C8;</span>";
+}
+
+document.getElementById("mf-img").addEventListener("input", updateMgrPreview);
+document.getElementById("mf-name").addEventListener("input", updateMgrPreview);
+document.getElementById("mgr-form-close").onclick = () => { mgrEditingId=null; document.getElementById("mgr-form-panel").style.display="none"; renderMgr(); };
+document.getElementById("mf-cancel").onclick = () => { mgrEditingId=null; document.getElementById("mgr-form-panel").style.display="none"; renderMgr(); };
+document.getElementById("mgr-add-btn").onclick = openMgrNew;
+document.getElementById("mgr-search").addEventListener("input", renderMgr);
+document.getElementById("mgr-filter-type").addEventListener("change", renderMgr);
+document.getElementById("mgr-filter-brand").addEventListener("change", renderMgr);
+
+// ── Item view toggle: Card / Grid / Editorial ──
+function setItemView(mode) {
+  itemViewMode = mode;
+  document.getElementById("itoggle-card").classList.toggle("active", mode === "card");
+  document.getElementById("itoggle-grid").classList.toggle("active", mode === "grid");
+  document.getElementById("itoggle-editorial").classList.toggle("active", mode === "editorial");
+  renderMgr();
+}
+document.getElementById("itoggle-card").addEventListener("click", () => setItemView("card"));
+document.getElementById("itoggle-grid").addEventListener("click", () => setItemView("grid"));
+document.getElementById("itoggle-editorial").addEventListener("click", () => setItemView("editorial"));
+
+// ── Save / delete (custom items only) ──
+document.getElementById("mf-save").onclick = () => {
+  const name  = document.getElementById("mf-name").value.trim();
+  const brand = document.getElementById("mf-brand").value.trim().toUpperCase();
+  if (!name || !brand) return;
+  const updated = {
+    id: mgrEditingId || ("c-"+Date.now()), name, brand,
+    type: document.getElementById("mf-type").value,
+    cat:  document.getElementById("mf-type").value,
+    color: document.getElementById("mf-color").value.trim(),
+    size:  document.getElementById("mf-size").value.trim(),
+    url:   document.getElementById("mf-url").value.trim(),
+    img:   document.getElementById("mf-img").value.trim(),
+  };
+  const idx = customItems.findIndex(c => c.id === updated.id);
+  if (idx >= 0) customItems[idx] = updated; else customItems.push(updated);
+  mgrEditingId = null;
+  persist(); document.getElementById("mgr-form-panel").style.display="none";
+  renderMgr();
+};
+
+document.getElementById("mf-delete").onclick = () => {
+  if (!mgrEditingId) return;
+  customItems = customItems.filter(c => c.id !== mgrEditingId);
+  mgrEditingId = null;
+  persist(); document.getElementById("mgr-form-panel").style.display="none";
+  renderMgr();
+};
+
+// ── Init ──
+renderMgr();
+// Merge in the board's uploaded photos (same IndexedDB store) so the item popup shows the
+// same generated images the Outfits board does, then re-render.
+if (typeof loadUploadedOutfitPhotos === "function") {
+  loadUploadedOutfitPhotos().then(function(m) {
+    Object.assign(OUTFIT_PHOTOS, m || {});
+    renderMgr();
+  });
+}
+</script>
+</body>
+</html>

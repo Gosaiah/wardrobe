@@ -113,6 +113,7 @@ const Modals = (function(){
   function openWear(wornEntry, opts){
     inject();
     if (!wornEntry) return;
+    close("m-item"); close("m-outfit");   // wear-detail replaces the item/outfit popup it was opened from (it sits below them)
     opts = opts || {};
     var outfit = (wornEntry.outfitId != null && typeof _allOutfits === "function")
       ? _allOutfits().find(function(o){ return o.id === wornEntry.outfitId; }) : null;
