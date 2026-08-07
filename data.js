@@ -145,7 +145,7 @@ const IMAGES = {
   "PU Leather Lace Up Crop Vest":"item-photos/pu-leather-lace-up-crop-vest.jpg",
   "Protanopia Cloak Hoodie":"item-photos/protanopia-cloak-hoodie.jpg",
   "Japanese Relaxed Standing Collar Techwear Shirt":"item-photos/japanese-relaxed-standing-collar-techwear-shirt.jpg",
-  "Tunic Button-Up Collared Sleeveless":"https://di2ponv0v5otw.cloudfront.net/posts/2026/06/22/6a39a0ec4ba08a69d71db0a4/l_6a46d109a58fa4eaabf78257.jpg",
+  "Tunic Button-Up Collared Sleeveless":"item-photos/tunic-button-up-collared-sleeveless.jpg",
 };
 
 function getImg(name) {
