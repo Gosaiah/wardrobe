@@ -2,3 +2,11 @@
 past artifacts/
 outfit_refs/
 *.jsx
+
+# generated link-checker reports
+tools/link-report.json
+tools/link-report.md
+tools/localize-report.json
+
+# downloader backup
+data.js.bak
