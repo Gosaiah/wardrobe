@@ -113,6 +113,43 @@ def load_items(src):
     return items
 
 
+def _extract_object_body(src, name):
+    """Return the inner text between `{` and matching `}` of `const NAME = { ... }`."""
+    m = re.search(r'\b' + re.escape(name) + r'\s*=\s*\{', src)
+    if not m:
+        return ""
+    i, depth, instr, esc, start = m.end() - 1, 0, False, False, m.end()
+    while i < len(src):
+        ch = src[i]
+        if instr:
+            if esc: esc = False
+            elif ch == "\\": esc = True
+            elif ch == '"': instr = False
+        elif ch == '"':
+            instr = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return src[start:i]
+        i += 1
+    return ""
+
+
+def load_images_map(src):
+    """The IMAGES { "name":"url", ... } map — the primary per-item image source (pieceImg reads
+    IMAGES[name] before an item's own img). Returns [{name, url}]."""
+    block = _extract_object_body(src, "IMAGES")
+    pairs = re.findall(r'"((?:[^"\\]|\\.)*)"\s*:\s*"((?:[^"\\]|\\.)*)"', block)
+    return [{"name": k, "url": v} for k, v in pairs]
+
+
+def slug(name):
+    s = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+    return s or "item"
+
+
 # ---- download helpers ----------------------------------------------------
 CTX = ssl.create_default_context()
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36"
@@ -161,8 +198,8 @@ def download(url, dest_noext):
 
 
 # ---- build the plan ------------------------------------------------------
-def build_plan(items):
-    """List of {id, name, role, idx, url}. role: 'hero' | 'extra'."""
+def build_plan(items, images_map):
+    """List of {id, name, role, idx, url}. role: 'hero' | 'extra' | 'named' (IMAGES map)."""
     plan = []
     for it in items:
         if is_http(it["img"]):
@@ -170,6 +207,9 @@ def build_plan(items):
         for k, ex in enumerate(it["images"]):
             if is_http(ex):
                 plan.append({"id": it["id"], "name": it["name"], "role": "extra", "idx": k + 2, "url": ex})
+    for e in images_map:
+        if is_http(e["url"]):
+            plan.append({"id": slug(e["name"]), "name": e["name"], "role": "named", "idx": 1, "url": e["url"]})
     return plan
 
 
@@ -183,12 +223,22 @@ def main():
     src_path = os.path.join(REPO, "data.js")
     src = open(src_path, encoding="utf-8").read()
     items = load_items(src)
-    plan = build_plan(items)
+    images_map = load_images_map(src)
+    plan = build_plan(items, images_map)
 
-    local_ct = sum(1 for it in items if it["img"] and not is_http(it["img"]))
-    print(f"{len(items)} items · {len(plan)} remote image(s) to localize "
-          f"({sum(1 for p in plan if p['role']=='hero')} hero, "
-          f"{sum(1 for p in plan if p['role']=='extra')} extra) · {local_ct} already local.")
+    # dedup by URL (the IMAGES map reuses a few URLs across names; item img + a map entry can
+    # also coincide) — download each unique URL once, all references rewrite to the same file.
+    seen, deduped = set(), []
+    for p in plan:
+        if p["url"] in seen:
+            continue
+        seen.add(p["url"])
+        deduped.append(p)
+    plan = deduped
+
+    n = lambda role: sum(1 for p in plan if p["role"] == role)
+    print(f"{len(items)} items + {len(images_map)} IMAGES entries · {len(plan)} unique remote image(s) "
+          f"to localize ({n('hero')} item-hero, {n('extra')} extra, {n('named')} named-map).")
 
     if DRY_RUN:
         for p in plan:

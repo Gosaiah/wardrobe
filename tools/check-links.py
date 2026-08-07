@@ -102,6 +102,30 @@ def _split_objects(body):
     return objs
 
 
+def _extract_object_body(src, name):
+    """Inner text between `{` and matching `}` of `const NAME = { ... }`."""
+    m = re.search(r'\b' + re.escape(name) + r'\s*=\s*\{', src)
+    if not m:
+        return ""
+    i, depth, instr, esc, start = m.end() - 1, 0, False, False, m.end()
+    while i < len(src):
+        ch = src[i]
+        if instr:
+            if esc: esc = False
+            elif ch == "\\": esc = True
+            elif ch == '"': instr = False
+        elif ch == '"':
+            instr = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return src[start:i]
+        i += 1
+    return ""
+
+
 def load_targets():
     src = open(os.path.join(REPO, "data.js"), encoding="utf-8").read()
     items = []
@@ -122,10 +146,13 @@ def load_targets():
                 "img": FIELD("img", obj),
                 "images": images,
             })
-    return items
+    # IMAGES { "name":"url" } map — the primary per-item image source (pieceImg reads it first).
+    img_map = re.findall(r'"((?:[^"\\]|\\.)*)"\s*:\s*"((?:[^"\\]|\\.)*)"',
+                         _extract_object_body(src, "IMAGES"))
+    return items, [{"name": k, "url": v} for k, v in img_map]
 
 
-def collect(items):
+def collect(items, images_map):
     targets = {}   # url -> {url, kind, items:[...]}
     local_images = []
 
@@ -142,6 +169,13 @@ def collect(items):
                     add(img, "img", ref)
                 elif img:
                     local_images.append({**ref, "img": img})
+    if ONLY != "url":
+        for e in images_map:
+            ref = {"id": "IMAGES", "name": e["name"], "brand": ""}
+            if is_http(e["url"]):
+                add(e["url"], "img", ref)
+            elif e["url"]:
+                local_images.append({**ref, "img": e["url"]})
     return targets, local_images
 
 
@@ -234,10 +268,10 @@ def to_markdown(rep):
 # ---- main ----------------------------------------------------------------
 def main():
     from datetime import datetime, timezone
-    items = load_targets()
-    targets, local_images = collect(items)
-    print(f"Loaded {len(items)} items with links -> {len(targets)} unique link(s) to check "
-          f"({len(local_images)} already local).")
+    items, images_map = load_targets()
+    targets, local_images = collect(items, images_map)
+    print(f"Loaded {len(items)} items + {len(images_map)} IMAGES entries -> {len(targets)} unique link(s) "
+          f"to check ({len(local_images)} already local).")
 
     values = list(targets.values())
     if DRY_RUN or not values:
