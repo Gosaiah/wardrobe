@@ -686,14 +686,7 @@ function openItemDetail(name, brand) {
   });
 }
 
-// One delegated handler for every shared wear block (.wear-last-worn-link) — no per-popup wiring.
-document.addEventListener("click", function(e){
-  const el = e.target.closest && e.target.closest(".wear-last-worn-link");
-  if (!el) return;
-  const w = wornHistory[parseInt(el.dataset.idx)];
-  if (!w) return;
-  Modals.openWear(w, { uploads: OUTFIT_PHOTOS });
-});
+// (.wear-last-worn-link is handled centrally by modals.js — it lives inside the shared popups.)
 
 // ── Popup sub-click wiring ──
 // The detail popups are injected by modals.js (outside #outfits-grid). One delegated listener

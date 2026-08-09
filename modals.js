@@ -58,6 +58,14 @@ const Modals = (function(){
     wrap.addEventListener("click", function(e){
       var btn = e.target.closest("[data-modal-close]");
       if (btn){ close(btn.getAttribute("data-modal-close")); return; }
+      // Any wear block's "last worn" card (item OR outfit popup) → the wear-detail popup.
+      var lw = e.target.closest && e.target.closest(".wear-last-worn-link");
+      if (lw){
+        var hist = (typeof _wearHistory === "function") ? _wearHistory() : [];
+        var w = hist[parseInt(lw.getAttribute("data-idx"), 10)];
+        if (w) openWear(w, { uploads: (typeof OUTFIT_PHOTOS !== "undefined") ? OUTFIT_PHOTOS : undefined });
+        return;
+      }
       if (e.target.classList && e.target.classList.contains("item-detail-overlay")) close(e.target.id);
       if (e.target.id === "m-photo") close("m-photo");
     });

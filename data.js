@@ -445,7 +445,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 152;
+const DATA_VERSION = 153;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -1152,6 +1152,9 @@ function itemDetailPhotoHtml(item){
   // <img> in the photo column renders at natural size and looks zoomed/cropped.
   return img ? "<div class='item-detail-photo'><img src='" + img + "' alt='" + item.name + "'></div>" : "<div class='item-detail-photo-empty'>" + bk.slice(0,2) + "</div>";
 }
+// Default last-worn photo resolver for the interactive wear block (callers can override via
+// opts.outfitPhoto to fold in page-local uploaded board photos).
+function _defaultOutfitPhoto(id){ return (typeof outfitPhotoSrc === "function") ? outfitPhotoSrc(id) : ""; }
 function itemDetailInfoHtml(item, opts){
   if (!item) return "";
   opts = opts || {};
@@ -1195,7 +1198,7 @@ function itemDetailInfoHtml(item, opts){
   return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
-    ((opts.wearHtml != null) ? opts.wearHtml : (item.id ? wearBlockHtml("item", item.id) : "")) +
+    ((opts.wearHtml != null) ? opts.wearHtml : (item.id ? wearBlockHtml("item", item.id, { interactive:true, outfitPhoto:_defaultOutfitPhoto }) : "")) +
     ((item.id && typeof occasionSummaryHtml === "function" && typeof itemOccasions === "function") ? occasionSummaryHtml(itemOccasions(item.id)) : "") +
     statsHtml +
     outfitsHtml + pairingsHtml +
@@ -1638,7 +1641,7 @@ function outfitDetailInfoHtml(outfit, opts){
       "<div style='font-size:11px;color:var(--accent);font-style:italic'>" + (outfit.vibe||"") + "</div>" + personaChip +
     "</div>" +
     ((typeof occasionSummaryHtml === "function" && typeof outfitOccasions === "function") ? occasionSummaryHtml(outfitOccasions(outfit.id)) : "") +
-    (opts.wearHtml || "") +
+    ((opts.wearHtml != null) ? opts.wearHtml : (outfit.id != null ? wearBlockHtml("outfit", outfit.id, { interactive:true, outfitPhoto:_defaultOutfitPhoto }) : "")) +
     (function(){
       const cmp = (typeof outfitStatsCompareHtml === "function") ? outfitStatsCompareHtml(outfit) : "";
       if (cmp) return cmp;

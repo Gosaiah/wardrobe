@@ -173,8 +173,7 @@ function openItemDetail(name, brand) {
 document.addEventListener('click', function(e){
   const chip = e.target.closest('[data-outfit-id]');
   if (chip){ const o = _allOutfits().find(x=>x.id===parseInt(chip.dataset.outfitId,10)); if(o) Modals.openOutfit(o, { uploads: OUTFIT_PHOTOS }); return; }
-  const last = e.target.closest('.wear-last-worn-link');
-  if (last){ const w = wornHistory[parseInt(last.dataset.idx)]; if(w) Modals.openWear(w, { uploads: OUTFIT_PHOTOS }); return; }
+  // (.wear-last-worn-link handled centrally by modals.js)
   const pieceOrPair = e.target.closest('.pair-card, .outfit-detail-piece, .piece-name-link');
   if (pieceOrPair){ Modals.openItem(pieceOrPair.dataset.name, pieceOrPair.dataset.brand); return; }
 });
