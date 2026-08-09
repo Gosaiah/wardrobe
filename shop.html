@@ -68,6 +68,7 @@
 <body>
 <script src="nav.js"></script>
 <script src="data.js"></script>
+<script src="modals.js"></script>
 
 <main class="app-page">
   <div id="shop-view">
@@ -160,6 +161,14 @@ function closePairs() {
 document.getElementById("pairs-back").addEventListener("click", closePairs);
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && document.getElementById("pairs-view").style.display !== "none") closePairs();
+});
+
+// Piece clicks in the Pairs view (and inside the shared popups) → item / outfit detail (modals.js).
+document.addEventListener("click", function(e){
+  const piece = e.target.closest(".piece-name-link, .pair-card, .outfit-detail-piece");
+  if (piece && piece.dataset.name){ Modals.openItem(piece.dataset.name, piece.dataset.brand || ""); return; }
+  const oc = e.target.closest("[data-outfit-id]");
+  if (oc){ const o = (typeof _allOutfits === "function") ? _allOutfits().find(x => String(x.id) === oc.dataset.outfitId) : null; if (o) Modals.openOutfit(o); return; }
 });
 
 function renderShop() {
