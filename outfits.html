@@ -711,7 +711,10 @@ document.addEventListener("click", function(e){
 // ── OUTFIT POPUP (via modals.js) ──
 function openOutfitDetail(outfitId) {
   const o = outfits.find(x=>x.id===outfitId);
-  if (o) Modals.openOutfit(o, { uploads: OUTFIT_PHOTOS });
+  if (!o) return;
+  // Interactive wear block (last-worn card → wear detail), same as the item popup builds.
+  const wearHtml = wearBlockHtml('outfit', o.id, { interactive:true, outfitPhoto:function(id){ return OUTFIT_PHOTOS[id] || PROPOSAL_PHOTO_PATHS[id] || (typeof outfitPhotoPath==='function'?outfitPhotoPath(id):''); } });
+  Modals.openOutfit(o, { uploads: OUTFIT_PHOTOS, wearHtml: wearHtml });
 }
 
 function showPreview(name, brand) { openItemDetail(name, brand); }
