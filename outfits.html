@@ -462,6 +462,7 @@
       <button class="filter-btn pf-btn" data-pfilter="civilian">Civilian</button>
       <button class="filter-btn pf-btn" data-pfilter="viceroy">Viceroy</button>
     </div>
+    <div id="board-facet-bar" style="margin-top:8px;width:100%"></div>
     <button class="btn-add" id="btn-new-outfit">+ New Outfit</button>
     <button id="btn-load-photos" style="background:none;border:1px solid var(--accent2);color:var(--accent);padding:6px 13px;border-radius:8px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap">&#x2295; Load Photos</button>
     <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none">
@@ -517,6 +518,7 @@
 <script src="data.js"></script>
 <script src="store.js"></script>
 <script src="modals.js"></script>
+<script src="facet-filter.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
 // DATA
@@ -796,15 +798,8 @@ function renderGrid() {
   let filtered = boardOutfits;
   if (currentFilter !== "all") filtered = boardOutfits.filter(o => outfitFilterTags(o).has(currentFilter));
   if (currentPersonaFilter !== "all") filtered = filtered.filter(o => o.persona === currentPersonaFilter);
-  // Apply stat filters
-  const activeStats = Object.entries(statFilterVals).filter(([k,v]) => v > 0);
-  if (activeStats.length) {
-    filtered = filtered.filter(o => {
-      const s = getOutfitStats(o);
-      if (!s) return false;
-      return activeStats.every(([k,v]) => (s[k]||0) >= v);
-    });
-  }
+  // Facet filters (shared FacetFilter component) — filter by the outfit's effective stats.
+  if (boardFacetCtl && boardFacetCtl.active()) filtered = filtered.filter(o => boardFacetCtl.matches(getOutfitStats(o)));
 
   // Always display outfits in ascending number (id) order
   filtered = [...filtered].sort((a, b) => a.id - b.id);
@@ -928,20 +923,8 @@ function outfitStatPillsHtml(stats) {
 // ── STYLING CHIPS (which combos are firing + active attributes) ──
 // outfitStylingHtml() moved to data.js (shared)
 
-// ── STAT FILTER WIRING ──
-const STAT_FILTER_KEYS = ["drama","edge","structure","skin","formality"];
-const statFilterVals = {drama:0,edge:0,structure:0,skin:0,formality:0};
-
-STAT_FILTER_KEYS.forEach(key => {
-  const slider = document.getElementById("sf-" + key);
-  const valEl  = document.getElementById("sf-" + key + "-val");
-  if (!slider) return;
-  slider.addEventListener("input", () => {
-    statFilterVals[key] = parseInt(slider.value);
-    valEl.textContent = slider.value;
-    renderGrid();
-  });
-});
+// ── FACET FILTER (shared FacetFilter component) — filter the board by outfit effective stats ──
+const boardFacetCtl = (typeof FacetFilter !== "undefined") ? FacetFilter.mount("board-facet-bar", renderGrid) : null;
 
 // ── VIEW TOGGLE ──
 let outfitViewMode = "card"; // "card" | "grid" | "horizontal"
