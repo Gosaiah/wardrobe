@@ -145,7 +145,7 @@ const IMAGES = {
   "PU Leather Lace Up Crop Vest":"item-photos/pu-leather-lace-up-crop-vest.jpg",
   "Protanopia Cloak Hoodie":"item-photos/protanopia-cloak-hoodie.jpg",
   "Japanese Relaxed Standing Collar Techwear Shirt":"item-photos/japanese-relaxed-standing-collar-techwear-shirt.jpg",
-  "Tunic Button-Up Collared Sleeveless":"item-photos/tunic-button-up-collared-sleeveless.jpg",
+  "Tunic Button-Up Collared Sleeveless":"https://di2ponv0v5otw.cloudfront.net/posts/2026/06/22/6a39a0ec4ba08a69d71db0a4/l_6a724f4caf9ad1391c69b43b.jpg",
 };
 
 function getImg(name) {
@@ -445,7 +445,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 149;
+const DATA_VERSION = 150;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -993,14 +993,14 @@ function outfitCardHtml(outfit, opts){
    mutable `wornHistory` is the writer; the getters below read it when present,
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
-  { date:"2026-07-13", outfitId:34, outfitSource:"detected", itemIds:["tw1","m17","pw2"], photo:"wear-photos/wear_2026-07-13.jpeg" },
-  { date:"2026-07-14", outfitId:35, outfitSource:"detected", itemIds:["hd1","m9","s1"], photo:"wear-photos/wear_2026-07-14.jpeg" },
-  { date:"2026-07-17", outfitId:39, outfitSource:"detected", itemIds:["z1","m17","pw1"], photo:"wear-photos/wear_2026-07-17.jpeg" },
-  { date:"2026-07-22", outfitId:40, itemIds:["m6","m20","pw2"], photo:"wear-photos/wear_2026-07-22.jpg" },
-  { date:"2026-07-23", outfitId:52, itemIds:["am7","m18","pw1"], photo:"wear-photos/wear_2026-07-23.jpg", notes:"Wore with white sneakers instead of zipped tall boots" },
-  { date:"2026-07-28", outfitId:64, outfitSource:"detected", itemIds:["z2","o3","pw2"], photo:"wear-photos/wear_2026-07-28.jpeg" },
-  { date:"2026-07-30", outfitId:65, outfitSource:"detected", itemIds:["o5","m21","pw1"], photo:"wear-photos/wear_2026-07-30.jpeg" },
-  { date:"2026-08-01", outfitId:66, outfitSource:"detected", itemIds:["o15","m21","dm1"], photo:"wear-photos/wear_2026-08-01.jpeg" },
+  { date:"2026-07-13", outfitId:34, outfitSource:"detected", occasion:"work", itemIds:["tw1","m17","pw2"], photo:"wear-photos/wear_2026-07-13.jpeg" },
+  { date:"2026-07-14", outfitId:35, outfitSource:"detected", occasion:"work", itemIds:["hd1","m9","s1"], photo:"wear-photos/wear_2026-07-14.jpeg" },
+  { date:"2026-07-17", outfitId:39, outfitSource:"detected", occasion:"night-out", itemIds:["z1","m17","pw1"], photo:"wear-photos/wear_2026-07-17.jpeg" },
+  { date:"2026-07-22", outfitId:40, occasion:"work", itemIds:["m6","m20","pw2"], photo:"wear-photos/wear_2026-07-22.jpg" },
+  { date:"2026-07-23", outfitId:52, occasion:"work", itemIds:["am7","m18","pw1"], photo:"wear-photos/wear_2026-07-23.jpg", notes:"Wore with white sneakers instead of zipped tall boots" },
+  { date:"2026-07-28", outfitId:64, outfitSource:"detected", occasion:"work", itemIds:["z2","o3","pw2"], photo:"wear-photos/wear_2026-07-28.jpeg" },
+  { date:"2026-07-30", outfitId:65, outfitSource:"detected", occasion:"work", itemIds:["o5","m21","pw1"], photo:"wear-photos/wear_2026-07-30.jpeg" },
+  { date:"2026-08-01", outfitId:66, outfitSource:"detected", occasion:"night-out", itemIds:["o15","m21","dm1"], photo:"wear-photos/wear_2026-08-01.jpeg" },
   { date:"2026-08-04", outfitId:67, outfitSource:"detected", occasion:"work", itemIds:["m11","dm1"], photo:"wear-photos/wear_2026-08-04.jpg", notes:"New black short-sleeve shirt also worn — not yet in catalog (add it + append its id to outfit 67 + this entry when known)" },
   { date:"2026-08-06", outfitId:68, outfitSource:"detected", occasion:"work", itemIds:["o8","dm1","m5"], photo:"wear-photos/wear_2026-08-06.jpg" }
 ];
@@ -1021,6 +1021,31 @@ function fmtDate(iso){
   if (!iso) return "";
   const d = new Date(iso + "T00:00:00");
   return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
+}
+// ── OCCASION LAYER ───────────────────────────────────────────────────────────
+// Occasion lives on the WEAR (a specific day/event). An outfit or item aggregates a
+// distribution across its wears ("Worn to: Work ×2 · Night out ×1"). All computed on read.
+const OCCASION_LABELS = { work:"Work", "night-out":"Night out", date:"Date", casual:"Casual", party:"Party", event:"Event" };
+const OCCASION_ORDER  = ["work","night-out","date","casual","party","event"];
+function occasionLabel(k){ return OCCASION_LABELS[k] || (k ? k.charAt(0).toUpperCase()+k.slice(1) : ""); }
+// Tally occasions across the wears matching filterFn → [{key,label,count}] (count desc, then canonical order).
+function occasionSummary(filterFn){
+  const counts = {};
+  _wearHistory().forEach(w => { if (w.occasion && filterFn(w)) counts[w.occasion] = (counts[w.occasion]||0) + 1; });
+  return Object.keys(counts)
+    .sort((a,b) => (counts[b]-counts[a]) || (OCCASION_ORDER.indexOf(a)-OCCASION_ORDER.indexOf(b)))
+    .map(k => ({ key:k, label:occasionLabel(k), count:counts[k] }));
+}
+function outfitOccasions(outfitId){ return outfitId == null ? [] : occasionSummary(w => w.outfitId === outfitId); }
+function itemOccasions(itemId){ return occasionSummary(w => (w.itemIds||[]).includes(itemId)); }
+// "Worn to · Work ×2 · Night out ×1" line. opts.label overrides the "Worn to" lead-in.
+function occasionSummaryHtml(list, opts){
+  if (!list || !list.length) return "";
+  opts = opts || {};
+  const lead = opts.label !== undefined ? opts.label : "Worn to";
+  const parts = list.map(o => "<span style='color:var(--text)'>" + o.label + "</span>" + (o.count > 1 ? " <span style='color:var(--muted)'>×" + o.count + "</span>" : "")).join(" <span style='color:var(--border)'>·</span> ");
+  return "<div class='wear-occasion-summary' style='font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:2px 0 12px'>" +
+    (lead ? "<span style='color:var(--accent)'>" + lead + "</span> <span style='color:var(--border)'>·</span> " : "") + parts + "</div>";
 }
 // (Wear entries are captured via the photo → Claude flow that seeds WORN_HISTORY_DEFAULT,
 // not a client-side localStorage writer — a manual localStorage log wouldn't survive across
@@ -1169,6 +1194,7 @@ function itemDetailInfoHtml(item, opts){
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
     ((opts.wearHtml != null) ? opts.wearHtml : (item.id ? wearBlockHtml("item", item.id) : "")) +
+    ((item.id && typeof occasionSummaryHtml === "function" && typeof itemOccasions === "function") ? occasionSummaryHtml(itemOccasions(item.id)) : "") +
     statsHtml +
     outfitsHtml + pairingsHtml +
     (!itemOutfits.length && !pairings.length ? "<p style='color:var(--muted);font-size:0.8rem;margin-top:12px'>Not used in any outfits yet.</p>" : "");
@@ -1609,6 +1635,7 @@ function outfitDetailInfoHtml(outfit, opts){
     "<div style='display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px'>" +
       "<div style='font-size:11px;color:var(--accent);font-style:italic'>" + (outfit.vibe||"") + "</div>" + personaChip +
     "</div>" +
+    ((typeof occasionSummaryHtml === "function" && typeof outfitOccasions === "function") ? occasionSummaryHtml(outfitOccasions(outfit.id)) : "") +
     (opts.wearHtml || "") +
     (function(){
       const cmp = (typeof outfitStatsCompareHtml === "function") ? outfitStatsCompareHtml(outfit) : "";
