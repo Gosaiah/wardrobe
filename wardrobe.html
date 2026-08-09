@@ -89,6 +89,16 @@
     </div>
   </div>
 
+  <!-- Facet filters: minimum threshold per drama facet (presence/silhouette/movement/ornament) -->
+  <div id="mgr-facet-bar" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:10px 24px;border-bottom:1px solid var(--border);background:#0d0d0d">
+    <span style="font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)">Facet filters</span>
+    <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text)"><span style="min-width:60px;letter-spacing:0.04em">Presence</span><input type="range" min="0" max="5" step="0.5" value="0" id="ff-presence" style="width:88px;accent-color:var(--accent)"><span id="ff-presence-val" style="min-width:16px;color:var(--accent);font-size:9px">0</span></label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text)"><span style="min-width:60px;letter-spacing:0.04em">Silhouette</span><input type="range" min="0" max="5" step="0.5" value="0" id="ff-silhouette" style="width:88px;accent-color:var(--accent)"><span id="ff-silhouette-val" style="min-width:16px;color:var(--accent);font-size:9px">0</span></label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text)"><span style="min-width:60px;letter-spacing:0.04em">Movement</span><input type="range" min="0" max="5" step="0.5" value="0" id="ff-movement" style="width:88px;accent-color:var(--accent)"><span id="ff-movement-val" style="min-width:16px;color:var(--accent);font-size:9px">0</span></label>
+    <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text)"><span style="min-width:60px;letter-spacing:0.04em">Ornament</span><input type="range" min="0" max="5" step="0.5" value="0" id="ff-ornament" style="width:88px;accent-color:var(--accent)"><span id="ff-ornament-val" style="min-width:16px;color:var(--accent);font-size:9px">0</span></label>
+    <button id="mgr-facet-reset" style="display:none;background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit">Reset</button>
+  </div>
+
   <!-- Body: grid + slide-in edit form -->
   <div class="mgr-body">
     <div class="mgr-grid-wrap">
@@ -178,6 +188,10 @@ document.addEventListener('click', function(e){
   if (pieceOrPair){ Modals.openItem(pieceOrPair.dataset.name, pieceOrPair.dataset.brand); return; }
 });
 
+// Facet filters — minimum threshold per drama facet (wired below the render).
+const FACET_FILTER_KEYS = ["presence","silhouette","movement","ornament"];
+const facetFilterVals = { presence:0, silhouette:0, movement:0, ornament:0 };
+
 // ── Grid render (also (re)populates the brand filter) ──
 function renderMgr() {
   const search = document.getElementById("mgr-search").value.toLowerCase();
@@ -196,6 +210,7 @@ function renderMgr() {
     if (typeF && i.type !== typeF) return false;
     if (brandF && i.brand !== brandF) return false;
     if (search && !i.name.toLowerCase().includes(search) && !i.brand.toLowerCase().includes(search)) return false;
+    for (const f of FACET_FILTER_KEYS){ if (facetFilterVals[f] > 0 && ((i.stats && i.stats[f]) || 0) < facetFilterVals[f]) return false; }
     return true;
   });
 
@@ -289,6 +304,21 @@ document.getElementById("mgr-add-btn").onclick = openMgrNew;
 document.getElementById("mgr-search").addEventListener("input", renderMgr);
 document.getElementById("mgr-filter-type").addEventListener("change", renderMgr);
 document.getElementById("mgr-filter-brand").addEventListener("change", renderMgr);
+FACET_FILTER_KEYS.forEach(f => {
+  const sl = document.getElementById("ff-" + f), vl = document.getElementById("ff-" + f + "-val");
+  if (!sl) return;
+  sl.addEventListener("input", () => {
+    facetFilterVals[f] = parseFloat(sl.value);
+    if (vl) vl.textContent = sl.value;
+    document.getElementById("mgr-facet-reset").style.display = FACET_FILTER_KEYS.some(k => facetFilterVals[k] > 0) ? "" : "none";
+    renderMgr();
+  });
+});
+document.getElementById("mgr-facet-reset").addEventListener("click", () => {
+  FACET_FILTER_KEYS.forEach(f => { facetFilterVals[f] = 0; const sl = document.getElementById("ff-" + f), vl = document.getElementById("ff-" + f + "-val"); if (sl) sl.value = 0; if (vl) vl.textContent = "0"; });
+  document.getElementById("mgr-facet-reset").style.display = "none";
+  renderMgr();
+});
 
 // ── Item view toggle: Card / Grid / Editorial ──
 function setItemView(mode) {
