@@ -367,7 +367,9 @@ const OUTFITS_DEFAULT = [
   {id:63,name:"Photo Tee Espresso",vibe:"Dark / Minimal",tags:["dark"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF"},{role:"Bottom",id:"al2",name:"Double Take Short Espresso",brand:"ALO"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:64,name:"Olive Tee + Pinstripe Tailoring",vibe:"Tonal",tags:["tonal"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",styling:["tucked"]},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:65,name:"Longline Shirt + Cargo Skirt",vibe:"Layered",tags:["tonal"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o5",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
-  {id:66,name:"Sheer Cargo Night",vibe:"Dark / Going-out",tags:["dark"],source:"detected",persona:"night-shift",styling:["bare-torso"],pieces:[{role:"Top",id:"o15",name:"Alejandro Cardigan",brand:"ORTTU",styling:["worn-open"]},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
+  {id:66,name:"Sheer Cargo Night",vibe:"Dark / Going-out",tags:["dark"],source:"detected",persona:"night-shift",styling:["bare-torso"],pieces:[{role:"Top",id:"o15",name:"Alejandro Cardigan",brand:"ORTTU",styling:["worn-open"]},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
+  {id:67,name:"Crushed Black",vibe:"All Black / Structured",tags:["dark"],source:"detected",persona:"overlord",pieces:[{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
+  {id:68,name:"Ecru Collar & Black Skirt",vibe:"Cream / Black Contrast",tags:["contrast"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"m5",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o8",name:"Addams Skirt",brand:"ORTTU"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
 ];
 
 
@@ -443,7 +445,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 148;
+const DATA_VERSION = 149;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -999,8 +1001,8 @@ const WORN_HISTORY_DEFAULT = [
   { date:"2026-07-28", outfitId:64, outfitSource:"detected", itemIds:["z2","o3","pw2"], photo:"wear-photos/wear_2026-07-28.jpeg" },
   { date:"2026-07-30", outfitId:65, outfitSource:"detected", itemIds:["o5","m21","pw1"], photo:"wear-photos/wear_2026-07-30.jpeg" },
   { date:"2026-08-01", outfitId:66, outfitSource:"detected", itemIds:["o15","m21","dm1"], photo:"wear-photos/wear_2026-08-01.jpeg" },
-  { date:"2026-08-04", outfitId:null, outfitSource:"detected", occasion:"work", itemIds:["m11","dm1"], photo:"wear-photos/wear_2026-08-04.jpg", notes:"New black short-sleeve shirt also worn — not yet in catalog (add + append its id here when known)" },
-  { date:"2026-08-06", outfitId:null, outfitSource:"detected", occasion:"work", itemIds:["o8","dm1","m5"], photo:"wear-photos/wear_2026-08-06.jpg" }
+  { date:"2026-08-04", outfitId:67, outfitSource:"detected", occasion:"work", itemIds:["m11","dm1"], photo:"wear-photos/wear_2026-08-04.jpg", notes:"New black short-sleeve shirt also worn — not yet in catalog (add it + append its id to outfit 67 + this entry when known)" },
+  { date:"2026-08-06", outfitId:68, outfitSource:"detected", occasion:"work", itemIds:["o8","dm1","m5"], photo:"wear-photos/wear_2026-08-06.jpg" }
 ];
 function _wearHistory(){
   if (typeof wornHistory !== "undefined" && Array.isArray(wornHistory)) return wornHistory; // wardrobe's live store
