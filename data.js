@@ -1292,16 +1292,10 @@ function getItemPersona(item){
    so the two are byte-identical. Inline styles + data.js helpers only. */
 function statBarsHtml(stats) {
   if (!stats) return "";
-  // The 8 real axes (matches the spider + the outfit compare bars), with drama as a headline
-  // rollup above them — previously this showed only 5 (drama + 4 base), hiding the 4 facets.
+  // The 8 real axes (matches the spider + the outfit compare bars). Previously showed only 5
+  // (drama + 4 base), hiding the 4 facets; drama is a rollup, so it's dropped here.
   const K = (typeof SPIDER_KEYS !== "undefined") ? SPIDER_KEYS : ["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
   const L = (typeof SPIDER_LABELS !== "undefined") ? SPIDER_LABELS : K;
-  const drama = (typeof rollupDrama === "function") ? rollupDrama(stats) : (stats.drama || 0);
-  const head = "<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:8px\">" +
-    "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);width:70px;flex-shrink:0\">Drama</div>" +
-    "<div style=\"font-size:12px;color:var(--accent);font-weight:600\">" + drama + "</div>" +
-    "<div style=\"font-size:8px;color:var(--muted);letter-spacing:0.06em\">loudest facet</div>" +
-  "</div>";
   const bars = K.map((k, i) =>
     "<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px\">" +
     "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:70px;flex-shrink:0\">" + L[i] + "</div>" +
