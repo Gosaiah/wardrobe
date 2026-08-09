@@ -1292,16 +1292,26 @@ function getItemPersona(item){
    so the two are byte-identical. Inline styles + data.js helpers only. */
 function statBarsHtml(stats) {
   if (!stats) return "";
-  const bars = ["drama","edge","structure","skin","formality"].map(k =>
+  // The 8 real axes (matches the spider + the outfit compare bars), with drama as a headline
+  // rollup above them — previously this showed only 5 (drama + 4 base), hiding the 4 facets.
+  const K = (typeof SPIDER_KEYS !== "undefined") ? SPIDER_KEYS : ["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
+  const L = (typeof SPIDER_LABELS !== "undefined") ? SPIDER_LABELS : K;
+  const drama = (typeof rollupDrama === "function") ? rollupDrama(stats) : (stats.drama || 0);
+  const head = "<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:8px\">" +
+    "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);width:70px;flex-shrink:0\">Drama</div>" +
+    "<div style=\"font-size:12px;color:var(--accent);font-weight:600\">" + drama + "</div>" +
+    "<div style=\"font-size:8px;color:var(--muted);letter-spacing:0.06em\">loudest facet</div>" +
+  "</div>";
+  const bars = K.map((k, i) =>
     "<div style=\"display:flex;align-items:center;gap:8px;margin-bottom:6px\">" +
-    "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:70px;flex-shrink:0\">" + k + "</div>" +
+    "<div style=\"font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);width:70px;flex-shrink:0\">" + L[i] + "</div>" +
     "<div style=\"width:160px;height:2px;background:var(--border);border-radius:8px;overflow:hidden;flex-shrink:0\"><div style=\"height:100%;width:" + (stats[k]||0)*20 + "%;background:var(--accent);border-radius:8px\"></div></div>" +
     "<div style=\"font-size:10px;color:var(--accent);width:24px;text-align:right;flex-shrink:0\">" + (stats[k]||0) + "</div>" +
     "</div>"
   ).join("");
   return "<div style=\"display:flex;align-items:center;gap:20px;padding:4px 0\">" +
     drawSpider(stats, 130, "var(--accent)", "detail") +
-    "<div style=\"flex:1;min-width:0\">" + bars + "</div>" +
+    "<div style=\"flex:1;min-width:0\">" + head + bars + "</div>" +
   "</div>";
 }
 function outfitStylingHtml(outfit){
