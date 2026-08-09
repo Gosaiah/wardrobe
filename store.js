@@ -47,7 +47,14 @@ const Store = (function(){
       const userAddedHistory = (historyValid ? cachedHistory : []).filter(function(w){ return w && !defaultSignatures.has(historySig(w)); });
       wornHistory = [].concat(WORN_HISTORY_DEFAULT, userAddedHistory);
 
+      // Persist the MERGED result back — not just the version. Otherwise the stale cached
+      // "outfits"/"worn-history" (a prior persist snapshot) would resurface on the next
+      // same-version load (the else branch below), dropping any newly-added default entries.
       localStorage.setItem("data-version", String(DATA_VERSION));
+      try {
+        localStorage.setItem("outfits", JSON.stringify(outfits));
+        localStorage.setItem("worn-history", JSON.stringify(wornHistory));
+      } catch(e){}
     } else {
       outfits = cachedOutfits;
       wornHistory = historyValid ? cachedHistory : WORN_HISTORY_DEFAULT;
