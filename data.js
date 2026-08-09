@@ -369,7 +369,8 @@ const OUTFITS_DEFAULT = [
   {id:65,name:"Longline Shirt + Cargo Skirt",vibe:"Layered",tags:["tonal"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o5",name:"Porto Long Shirt",brand:"ORTTU"},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:66,name:"Sheer Cargo Night",vibe:"Dark / Going-out",tags:["dark"],source:"detected",persona:"night-shift",styling:["bare-torso"],pieces:[{role:"Top",id:"o15",name:"Alejandro Cardigan",brand:"ORTTU",styling:["worn-open"]},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
   {id:67,name:"Crushed Black",vibe:"All Black / Structured",tags:["dark"],source:"detected",persona:"overlord",pieces:[{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
-  {id:68,name:"Ecru Collar & Black Skirt",vibe:"Cream / Black Contrast",tags:["contrast"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"m5",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o8",name:"Addams Skirt",brand:"ORTTU"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
+  {id:68,name:"Ecru Collar & Black Skirt",vibe:"Cream / Black Contrast",tags:["contrast"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"m5",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o8",name:"Addams Skirt",brand:"ORTTU"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
+  {id:69,name:"Sheer Fringe Concert",vibe:"Sheer / Going-out",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"r3",name:"Obscure Cloak Fringe Crop Top",brand:"RYVK"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Shoes",id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA"}]}
 ];
 
 
@@ -445,7 +446,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 153;
+const DATA_VERSION = 154;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -993,6 +994,7 @@ function outfitCardHtml(outfit, opts){
    mutable `wornHistory` is the writer; the getters below read it when present,
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
+  { date:"2026-06-26", outfitId:69, outfitSource:"detected", occasion:["night-out","concert"], itemIds:["r3","m18","dc1"], photo:"wear-photos/wear_2026-06-26.jpg" },
   { date:"2026-07-13", outfitId:34, outfitSource:"detected", occasion:"work", itemIds:["tw1","m17","pw2"], photo:"wear-photos/wear_2026-07-13.jpeg" },
   { date:"2026-07-14", outfitId:35, outfitSource:"detected", occasion:"work", itemIds:["hd1","m9","s1"], photo:"wear-photos/wear_2026-07-14.jpeg" },
   { date:"2026-07-17", outfitId:39, outfitSource:"detected", occasion:"night-out", itemIds:["z1","m17","pw1"], photo:"wear-photos/wear_2026-07-17.jpeg" },
