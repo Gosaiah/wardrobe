@@ -442,12 +442,20 @@ document.getElementById("closet-save-btn").addEventListener("click", () => {
     };
   });
 
+  // Derive + stamp persona (from the outfit's effective stats) so the saved look shows its
+  // persona chip and matches the persona filter — outfitFilterTags can only derive it at read
+  // time, but the stored `persona` is what the chip + data-pfilter read directly.
+  const statPieces = activeItems.map(it => ({ role: (typeof pieceRole === "function" ? pieceRole(it) : it.type), id: it.id, name: it.name, brand: it.brand, stats: it.stats }));
+  const effStats = (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats({ pieces: statPieces }) : null;
+  const persona  = (effStats && typeof getItemPersona === "function") ? getItemPersona({ stats: effStats }) : null;
+
   const existing = JSON.parse(localStorage.getItem("CUSTOM_PROPOSALS") || "[]");
   const newProposal = {
-    id:     "custom_" + Date.now(),
-    name:   pieces.map(p => p.name.split(" ").slice(0,2).join(" ")).join(" + "),
-    date:   new Date().toISOString().split("T")[0],
-    vibe:   "Custom",
+    id:      "custom_" + Date.now(),
+    name:    pieces.map(p => p.name.split(" ").slice(0,2).join(" ")).join(" + "),
+    date:    new Date().toISOString().split("T")[0],
+    vibe:    "Custom",
+    persona: persona || undefined,
     pieces
   };
   existing.push(newProposal);

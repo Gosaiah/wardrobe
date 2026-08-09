@@ -210,9 +210,14 @@ function renderMgr() {
     const img = item.img || IMAGES[item.name] || "";
     const isCustom = customItems.find(c => c.id === item.id);
     const outfitCount = outfits.filter(o => o.pieces.some(p => (p.id ? p.id === item.id : p.name === item.name))).length;
+    const wearCount = (typeof getWearCount === "function") ? getWearCount("item", item.id) : 0;
     return "<div class='mgr-item" + (item.id===mgrEditingId?" selected":"") + "' data-id='" + item.id + "'>" +
       "<div class='mgr-item-img'>" + (img ? "<img src='" + img + "' alt='" + item.name + "' loading='lazy'>" : "<div style='display:flex;align-items:center;justify-content:center;height:100%;font-size:32px;color:var(--muted)'>&#x25C8;</div>") + "</div>" +
-      "<div class='mgr-item-cv'><div class='mgr-item-cv-brand'>" + (BRANDS[bk]&&BRANDS[bk].label||item.brand) + "</div><div class='mgr-item-cv-name'>" + item.name + "</div>" + (getItemPersona(item)?"<div style='margin-top:5px'><span style='background:var(--accent);color:#111;font-size:8px;padding:2px 6px;border-radius:4px;letter-spacing:0.06em;font-weight:700;text-transform:uppercase'>"+PERSONA_LABELS[getItemPersona(item)]+"</span></div>":"") + "</div>" +
+      "<div class='mgr-item-cv'><div class='mgr-item-cv-brand'>" + (BRANDS[bk]&&BRANDS[bk].label||item.brand) + "</div><div class='mgr-item-cv-name'>" + item.name + "</div>" +
+        "<div style='margin-top:4px;font-size:8px;letter-spacing:0.06em'>" +
+          (outfitCount>0 ? "<span style='color:var(--accent)'>" + outfitCount + " outfit" + (outfitCount!==1?"s":"") + "</span>" : "<span style='color:var(--muted)'>No outfits</span>") +
+          (wearCount>0 ? " <span style='color:var(--border)'>·</span> <span style='color:var(--accent)'>Worn " + wearCount + "x</span>" : "") +
+        "</div></div>" +
       "<div class='mgr-item-info'>" +
         "<div class='mgr-item-brand' style='color:" + bc + "'>" + (BRANDS[bk]&&BRANDS[bk].label||item.brand) + "</div>" +
         "<div class='mgr-item-name'>" + item.name + "</div>" +
@@ -221,11 +226,13 @@ function renderMgr() {
           (item.color&&item.color!=="—"?"<span class='mgr-tag'>"+item.color+"</span>":"") +
           (item.size&&item.size!=="—"?"<span class='mgr-tag'>"+item.size+"</span>":"") +
           (isCustom?"<span class='mgr-tag' style='color:var(--accent)'>custom</span>":"") +
-          (getItemPersona(item)?"<span class='mgr-tag' style='background:var(--accent);color:#111;font-weight:600'>"+PERSONA_LABELS[getItemPersona(item)]+"</span>":"") +
         "</div>" +
-        (outfitCount > 0
-          ? "<div style='font-size:10px;color:var(--accent);letter-spacing:0.06em'>In " + outfitCount + " outfit" + (outfitCount!==1?"s":"") + "</div>"
-          : "<div style='font-size:10px;color:var(--muted)'>Not in any outfits</div>") +
+        "<div style='font-size:10px;letter-spacing:0.06em'>" +
+          (outfitCount > 0
+            ? "<span style='color:var(--accent)'>In " + outfitCount + " outfit" + (outfitCount!==1?"s":"") + "</span>"
+            : "<span style='color:var(--muted)'>Not in any outfits</span>") +
+          (wearCount>0 ? " <span style='color:var(--border)'>·</span> <span style='color:var(--accent)'>Worn " + wearCount + "x</span>" : "") +
+        "</div>" +
       "</div></div>";
   }).join("")
 
