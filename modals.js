@@ -152,9 +152,11 @@ const Modals = (function(){
           "<div style='margin-left:auto;font-size:14px;color:var(--muted)'>&#x2192;</div>" +
         "</div>"
       : "<div style='font-size:12px;color:var(--muted);margin-bottom:12px'>Items Only</div>";
-    var OCCASION_LABELS = { work:"Work", "night-out":"Night out", date:"Date", casual:"Casual", party:"Party", event:"Event" };
-    var occHtml = wornEntry.occasion
-      ? "<div class='wear-occasion' style='display:inline-block;margin-bottom:12px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--border);border-radius:999px;padding:3px 10px'>Worn to · " + (OCCASION_LABELS[wornEntry.occasion] || wornEntry.occasion) + "</div>"
+    var occs = (typeof wearOccasionList === "function") ? wearOccasionList(wornEntry)
+      : (Array.isArray(wornEntry.occasion) ? wornEntry.occasion : (wornEntry.occasion ? [wornEntry.occasion] : []));
+    var occLbl = (typeof occasionLabel === "function") ? occasionLabel : function(k){ return k; };
+    var occHtml = occs.length
+      ? "<div class='wear-occasion' style='display:inline-block;margin-bottom:12px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--border);border-radius:999px;padding:3px 10px'>Worn to · " + occs.map(occLbl).join(" · ") + "</div>"
       : "";
     el("m-wear-info").innerHTML =
       "<div class='item-detail-name'>" + (typeof fmtDate === "function" ? fmtDate(wornEntry.date) : wornEntry.date) + "</div>" +

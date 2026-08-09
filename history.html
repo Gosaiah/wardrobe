@@ -348,7 +348,7 @@ function wearMatchesFilters(w){
     const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
     if (!outfit || !outfitFilterTags(outfit).has(historyFilter)) return false;
   }
-  if (occasionFilter !== "all" && w.occasion !== occasionFilter) return false;
+  if (occasionFilter !== "all" && !wearOccasionList(w).includes(occasionFilter)) return false;
   return true;
 }
 document.querySelectorAll("[data-hfilter]").forEach(btn => {
@@ -365,7 +365,7 @@ document.querySelectorAll("[data-hfilter]").forEach(btn => {
   const bar = document.getElementById("hoccasions");
   if (!bar) return;
   const present = (typeof OCCASION_ORDER !== "undefined" ? OCCASION_ORDER : [])
-    .filter(k => wornHistory.some(w => w.occasion === k));
+    .filter(k => wornHistory.some(w => wearOccasionList(w).includes(k)));
   if (!present.length) { bar.style.display = "none"; return; }
   const chip = (val, label, active) => "<button class='filter-btn" + (active ? " active" : "") + "' data-ofilter='" + val + "'>" + label + "</button>";
   bar.innerHTML = chip("all", "All occasions", true) +
