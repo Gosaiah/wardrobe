@@ -826,11 +826,16 @@ function render() {
 
   const heroName = p.name.replace('\n', '<br>');
 
-  const statsHtml = Object.entries(p.stats).map(([k, v]) =>
+  // Persona stats — the shared 8-axis PERSONA_TARGETS (matches the spider + the 8-stat model),
+  // not the old hardcoded 5-key values.
+  const _pstats = (typeof PERSONA_TARGETS !== 'undefined' && PERSONA_TARGETS[id]) || p.stats;
+  const _pkeys  = (typeof SPIDER_KEYS !== 'undefined') ? SPIDER_KEYS : Object.keys(_pstats);
+  const _plabels = (typeof SPIDER_LABELS !== 'undefined') ? SPIDER_LABELS : _pkeys;
+  const statsHtml = _pkeys.map((k, i) =>
     `<div class="stat-row">
-      <span class="stat-name">${k.charAt(0).toUpperCase()+k.slice(1)}</span>
-      <div class="stat-track"><div class="stat-fill" style="width:${v/5*100}%"></div></div>
-      <span class="stat-val">${v.toFixed(1)}</span>
+      <span class="stat-name">${_plabels[i]}</span>
+      <div class="stat-track"><div class="stat-fill" style="width:${(_pstats[k]||0)/5*100}%"></div></div>
+      <span class="stat-val">${(_pstats[k]||0).toFixed(1)}</span>
     </div>`
   ).join('');
 
