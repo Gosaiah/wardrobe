@@ -11,8 +11,9 @@
      outfits.filter(o => ff.matches(effectiveOutfitStats(o)));  // board: outfit effective stats
 */
 const FacetFilter = (function(){
-  const KEYS   = ["presence","silhouette","movement","ornament"];
-  const LABELS = { presence:"Presence", silhouette:"Silhouette", movement:"Movement", ornament:"Ornament" };
+  // All 8 stat axes (matches the spider + the item/outfit stat bars), not just the 4 facets.
+  const KEYS   = (typeof SPIDER_KEYS !== "undefined") ? SPIDER_KEYS.slice() : ["formality","structure","presence","edge","skin","ornament","movement","silhouette"];
+  const LABELS = (function(){ const m = {}; KEYS.forEach(function(k, i){ m[k] = (typeof SPIDER_LABELS !== "undefined") ? SPIDER_LABELS[i] : (k.charAt(0).toUpperCase() + k.slice(1)); }); return m; })();
 
   function barHtml(){
     const slider = function(k){
@@ -23,7 +24,7 @@ const FacetFilter = (function(){
       "</label>";
     };
     return "<div style='display:flex;align-items:center;gap:18px;flex-wrap:wrap'>" +
-      "<span style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)'>Facet filters</span>" +
+      "<span style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)'>Stat filters</span>" +
       KEYS.map(slider).join("") +
       "<button data-ff-reset style='display:none;background:none;border:1px solid var(--border);color:var(--muted);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:inherit'>Reset</button>" +
     "</div>";
@@ -35,7 +36,7 @@ const FacetFilter = (function(){
     const el = (typeof containerId === "string") ? document.getElementById(containerId) : containerId;
     if (!el) return null;
     el.innerHTML = barHtml();
-    const values = { presence:0, silhouette:0, movement:0, ornament:0 };
+    const values = {}; KEYS.forEach(function(k){ values[k] = 0; });
     const resetBtn = el.querySelector("[data-ff-reset]");
     const active = function(){ return KEYS.some(function(k){ return values[k] > 0; }); };
     const sync = function(){ if (resetBtn) resetBtn.style.display = active() ? "" : "none"; };
