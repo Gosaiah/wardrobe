@@ -446,7 +446,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 154;
+const DATA_VERSION = 155;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -777,7 +777,7 @@ const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a
 function outfitPhotoPath(id){ return "outfits/outfit_" + String(id).padStart(2, "0") + ".jpg"; }
 // Outfit ids that have a curated board photo at outfits/outfit_XX.jpg — SINGLE source
 // (the Outfits board + Today both read this so they agree on which outfits have a photo).
-const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,53,54,55,56,57,58,59,62,63,64,65,66,68];
+const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,53,54,55,56,57,58,59,62,63,64,65,66,68,69];
 function outfitHasPhoto(id){ return OUTFIT_PHOTO_IDS.indexOf(id) >= 0; }
 // Best photo src for an outfit: an uploaded board photo (from the shared IndexedDB store,
 // passed in via `uploads`) wins, else the curated default path, else "" (renders "No photo").
