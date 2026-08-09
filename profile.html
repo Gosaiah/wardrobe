@@ -114,7 +114,11 @@
 <section class="section">
   <div class="section-label">Style Signature</div>
   <div class="signature-grid">
-    <div class="signature-spider" id="spider-main"></div>
+    <div class="signature-spider">
+      <div id="spider-main"></div>
+      <div id="sig-legend" style="display:flex;gap:16px;justify-content:center;margin-top:6px;font-size:10px;color:var(--muted)"></div>
+      <div id="sig-toggle" style="display:flex;gap:6px;justify-content:center;margin-top:12px"></div>
+    </div>
     <div class="signature-text">
       <h3>Edge over everything.<br>Structure as language.</h3>
       <p>The wardrobe skews dark and minimal, built on avant-garde Japanese construction and sharp ORTTU tailoring. Drama and edge lead — formality and structure support without ever softening the intention.</p>
@@ -299,6 +303,26 @@ const STYLE_SIGNATURE = (function(){
   return sig;
 })();
 
+// Multi-shape signature — two readings overlaid on one spider (everyday↔boldest, owned↔worn).
+function _sigFrom(pop, q){
+  if (!pop.length) return null;
+  const K = (typeof SPIDER_KEYS !== "undefined") ? SPIDER_KEYS : Object.keys(WARDROBE_STATS);
+  const sig = {};
+  K.forEach(k => {
+    const vals = pop.map(s => s[k] || 0).sort((a,b) => b - a);
+    const n = q >= 1 ? vals.length : Math.max(1, Math.round(vals.length * q));
+    sig[k] = Math.round(vals.slice(0, n).reduce((a,b) => a + b, 0) / n * 100) / 100;
+  });
+  if (typeof rollupDrama === "function") sig.drama = rollupDrama(sig);
+  return sig;
+}
+const _popAll = [];  OUTFITS.forEach(o => { const st = (typeof effectiveOutfitStats === "function") && effectiveOutfitStats(o); if (st) _popAll.push(st); });
+const _popWorn = []; WORN.forEach(w => { const o = OUTFITS.find(x => x.id === w.outfitId); const st = o && effectiveOutfitStats(o); if (st) _popWorn.push(st); });
+const SIG_EVERYDAY = _sigFrom(_popAll, 1)     || WARDROBE_STATS;   // mean of every outfit
+const SIG_BOLDEST  = STYLE_SIGNATURE;                              // top ~15% peak (worn-weighted) — drives the pills
+const SIG_SAVED    = _sigFrom(_popAll, 0.15)  || WARDROBE_STATS;   // peak of everything owned
+const SIG_WORN     = _sigFrom(_popWorn, 0.15) || SIG_SAVED;        // peak of what you've actually worn
+
 // Persona target profiles now live in data.js (PERSONA_TARGETS) — single source, 8-key facets.
 const PERSONA_STATS = {
   p1: PERSONA_TARGETS.overlord,
@@ -341,8 +365,30 @@ const VIBES = [
   count: (typeof outfitFilterTags === "function") ? OUTFITS.filter(o => outfitFilterTags(o).has(d.key)).length : 0
 }));
 
-// ── Render main spider ──
-document.getElementById("spider-main").innerHTML = drawSpider(STYLE_SIGNATURE, 200, "#e2d3b4");
+// ── Render main spider — overlay two readings, switchable ──
+const SIG_MODES = {
+  range:   { base: SIG_EVERYDAY, eff: SIG_BOLDEST, baseLabel: "Everyday", effLabel: "At your boldest" },
+  ownworn: { base: SIG_SAVED,    eff: SIG_WORN,    baseLabel: "Owned",    effLabel: "Worn" },
+};
+let sigMode = "range";
+const _buffColor = (typeof SPIDER_BUFF !== "undefined") ? SPIDER_BUFF : "#7db87d";
+function renderSignature(){
+  const m = SIG_MODES[sigMode];
+  document.getElementById("spider-main").innerHTML = (typeof drawSpiderCompare === "function")
+    ? drawSpiderCompare(m.base, m.eff, 200)
+    : drawSpider(m.eff, 200, "#e2d3b4");
+  document.getElementById("sig-legend").innerHTML =
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--accent);margin-right:5px;vertical-align:middle'></span>" + m.baseLabel + "</span>" +
+    "<span><span style='display:inline-block;width:9px;height:9px;border-radius:2px;background:" + _buffColor + ";margin-right:5px;vertical-align:middle'></span>" + m.effLabel + "</span>";
+  document.querySelectorAll("#sig-toggle [data-sigmode]").forEach(b => b.classList.toggle("active", b.dataset.sigmode === sigMode));
+}
+document.getElementById("sig-toggle").innerHTML =
+  "<button class='filter-btn active' data-sigmode='range'>Everyday &rarr; Boldest</button>" +
+  "<button class='filter-btn' data-sigmode='ownworn'>Owned &rarr; Worn</button>";
+document.querySelectorAll("#sig-toggle [data-sigmode]").forEach(b => {
+  b.addEventListener("click", () => { sigMode = b.dataset.sigmode; renderSignature(); });
+});
+renderSignature();
 
 // ── Render persona spiders ──
 ['p1','p2','p3','p4','p5'].forEach(id => {
