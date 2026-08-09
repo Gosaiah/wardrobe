@@ -145,7 +145,7 @@ const IMAGES = {
   "PU Leather Lace Up Crop Vest":"item-photos/pu-leather-lace-up-crop-vest.jpg",
   "Protanopia Cloak Hoodie":"item-photos/protanopia-cloak-hoodie.jpg",
   "Japanese Relaxed Standing Collar Techwear Shirt":"item-photos/japanese-relaxed-standing-collar-techwear-shirt.jpg",
-  "Tunic Button-Up Collared Sleeveless":"https://di2ponv0v5otw.cloudfront.net/posts/2026/06/22/6a39a0ec4ba08a69d71db0a4/l_6a724f4caf9ad1391c69b43b.jpg",
+  "Tunic Button-Up Collared Sleeveless":"item-photos/tunic-button-up-collared-sleeveless.jpg",
 };
 
 function getImg(name) {
@@ -445,7 +445,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 151;
+const DATA_VERSION = 152;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -776,7 +776,7 @@ const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a
 function outfitPhotoPath(id){ return "outfits/outfit_" + String(id).padStart(2, "0") + ".jpg"; }
 // Outfit ids that have a curated board photo at outfits/outfit_XX.jpg — SINGLE source
 // (the Outfits board + Today both read this so they agree on which outfits have a photo).
-const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,53,54,55,56,57,58,59,62,63,64,65,66];
+const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,49,50,52,53,54,55,56,57,58,59,62,63,64,65,66,68];
 function outfitHasPhoto(id){ return OUTFIT_PHOTO_IDS.indexOf(id) >= 0; }
 // Best photo src for an outfit: an uploaded board photo (from the shared IndexedDB store,
 // passed in via `uploads`) wins, else the curated default path, else "" (renders "No photo").
