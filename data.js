@@ -1305,7 +1305,7 @@ function statBarsHtml(stats) {
   ).join("");
   return "<div style=\"display:flex;align-items:center;gap:20px;padding:4px 0\">" +
     drawSpider(stats, 130, "var(--accent)", "detail") +
-    "<div style=\"flex:1;min-width:0\">" + head + bars + "</div>" +
+    "<div style=\"flex:1;min-width:0\">" + bars + "</div>" +
   "</div>";
 }
 function outfitStylingHtml(outfit){
