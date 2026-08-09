@@ -446,7 +446,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 156;
+const DATA_VERSION = 157;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -652,18 +652,64 @@ function boostText(boost){
 }
 
 // EFFECTIVE outfit stats: per-item singles averaged, then outfit-level combos added full-strength
+// ── JEWELRY ENHANCEMENT (RPG "equip") ────────────────────────────────────────
+// Pure jewelry (rings/bracelets/necklaces/cuffs/pendants/earrings) is an ACCENT, not a
+// garment slot: it does NOT count in the outfit's base average (so it can't dilute), and
+// instead applies a capped BUFF to the effective stats (the green layer) — like equipping a
+// rune. Statement pieces (harness / body chain / armor) stay base-stat garments. The buff is
+// auto-derived from each piece's strongest axes, overridable per item via `enhance:{...}`.
+const JEWELRY_BUFF_SCALE = 0.4;   // derived buff per axis = item.stat * scale
+const JEWELRY_BUFF_CAP   = 1.5;   // max TOTAL jewelry buff per axis across an outfit
+const JEWELRY_BUFF_TOPN  = 2;     // only each piece's strongest N axes buff (keeps accents focused)
+function isJewelryEnhancement(item){
+  if (!item || item.type !== "accessory") return false;
+  const s = ((item.cat || "") + " " + (item.name || "")).toLowerCase();
+  return !/harness|body ?chain|armor|corset|pauldron|chest|cape/.test(s);   // statement pieces stay garments
+}
+// The buff a single jewelry piece grants (explicit `enhance` wins; else its top axes, scaled).
+function itemEnhance(item){
+  if (item && item.enhance) return item.enhance;
+  if (!item || !item.stats) return {};
+  const buff = {};
+  STAT_KEYS8.map(function(k){ return [k, item.stats[k] || 0]; })
+    .filter(function(e){ return e[1] > 0; })
+    .sort(function(a, b){ return b[1] - a[1]; })
+    .slice(0, JEWELRY_BUFF_TOPN)
+    .forEach(function(e){ buff[e[0]] = Math.round(e[1] * JEWELRY_BUFF_SCALE * 10) / 10; });
+  return buff;
+}
+// Summed, capped jewelry buff for a whole outfit (per axis).
+function outfitJewelryBuff(outfit){
+  const total = {};
+  ((outfit && outfit.pieces) || []).forEach(function(p){
+    const it = itemForPiece(p) || (p && p.stats ? p : null);
+    if (it && isJewelryEnhancement(it)){
+      const e = itemEnhance(it);
+      Object.keys(e).forEach(function(k){ total[k] = (total[k] || 0) + e[k]; });
+    }
+  });
+  Object.keys(total).forEach(function(k){ total[k] = Math.min(JEWELRY_BUFF_CAP, Math.round(total[k] * 10) / 10); });
+  return total;
+}
 function effectiveOutfitStats(outfit){
   if (!outfit || !outfit.pieces) return null;
   // Aggregate all 8 facet/base keys (+ drama headline) across pieces.
   const AGG = STAT_KEYS5.concat(FACET_KEYS); // drama,structure,skin,edge,formality + 4 facets
   const totals = {}; AGG.forEach(k => totals[k] = 0);
   let n = 0;
-  outfit.pieces.forEach(p => {
-    const it = itemForPiece(p) || (p && p.stats ? p : null); if (!it || !it.stats) return;
+  const addPiece = function(p){
+    const it = itemForPiece(p) || (p && p.stats ? p : null); if (!it || !it.stats) return false;
     const eff = itemEffectiveStats(it, p.styling || []);
     AGG.forEach(k => { totals[k] += (eff[k] || 0); });
-    n++;
+    return true;
+  };
+  // Garments define the base average; jewelry buffs later (so it accents instead of diluting).
+  outfit.pieces.forEach(p => {
+    const it = itemForPiece(p) || (p && p.stats ? p : null);
+    if (it && isJewelryEnhancement(it)) return;
+    if (addPiece(p)) n++;
   });
+  if (!n){ outfit.pieces.forEach(p => { if (addPiece(p)) n++; }); }   // all-jewelry outfit → fall back to counting it
   if (!n) return null;
   const avg = {}; AGG.forEach(k => { avg[k] = totals[k] / n; });
   const attrs = outfitAttrs(outfit);
@@ -673,9 +719,10 @@ function effectiveOutfitStats(outfit){
     const fires = c.test ? c.test(outfit) : (c.needs || []).every(a => attrs.has(a));
     if (fires) Object.keys(c.boost).forEach(k => { if (k in cd) cd[k] += c.boost[k]; });
   });
+  const jbuff = outfitJewelryBuff(outfit);   // capped jewelry accent, added on the green layer
   AGG.forEach(k => {
     const capped = Math.max(-STYLE_COMBO_CAP, Math.min(STYLE_COMBO_CAP, cd[k] || 0));
-    avg[k] = Math.round(clamp05(avg[k] + capped) * 10) / 10;
+    avg[k] = Math.round(clamp05(avg[k] + capped + (jbuff[k] || 0)) * 10) / 10;
   });
   avg.drama = rollupDrama(avg);   // headline drama = loudest facet, now that combos target facets
   return avg;
@@ -1196,7 +1243,16 @@ function itemDetailInfoHtml(item, opts){
       }).join("") + "</div></div>";
   }
   const personaTag = persona ? "<span class='item-detail-tag' style='background:var(--accent);color:var(--on-accent);font-weight:700'>" + (PERSONA_LABELS[persona]||persona) + "</span>" : "";
-  const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>Stats</div>" + statBarsHtml(item.stats) + itemStylingPotentialHtml(item) + "</div>" : "";
+  const isEnh = (typeof isJewelryEnhancement === "function") && isJewelryEnhancement(item);
+  const enhHtml = (function(){
+    if (!isEnh || typeof itemEnhance !== "function") return "";
+    const e = itemEnhance(item);
+    const parts = Object.keys(e).map(function(k){ return "+" + e[k] + " " + k; });
+    return parts.length
+      ? "<div style='font-size:10px;color:var(--buff);margin-bottom:10px'>Adds to an outfit: <strong>" + parts.join(" &middot; ") + "</strong> <span style='color:var(--muted)'>(accent, doesn't dilute)</span></div>"
+      : "";
+  })();
+  const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>" + (isEnh ? "Enhancement" : "Stats") + "</div>" + enhHtml + statBarsHtml(item.stats) + itemStylingPotentialHtml(item) + "</div>" : "";
   return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
@@ -1276,7 +1332,8 @@ const SPIDER_BUFF = "var(--buff)"; // styling-buff green (theme token)
 function outfitBaseStats(outfit){
   if (!outfit || !outfit.pieces) return null;
   const t = {}; STAT_KEYS8.forEach(k => t[k] = 0); let n = 0;
-  outfit.pieces.forEach(p => { const it = itemForPiece(p) || (p && p.stats ? p : null); if (it && it.stats){ STAT_KEYS8.forEach(k => t[k] += (it.stats[k]||0)); n++; } });
+  outfit.pieces.forEach(p => { const it = itemForPiece(p) || (p && p.stats ? p : null); if (it && it.stats && !isJewelryEnhancement(it)){ STAT_KEYS8.forEach(k => t[k] += (it.stats[k]||0)); n++; } });
+  if (!n){ outfit.pieces.forEach(p => { const it = itemForPiece(p) || (p && p.stats ? p : null); if (it && it.stats){ STAT_KEYS8.forEach(k => t[k] += (it.stats[k]||0)); n++; } }); }
   if (!n) return null;
   const a = {}; STAT_KEYS8.forEach(k => a[k] = Math.round(t[k]/n*10)/10); a.drama = rollupDrama(a); return a;
 }
