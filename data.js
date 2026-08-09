@@ -443,7 +443,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 147;
+const DATA_VERSION = 148;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -998,7 +998,9 @@ const WORN_HISTORY_DEFAULT = [
   { date:"2026-07-23", outfitId:52, itemIds:["am7","m18","pw1"], photo:"wear-photos/wear_2026-07-23.jpg", notes:"Wore with white sneakers instead of zipped tall boots" },
   { date:"2026-07-28", outfitId:64, outfitSource:"detected", itemIds:["z2","o3","pw2"], photo:"wear-photos/wear_2026-07-28.jpeg" },
   { date:"2026-07-30", outfitId:65, outfitSource:"detected", itemIds:["o5","m21","pw1"], photo:"wear-photos/wear_2026-07-30.jpeg" },
-  { date:"2026-08-01", outfitId:66, outfitSource:"detected", itemIds:["o15","m21","dm1"], photo:"wear-photos/wear_2026-08-01.jpeg" }
+  { date:"2026-08-01", outfitId:66, outfitSource:"detected", itemIds:["o15","m21","dm1"], photo:"wear-photos/wear_2026-08-01.jpeg" },
+  { date:"2026-08-04", outfitId:null, outfitSource:"detected", occasion:"work", itemIds:["m11","dm1"], photo:"wear-photos/wear_2026-08-04.jpg", notes:"New black short-sleeve shirt also worn — not yet in catalog (add + append its id here when known)" },
+  { date:"2026-08-06", outfitId:null, outfitSource:"detected", occasion:"work", itemIds:["o8","dm1","m5"], photo:"wear-photos/wear_2026-08-06.jpg" }
 ];
 function _wearHistory(){
   if (typeof wornHistory !== "undefined" && Array.isArray(wornHistory)) return wornHistory; // wardrobe's live store

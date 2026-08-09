@@ -152,9 +152,13 @@ const Modals = (function(){
           "<div style='margin-left:auto;font-size:14px;color:var(--muted)'>&#x2192;</div>" +
         "</div>"
       : "<div style='font-size:12px;color:var(--muted);margin-bottom:12px'>Items Only</div>";
+    var OCCASION_LABELS = { work:"Work", "night-out":"Night out", date:"Date", casual:"Casual", party:"Party", event:"Event" };
+    var occHtml = wornEntry.occasion
+      ? "<div class='wear-occasion' style='display:inline-block;margin-bottom:12px;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--border);border-radius:999px;padding:3px 10px'>Worn to · " + (OCCASION_LABELS[wornEntry.occasion] || wornEntry.occasion) + "</div>"
+      : "";
     el("m-wear-info").innerHTML =
       "<div class='item-detail-name'>" + (typeof fmtDate === "function" ? fmtDate(wornEntry.date) : wornEntry.date) + "</div>" +
-      linkHtml + statsHtml +
+      occHtml + linkHtml + statsHtml +
       "<div class='item-detail-section-title'>Pieces worn</div>" +
       "<div style='display:flex;flex-direction:column;gap:5px'>" + pieces + "</div>";
 
