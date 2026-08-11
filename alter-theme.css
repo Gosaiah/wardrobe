@@ -312,6 +312,9 @@ input:focus, textarea:focus, select:focus,
 .outfit-card .piece-name { font-size: 11px; color: var(--text); flex: 1; }
 .piece-name-link { cursor: pointer; transition: color 0.12s; }
 .piece-name-link:hover { color: var(--white); text-decoration: underline; text-decoration-color: var(--accent); }
+/* Short item code (the item id) — a quick, unique reference shown on cards + popups so items
+   can be named without the full title. */
+.item-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10px; letter-spacing: 0.02em; color: var(--accent); background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; vertical-align: middle; }
 
 /* Shared outfit card — EDITORIAL (horizontal) view + global h-piece item cards */
 .outfits-grid.horizontal { display: flex; flex-direction: column; gap: 16px; }

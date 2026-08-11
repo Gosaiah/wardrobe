@@ -1278,7 +1278,7 @@ function itemDetailInfoHtml(item, opts){
       : "";
   })();
   const statsHtml = item.stats ? "<div style='margin-bottom:20px;padding:14px;background:var(--surface2);border-radius:8px'><div style='font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px'>" + (isEnh ? "Enhancement" : "Stats") + "</div>" + enhHtml + statBarsHtml(item.stats) + itemStylingPotentialHtml(item) + "</div>" : "";
-  return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
+  return "<div class='item-detail-brand-name'>" + bLbl + (item.id ? " <span class='item-code'>" + item.id + "</span>" : "") + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
     ((item.type !== "accessory" && typeof itemWarmth === "function" && typeof warmthRangeLabel === "function")
