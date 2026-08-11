@@ -370,7 +370,10 @@ const OUTFITS_DEFAULT = [
   {id:66,name:"Sheer Cargo Night",vibe:"Dark / Going-out",tags:["dark"],source:"detected",persona:"night-shift",styling:["bare-torso"],pieces:[{role:"Top",id:"o15",name:"Alejandro Cardigan",brand:"ORTTU",styling:["worn-open"]},{role:"Bottom",id:"m21",name:"Cargo Asymmetric Skirt",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
   {id:67,name:"Crushed Black",vibe:"All Black / Structured",tags:["dark"],source:"detected",persona:"overlord",pieces:[{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
   {id:68,name:"Ecru Collar & Black Skirt",vibe:"Cream / Black Contrast",tags:["contrast"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"m5",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o8",name:"Addams Skirt",brand:"ORTTU"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
-  {id:69,name:"Sheer Fringe Concert",vibe:"Sheer / Going-out",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"r3",name:"Obscure Cloak Fringe Crop Top",brand:"RYVK"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Shoes",id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA"}]}
+  {id:69,name:"Sheer Fringe Concert",vibe:"Sheer / Going-out",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"r3",name:"Obscure Cloak Fringe Crop Top",brand:"RYVK"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Shoes",id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA"}]},
+  {id:70,name:"Cream Pinstripe Suit",vibe:"Tailored / Contrast",tags:["contrast"],source:"detected",persona:"viceroy",pieces:[{role:"Top",id:"m6",name:"Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"o4",name:"Roberto Jacket",brand:"ORTTU"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
+  {id:71,name:"Distressed Burgundy Layers",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"am7",name:"Cable Knit Sweater Vest Burgundy",brand:"AMAZON"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
+  {id:72,name:"Rust Shirt Distressed Coat",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o6",name:"Raphael Shirt",brand:"ORTTU"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]}
 ];
 
 
@@ -446,7 +449,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 160;
+const DATA_VERSION = 161;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -1041,6 +1044,9 @@ function outfitCardHtml(outfit, opts){
    mutable `wornHistory` is the writer; the getters below read it when present,
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
+  { date:"2025-05-25", outfitId:70, outfitSource:"detected", occasion:["wedding"], itemIds:["m6","o3","o4","y2"], photo:"wear-photos/wear_2025-05-25.jpg" },
+  { date:"2026-05-01", outfitId:72, outfitSource:"detected", occasion:["night-out","concert"], itemIds:["o6","o3","m14","y2"], photo:"wear-photos/wear_2026-05-01.jpg" },
+  { date:"2026-05-08", outfitId:71, outfitSource:"detected", occasion:["night-out"], itemIds:["am7","m18","m14","pw1"], photo:"wear-photos/wear_2026-05-08.jpg" },
   { date:"2026-06-26", outfitId:69, outfitSource:"detected", occasion:["night-out","concert"], itemIds:["r3","m18","dc1"], photo:"wear-photos/wear_2026-06-26.jpg" },
   { date:"2026-07-13", outfitId:34, outfitSource:"detected", occasion:"work", itemIds:["tw1","m17","pw2"], photo:"wear-photos/wear_2026-07-13.jpeg" },
   { date:"2026-07-14", outfitId:35, outfitSource:"detected", occasion:"work", itemIds:["hd1","m9","s1"], photo:"wear-photos/wear_2026-07-14.jpeg" },
@@ -1074,8 +1080,8 @@ function fmtDate(iso){
 // ── OCCASION LAYER ───────────────────────────────────────────────────────────
 // Occasion lives on the WEAR (a specific day/event). An outfit or item aggregates a
 // distribution across its wears ("Worn to: Work ×2 · Night out ×1"). All computed on read.
-const OCCASION_LABELS = { work:"Work", "night-out":"Night out", concert:"Concert", date:"Date", casual:"Casual", party:"Party", event:"Event" };
-const OCCASION_ORDER  = ["work","night-out","concert","date","casual","party","event"];
+const OCCASION_LABELS = { work:"Work", "night-out":"Night out", concert:"Concert", wedding:"Wedding", date:"Date", casual:"Casual", party:"Party", event:"Event" };
+const OCCASION_ORDER  = ["work","night-out","concert","wedding","date","casual","party","event"];
 function occasionLabel(k){ return OCCASION_LABELS[k] || (k ? k.charAt(0).toUpperCase()+k.slice(1) : ""); }
 // A wear's occasion may be a single string or an array (a day that spanned two contexts). Normalize to a list.
 function wearOccasionList(w){ return Array.isArray(w.occasion) ? w.occasion : (w.occasion ? [w.occasion] : []); }
