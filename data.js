@@ -59,9 +59,9 @@ const IMAGES = {
   "Alejandro Cardigan":"item-photos/alejandro-cardigan.jpg",
   "Christian Shirt":"item-photos/christian-shirt.jpg",
   "Roberto Jacket":"item-photos/roberto-jacket.jpg",
-  "Renato Jacket":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/44_d45b6c5e-16f8-4a83-b823-a85a125805f4.jpg?v=1783962800",
-  "Federico Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/41_e39339aa-8e9c-4215-9021-869ddc966405.jpg?v=1783960255",
-  "Matisse Sleeveless Top":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/1-2_5e4b79ab-6b61-4606-82a6-d3720e6286bf.jpg?v=1765645855",
+  "Renato Jacket":"item-photos/renato-jacket.jpg",
+  "Federico Pants":"item-photos/federico-pants.jpg",
+  "Matisse Sleeveless Top":"item-photos/matisse-sleeveless-top.jpg",
   "Addams Skirt":"item-photos/addams-skirt.jpg",
   "Porto Long Shirt":"item-photos/porto-long-shirt.jpg",
   "Raphael Shirt":"item-photos/raphael-shirt.jpg",
@@ -936,6 +936,17 @@ function leadingStatsHtml(stats, color){
     top.map(function(t){ return SPIDER_LABELS[SPIDER_KEYS.indexOf(t[0])] + " " + (Math.round(t[1]*10)/10); }).join("  &middot;  ") +
   "</div>";
 }
+// Branded placeholder shown when an outfit has no photo AND no piece images to collage.
+// stroke=currentColor so the surrounding empty-state class tints it (muted).
+function outfitPlaceholderInner(caption){
+  var mark = "<svg class='ph-mark' viewBox='0 0 100 100' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' aria-hidden='true'>" +
+    "<path d='M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z' stroke-width='4' opacity='0.28' transform='translate(9 6)'/>" +
+    "<path d='M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z' stroke-width='4' opacity='0.55' transform='translate(3 2)'/>" +
+    "<path d='M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z' stroke-width='4' transform='translate(-4 -3)'/>" +
+  "</svg>";
+  return mark + "<span>" + (caption || "No photo yet") + "</span>";
+}
+
 function outfitCardHtml(outfit, opts){
   opts = opts || {};
   // effective stats when the pieces resolve; else the outfit's own precomputed stats
@@ -954,7 +965,7 @@ function outfitCardHtml(outfit, opts){
   } else if (photoSrc){
     imgHtml = "<img class='cv-img' src='" + photoSrc + "' alt='" + outfit.name + "' loading='lazy'><div class='cv-gradient'></div>";
   } else {
-    imgHtml = "<div class='cv-no-img'>No photo</div>";
+    imgHtml = "<div class='cv-no-img cv-ph'>" + outfitPlaceholderInner() + "</div>";
   }
   const actionsHtml = opts.actions
     ? "<div class='cv-actions'><button class='action-btn " + (opts.saved ? "saved" : "") + "' data-action='save'>" + (opts.saved ? "&#9733;" : "&#9734;") + "</button><button class='action-btn' data-action='delete'>&#x2715;</button></div>"
@@ -982,7 +993,7 @@ function outfitCardHtml(outfit, opts){
       const photoBlock = (collageImgs && collageImgs.length)
         ? "<div class='outfit-photo'>" + badges + "<div class='cv-collage'>" + collageImgs.map(function(s){ return "<img src='" + s + "' loading='lazy'>"; }).join("") + "</div>" + overlay + "</div>"
         : (photoSrc ? "<div class='outfit-photo'>" + badges + "<img src='" + photoSrc + "' alt='" + outfit.name + "'>" + overlay + "</div>"
-                    : "<div class='outfit-photo outfit-photo-empty'>" + badges + "<span>no photo</span></div>");
+                    : "<div class='outfit-photo outfit-photo-empty'>" + badges + outfitPlaceholderInner() + "</div>");
       const pieceRows = (outfit.pieces || []).map(function(p){
         var im = pieceImg(p);
         var thumb = "<div class='piece-thumb piece-name-link' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\">" + (im ? "<img src='" + im + "' alt='" + p.name + "' loading='lazy'>" : "<div class='piece-thumb-empty'>&middot;</div>") + "</div>";
@@ -1010,7 +1021,7 @@ function outfitCardHtml(outfit, opts){
     const ePhoto = (collageImgs && collageImgs.length)
       ? "<div class='outfit-photo'>" + badges + "<div class='cv-collage'>" + collageImgs.map(function(s){ return "<img src='" + s + "' loading='lazy'>"; }).join("") + "</div></div>"
       : (photoSrc ? "<div class='outfit-photo'>" + badges + "<img src='" + photoSrc + "' alt='" + outfit.name + "'></div>"
-                  : "<div class='outfit-photo outfit-photo-empty'>" + badges + "<span>no photo</span></div>");
+                  : "<div class='outfit-photo outfit-photo-empty'>" + badges + outfitPlaceholderInner() + "</div>");
     const hPieces = (outfit.pieces || []).map(function(p){
       var im = pieceImg(p);
       return "<div class='h-piece-card piece-name-link' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\">" +
