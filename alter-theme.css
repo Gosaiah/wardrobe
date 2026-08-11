@@ -232,6 +232,9 @@ input:focus, textarea:focus, select:focus,
    One definition for every page. Loaded here (all pages link alter-theme.css) so
    the Outfits page — which doesn't link components.css — shares it too. */
 .outfits-grid.card-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+/* Card view: 2 per row on mobile (scoped .card-view so it beats the base minmax rule) */
+@media (max-width: 768px) { .outfits-grid.card-view { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+@media (max-width: 480px) { .outfits-grid.card-view { gap: 10px; } }
 .outfit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
 .outfit-card.card-view { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 8px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); transition: border-color 0.2s; }
 .outfit-card.card-view:hover { border-color: var(--accent2); }
@@ -258,6 +261,10 @@ input:focus, textarea:focus, select:focus,
 .outfit-card .outfit-photo { width: 100%; aspect-ratio: 4/5; background: var(--surface2); overflow: hidden; position: relative; border-bottom: 1px solid var(--border); }
 .outfit-card .outfit-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
 .outfit-card .outfit-photo-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; min-height: 120px; }
+/* Card photo: clickable + subtle hover-zoom (was outfits-only inline; now shared across board + proposals) */
+.outfit-card .outfit-photo { cursor: pointer; }
+.outfit-card .outfit-photo img { transition: transform 0.4s ease; }
+.outfit-card .outfit-photo:hover img { transform: scale(1.04); }
 /* Branded "no photo yet" placeholder (used when there's no photo AND no piece-collage) */
 .cv-no-img.cv-ph { flex-direction: column; gap: 8px; }
 .ph-mark { width: 34px; height: 34px; color: var(--muted); opacity: 0.5; flex-shrink: 0; }
