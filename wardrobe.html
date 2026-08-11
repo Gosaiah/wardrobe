@@ -20,7 +20,7 @@
   .mgr-items.editorial-view .mgr-item { flex-direction: row; }
   .mgr-items.editorial-view .mgr-item-img { width: 120px; min-width: 120px; height: 150px; flex-shrink: 0; border-right: 1px solid var(--border); }
   .mgr-items.editorial-view .mgr-item-cv { display: none; }
-  .mgr-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 7px 11px; outline: none; border-radius:8px; flex: 1; min-width: 140px; }
+  /* .mgr-search is single-sourced in components.css */
   .mgr-select { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 11px; padding: 7px 10px; border-radius:8px; outline: none; }
   .mgr-body { flex: 1; display: flex; overflow: hidden; }
   .mgr-grid-wrap { flex: 1; overflow-y: auto; padding: 16px 20px 40px; }
@@ -43,7 +43,6 @@
 
   @media (max-width: 768px) {
     .mgr-toolbar { padding: 10px 14px; gap: 8px; }
-    .mgr-search { font-size: 14px; } /* prevent iOS zoom */
     .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .mgr-item-img { height: 200px; }
     .mgr-form-panel { position: fixed; inset: 0; width: 100%; z-index: 500; border-radius: 0; }

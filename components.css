@@ -12,6 +12,9 @@
    authoritative mobile grid; editorial-view keeps its own single-column layout). */
 @media (max-width: 768px) { .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 @media (max-width: 480px) { .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
+/* Search input — shared by the wardrobe + builder toolbars (was duplicated inline in both). */
+.mgr-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 7px 11px; outline: none; border-radius: 8px; flex: 1; min-width: 140px; }
+@media (max-width: 768px) { .mgr-search { font-size: 14px; } } /* larger tap target / limit iOS zoom */
 .mgr-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; cursor:pointer; transition:border-color 0.15s; display:flex; flex-direction:column; }
 .mgr-item:hover { border-color:var(--accent2); }
 .mgr-item.selected { border-color:var(--accent); }

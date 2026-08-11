@@ -24,7 +24,7 @@
   #builder-suggest-view, #builder-closet-view { min-height: 0; }
 
   /* ── BUILDER SEARCH INPUT (reuses .mgr-search) ── */
-  .mgr-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 7px 11px; outline: none; border-radius:8px; flex: 1; min-width: 140px; }
+  /* .mgr-search is single-sourced in components.css */
 
   /* ── BUILDER MODE TOGGLE ── */
   .builder-mode-bar { display:flex; border-bottom:1px solid var(--border); background:#000; flex-shrink:0; }
@@ -113,7 +113,6 @@
     /* On small screens the page scrolls; panes stack top-to-bottom. */
     body { height: auto; min-height: 100vh; overflow: auto; }
     .builder-page { overflow: visible; }
-    .mgr-search { font-size: 14px; } /* prevent iOS zoom */
 
     /* BUILDER — stack left panel above right */
     .builder-layout { flex-direction: column; height: auto; min-height: unset; overflow: visible; }

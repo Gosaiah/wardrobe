@@ -103,7 +103,7 @@
 }
 
 /* stray hard-coded tints → token */
-.custom-badge       { background: var(--accent-soft) !important; border-color: var(--accent2) !important; }
+.custom-badge       { background: var(--accent-soft) !important; border-color: var(--accent2) !important; color: var(--accent) !important; }
 .move-type.ultimate { background: var(--accent-soft) !important; }
 
 /* ── Filter / context chips — ONE component, ONE styling for every page ────────
