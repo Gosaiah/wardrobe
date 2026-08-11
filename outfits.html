@@ -39,13 +39,16 @@
   header.board-header {
     background: #000;
     border-bottom: 1px solid var(--border);
-    padding: 14px 32px;
+    padding: 16px 32px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
     flex-shrink: 0;
   }
+  .board-header-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .board-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  header.board-header .page-title { margin: 0; }
   /* .filter-btn / .pf-btn styling is shared (alter-theme.css filter/context chip) */
   .container { display: flex; flex: 1; overflow: hidden; }
   .sidebar {
@@ -430,7 +433,7 @@
 
   @media (max-width: 480px) {
     /* OUTFIT GRID — single column on phone */
-    .outfits-grid { grid-template-columns: 1fr; gap: 14px; }
+    .outfits-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .h-piece-card { width: 100px; }
     .h-piece-img { width: 100px; height: 124px; }
     .h-piece-name { font-size: 9px; }
@@ -447,7 +450,15 @@
 <!-- ══ TAB: OUTFIT BOARD ══ -->
 <div class="tab-panel active" id="tab-board">
   <header class="board-header">
-    <span id="board-filters-slot"></span>
+    <div class="board-header-top">
+      <h1 class="page-title">Outfits</h1>
+      <div class="board-actions">
+        <span id="board-filters-slot"></span>
+        <button class="btn-add" id="btn-new-outfit">+ New Outfit</button>
+        <button id="btn-load-photos" style="background:none;border:1px solid var(--accent2);color:var(--accent);padding:6px 13px;border-radius:8px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap">&#x2295; Load Photos</button>
+        <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none">
+      </div>
+    </div>
     <div class="filter-row" id="board-cat-row" style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="dark">Dark / Minimal</button>
@@ -464,9 +475,6 @@
       <button class="filter-btn pf-btn" data-pfilter="viceroy">Viceroy</button>
     </div>
     <div id="board-facet-bar" style="margin-top:8px;width:100%"></div>
-    <button class="btn-add" id="btn-new-outfit">+ New Outfit</button>
-    <button id="btn-load-photos" style="background:none;border:1px solid var(--accent2);color:var(--accent);padding:6px 13px;border-radius:8px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:inherit;white-space:nowrap">&#x2295; Load Photos</button>
-    <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none">
   </header>
   <div class="container">
     <aside class="sidebar">
