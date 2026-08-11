@@ -29,7 +29,7 @@
   /* Card layout — proposals render the shared .outfit-card (data.js/alter-theme).
      These containers just arrange them per view mode. */
   .proposals-list { display:flex; flex-direction:column; gap:16px; }
-  .proposals-list.card-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:10px; }
+  /* .proposals-list.card-view grid is single-sourced in alter-theme.css (.card-grid family). */
   .proposals-list.grid-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
 
   /* Card overlays: session / added / closet badges + custom delete button */
@@ -53,8 +53,7 @@
     .filter-chip { white-space: nowrap; flex-shrink: 0; }
     .outfit-count { display: none; }
 
-    /* Card view: 2 per row on mobile (grid/editorial keep their own layouts) */
-    .proposals-list.card-view { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    /* card-view mobile 2-col handled by the shared .card-grid rule in alter-theme.css */
   }
 
 </style>

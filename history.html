@@ -28,7 +28,7 @@
   /* ── WORN HISTORY: CARD VIEW ── */
   /* Card + feed views now use the shared outfit card (data.js outfitCardHtml);
      these containers just lay the shared cards out. */
-  .history-card-view { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,220px)); gap:10px; justify-content:start; }
+  /* .history-card-view grid is single-sourced in alter-theme.css (.card-grid family). */
   .history-feed-view { display:flex; flex-direction:column; gap:20px; }
 
   /* ── WORN HISTORY: CALENDAR VIEW ── */
@@ -53,10 +53,6 @@
 
   .history-toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .history-filters { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-  /* 2 cards per row on mobile (card view) */
-  @media (max-width: 768px) {
-    .history-card-view { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  }
 </style>
 <link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="alter-theme.css">

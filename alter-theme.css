@@ -231,10 +231,38 @@ input:focus, textarea:focus, select:focus,
 /* ── Shared outfit card — CARD VIEW (used by Outfits board, Persona, Today) ────
    One definition for every page. Loaded here (all pages link alter-theme.css) so
    the Outfits page — which doesn't link components.css — shares it too. */
-.outfits-grid.card-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
-/* Card view: 2 per row on mobile (scoped .card-view so it beats the base minmax rule) */
-@media (max-width: 768px) { .outfits-grid.card-view { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
-@media (max-width: 480px) { .outfits-grid.card-view { gap: 10px; } }
+/* ── Shared card grid ───────────────────────────────────────────────────────
+   One responsive behavior for EVERY page's card view: auto-fit columns on
+   desktop (density per container via --card-min), exactly 2 per row on mobile.
+   Grid / editorial / horizontal / feed views keep their own layouts below.
+   This is the single source — pages must not redefine these grids inline. */
+.card-grid,
+.t-results,
+.outfits-grid.card-view,
+.mgr-items.card-view,
+.proposals-list.card-view,
+.shop-grid,
+.history-card-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--card-min, 220px), 1fr));
+  gap: var(--card-gap, 14px);
+}
+@media (max-width: 768px) {
+  .card-grid,
+  .t-results,
+  .outfits-grid.card-view,
+  .mgr-items.card-view,
+  .proposals-list.card-view,
+  .shop-grid,
+  .history-card-view { grid-template-columns: repeat(2, 1fr); gap: var(--card-gap-m, 10px); }
+}
+/* Per-container density (only the token differs; the behavior above is shared) */
+.t-results                { --card-min: 260px; --card-gap: 16px; }
+.outfits-grid.card-view   { --card-min: 220px; --card-gap: 12px; }
+.mgr-items.card-view      { --card-min: 180px; --card-gap: 10px; }
+.proposals-list.card-view { --card-min: 220px; --card-gap: 10px; }
+.shop-grid                { --card-min: 240px; --card-gap: 16px; }
+.history-card-view        { --card-min: 200px; --card-gap: 10px; }
 .outfit-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
 .outfit-card.card-view { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 8px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); transition: border-color 0.2s; }
 .outfit-card.card-view:hover { border-color: var(--accent2); }
