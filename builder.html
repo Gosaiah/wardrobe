@@ -142,6 +142,8 @@
 <script src="data.js"></script>
 <script src="store.js"></script>
 <script src="modals.js"></script>
+<script src="facet-filter.js"></script>
+<script src="filter-modal.js"></script>
 
 <div class="builder-page">
   <header class="builder-topbar">
@@ -149,9 +151,10 @@
       <h1 class="builder-title">Builder</h1>
     </div>
     <!-- Mode toggle -->
-    <div class="builder-mode-bar">
+    <div class="builder-mode-bar" style="display:flex;align-items:center">
       <button class="builder-mode-btn active" id="mode-btn-suggest">Suggestions</button>
       <button class="builder-mode-btn" id="mode-btn-closet">Closet</button>
+      <span id="bld-filters-slot" style="margin-left:auto;padding-right:16px"></span>
     </div>
   </header>
 
@@ -201,6 +204,32 @@ const _S = Store.load();
 const items = _S.items;
 const outfits = _S.outfits;
 
+// ── Shared filters (FilterModal) — narrow both tabs' item pools by Type/Brand/Facets ──
+let builderTypeF = "", builderBrandF = "", builderFacetCtl = null, builderFilterBtn = null;
+function builderItemMatches(i){   // Suggestions list: type + brand + facet
+  if (builderTypeF && i.type !== builderTypeF) return false;
+  if (builderBrandF && i.brand !== builderBrandF) return false;
+  if (builderFacetCtl && !builderFacetCtl.matches(i.stats)) return false;
+  return true;
+}
+function builderClosetMatches(i){ // Closet slots are already typed → brand + facet only
+  if (builderBrandF && i.brand !== builderBrandF) return false;
+  if (builderFacetCtl && !builderFacetCtl.matches(i.stats)) return false;
+  return true;
+}
+function syncBuilderFilterCount(){
+  if (!builderFilterBtn) return;
+  let n = 0; if (builderTypeF) n++; if (builderBrandF) n++; if (builderFacetCtl && builderFacetCtl.active()) n++;
+  builderFilterBtn.setCount(n);
+}
+function refreshBuilder(){
+  if (typeof renderBuilderPieces === "function") renderBuilderPieces();
+  if (typeof closetIdxs !== "undefined") Object.keys(closetIdxs).forEach(k => { if (closetIdxs[k] >= closetItemsFor(k).length) closetIdxs[k] = 0; });
+  if (typeof renderClosetRows === "function") renderClosetRows();
+  if (typeof renderClosetStats === "function") renderClosetStats();
+  syncBuilderFilterCount();
+}
+
 // Effective stats (base + styling modifiers + combos). Engine lives in data.js.
 function getOutfitStats(o){ return (typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(o) : null; }
 
@@ -219,7 +248,7 @@ let builderSelectedId = null;
 
 function renderBuilderPieces() {
   const search = document.getElementById("builder-search").value.toLowerCase();
-  const clothing = items.filter(i => i.type !== "accessory");
+  const clothing = items.filter(i => i.type !== "accessory" && builderItemMatches(i));
   const filtered = search ? clothing.filter(i => i.name.toLowerCase().includes(search) || i.brand.toLowerCase().includes(search)) : clothing;
 
   document.getElementById("builder-piece-list").innerHTML = filtered.map(item => {
@@ -331,7 +360,7 @@ let closetIdxs = { outer: 0, top: 0, bottom: 0, shoes: 0 };
 let closetInited = false;
 
 function closetItemsFor(type) {
-  return items.filter(i => i.type === type && getItemImg(i));
+  return items.filter(i => i.type === type && getItemImg(i) && builderClosetMatches(i));
 }
 
 function initCloset() {
@@ -476,6 +505,32 @@ document.addEventListener('click', function(e){
   const pp = e.target.closest('.pair-card, .outfit-detail-piece, .piece-name-link');
   if (pp){ Modals.openItem(pp.dataset.name, pp.dataset.brand); return; }
 });
+
+// ── Filters modal (shared) — Type/Brand/Facets, applied to both tabs' pools ──
+(function setupBuilderFilters(){
+  if (typeof FilterModal === "undefined" || typeof FacetFilter === "undefined") return;
+  const modal = FilterModal.create({ title:"Filter pieces", onReset:function(){
+    builderTypeF = ""; builderBrandF = "";
+    modal.overlay.querySelector("#bld-type").value = ""; modal.overlay.querySelector("#bld-brand").value = "";
+    if (builderFacetCtl) builderFacetCtl.reset();
+    refreshBuilder();
+  }});
+  const typeSel = document.createElement("select"); typeSel.id = "bld-type";
+  typeSel.innerHTML = "<option value=''>All types</option><option value='top'>Top</option><option value='bottom'>Bottom</option><option value='outer'>Outer</option><option value='shoes'>Shoes</option>";
+  typeSel.addEventListener("change", function(){ builderTypeF = typeSel.value; refreshBuilder(); });
+  const brandSel = document.createElement("select"); brandSel.id = "bld-brand";
+  const brands = Array.from(new Set(items.filter(i => i.type !== "accessory").map(i => i.brand))).sort();
+  brandSel.innerHTML = "<option value=''>All brands</option>" + brands.map(function(b){ return "<option value=\"" + b + "\">" + ((BRANDS[bkey(b)] && BRANDS[bkey(b)].label) || b) + "</option>"; }).join("");
+  brandSel.addEventListener("change", function(){ builderBrandF = brandSel.value; refreshBuilder(); });
+  modal.body.appendChild(FilterModal.row("Type", typeSel));
+  modal.body.appendChild(FilterModal.row("Brand", brandSel));
+  const facetWrap = document.createElement("div"); modal.body.appendChild(facetWrap);
+  builderFacetCtl = FacetFilter.mount(facetWrap, refreshBuilder);
+  builderFilterBtn = FilterModal.trigger("Filters");
+  document.getElementById("bld-filters-slot").appendChild(builderFilterBtn);
+  builderFilterBtn.addEventListener("click", modal.open);
+  syncBuilderFilterCount();
+})();
 
 // ── Init ──
 // Default to Suggestions mode; the closet is rendered lazily on first switch (initCloset).
