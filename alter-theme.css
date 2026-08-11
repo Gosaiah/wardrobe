@@ -391,3 +391,25 @@ img.img-ph { background: var(--surface2) !important; object-fit: contain; }
 @keyframes alterMarkIn { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
 @keyframes alterFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @keyframes alterSplashOut { to { opacity: 0; visibility: hidden; } }
+
+/* ── Mobile: keep detail popups (item / outfit / wear) closable ──────────────
+   The × was low-contrast and, with 100vh panels on iOS, could sit behind the
+   browser chrome. Pin it to the *visible* viewport as a solid floating target,
+   size the panel with dvh, and pad the scroll area past the bottom bar. Scoped
+   higher (.item-detail-overlay …) so it wins over per-page rules. */
+@media (max-width: 768px) {
+  .item-detail-overlay .item-detail-panel { height: 100dvh; max-height: 100dvh; }
+  .item-detail-overlay .item-detail-close {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    right: calc(env(safe-area-inset-right, 0px) + 12px);
+    z-index: 60; width: 42px; height: 42px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(20,20,20,0.66); border: 1px solid rgba(255,255,255,0.4);
+    color: #fff; border-radius: 999px; font-size: 1.1rem; line-height: 1;
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+  .item-detail-overlay .item-detail-close:hover { color: #fff; border-color: #fff; }
+  .item-detail-overlay .item-detail-info-col { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px); }
+}
