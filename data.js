@@ -180,7 +180,7 @@ const WARDROBE_DATA = [
   {id:"o15",name:"Alejandro Cardigan",brand:"ORTTU",color:"Black",size:"OS",cat:"Cardigan",type:"outer",style:"Dark / Minimal",stats:{drama:4,structure:1,skin:4,edge:0,formality:2,presence:1,silhouette:0,movement:4,ornament:0}},
   {id:"o16",name:"Star Neck Shirt Couture",brand:"ORTTU",color:"Beige",size:"L",cat:"Shirt",type:"top",style:"Tonal",stats:{drama:2,structure:3,skin:2,edge:0,formality:4,presence:0,silhouette:0,movement:0,ornament:2}},
   {id:"o17",name:"Garson Pants",brand:"ORTTU",color:"Ivory",size:"L",cat:"Pants",type:"bottom",style:"Tonal",stats:{drama:0,structure:3,skin:1,edge:0,formality:2.5,presence:0,silhouette:0,movement:0,ornament:0}},
-  {id:"o18",name:"Star Neck Cardigan Sleeveless",brand:"ORTTU",color:"Green",size:"XL",cat:"Cardigan",type:"top",style:"Contrast",stats:{drama:2,structure:1,skin:3.5,edge:0,formality:2,presence:0,silhouette:0,movement:0,ornament:2}},
+  {id:"o18",name:"Star Neck Cardigan Sleeveless",brand:"ORTTU",color:"Green",size:"XL",cat:"Cardigan",type:"top",style:"Contrast",warmth:1.5,stats:{drama:2,structure:1,skin:3.5,edge:0,formality:2,presence:0,silhouette:0,movement:0,ornament:2}},
   // ── Minoar ─────────────────────────────────────────────────────────────────
   {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
   {id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR",color:"Natural",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:2,formality:3,presence:0,silhouette:2.5,movement:1.5,ornament:0}},
@@ -269,7 +269,7 @@ const WARDROBE_DATA = [
   {id:"am10",name:"PU Leather Crop Tank",brand:"AMAZON",color:"Black",size:"XXL",cat:"Tank",type:"top",url:"https://www.amazon.com/dp/B0C22Z7XT9",stats:{drama:1.5,structure:2,skin:3,edge:4,formality:0,presence:1.5,silhouette:0,movement:0,ornament:0}},
   {id:"am11",name:"PU Leather Shorts",brand:"AMAZON",color:"Black",size:"XXL",cat:"Shorts",type:"bottom",url:"https://www.amazon.com/dp/B0C22Z7XT9",stats:{drama:1.5,structure:2,skin:2,edge:3,formality:1,presence:1.5,silhouette:0,movement:0,ornament:0}},
   {id:"am12",name:"Latex Hood Mask",brand:"AMAZON",color:"Black",size:"XL",cat:"Mask",type:"acc",url:"https://www.amazon.com/dp/B0FQV3N3KS",stats:{drama:4,structure:2,skin:0,edge:5,formality:0,presence:4,silhouette:0,movement:0,ornament:0}},
-  {id:"am13",name:"PU Leather Lace Up Crop Vest",brand:"AMAZON",color:"Black",size:"XL",cat:"Vest",type:"top",url:"https://www.amazon.com/dp/B0FHK64N8T",stats:{drama:2.5,structure:2,skin:3.5,edge:4,formality:0,presence:1.5,silhouette:0,movement:0,ornament:2.5}},
+  {id:"am13",name:"PU Leather Lace Up Crop Vest",brand:"AMAZON",color:"Black",size:"XL",cat:"Vest",type:"top",url:"https://www.amazon.com/dp/B0FHK64N8T",warmth:1,stats:{drama:2.5,structure:2,skin:3.5,edge:4,formality:0,presence:1.5,silhouette:0,movement:0,ornament:2.5}},
   // ── ALO ──────────────────────────────────────────────────────────────────────
   {id:"al1",name:"Double Take Short Black",brand:"ALO",color:"Black",size:"M",cat:"Shorts",type:"bottom",style:"Dark / Minimal",url:"https://www.aloyoga.com/products/m6143r-7-double-take-short-black",stats:{drama:1,structure:1,skin:2,edge:0,formality:1,presence:1,silhouette:0,movement:0,ornament:0}},
   {id:"al2",name:"Double Take Short Espresso",brand:"ALO",color:"Espresso",size:"M",cat:"Shorts",type:"bottom",style:"Tonal",url:"https://www.aloyoga.com/products/m6143r-7-double-take-short-espresso",stats:{drama:1,structure:1,skin:2,edge:0,formality:1,presence:1,silhouette:0,movement:0,ornament:0}},
@@ -446,7 +446,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 158;
+const DATA_VERSION = 159;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -1256,6 +1256,9 @@ function itemDetailInfoHtml(item, opts){
   return "<div class='item-detail-brand-name'>" + bLbl + "</div>" +
     "<div class='item-detail-name'>" + name + "</div>" +
     ((tags.length || persona) ? "<div class='item-detail-tags'>" + tags.map(t => "<span class='item-detail-tag'>" + t + "</span>").join("") + personaTag + "</div>" : "") +
+    ((item.type !== "accessory" && typeof itemWarmth === "function" && typeof warmthRangeLabel === "function")
+      ? (function(){ var lbl = warmthRangeLabel(itemWarmth(item)); return lbl ? "<div style='font-size:10px;color:var(--muted);margin:2px 0 12px'>&#127777;&#65039; Weather &middot; <span style='color:var(--accent)'>" + lbl + "</span></div>" : ""; })()
+      : "") +
     ((opts.wearHtml != null) ? opts.wearHtml : (item.id ? wearBlockHtml("item", item.id, { interactive:true, outfitPhoto:_defaultOutfitPhoto }) : "")) +
     ((item.id && typeof occasionSummaryHtml === "function" && typeof itemOccasions === "function") ? occasionSummaryHtml(itemOccasions(item.id)) : "") +
     statsHtml +
@@ -1516,12 +1519,45 @@ function pieceWarmth(p){
   const it = itemForPiece(p) || (p && p.stats ? p : null);
   return it ? itemWarmth(it) : 1;
 }
+// Sleeve coverage of a top/outer garment — drives the warm-weather rule + a little warmth.
+function itemSleeve(item){
+  if (!item) return "long";
+  const s = ((item.cat || "") + " " + (item.name || "")).toLowerCase();
+  if (/sleeveless|\btank\b|camisole|halter|bandeau|bralette|\bvest\b|gilet/.test(s)) return "sleeveless";
+  if (/short.?sleeve|\btee\b|t-shirt|\bpolo\b/.test(s)) return "short";
+  return "long";   // default: a shirt/knit/hoodie/jacket covers the arms
+}
+// Longest sleeve among the outfit's TOP layers (the base you can't just take off).
+function outfitTopSleeve(outfit){
+  const rank = { sleeveless:0, short:1, long:2 }; let best = "sleeveless", seen = false;
+  ((outfit && outfit.pieces) || []).forEach(function(p){
+    const it = itemForPiece(p) || (p && p.stats ? p : null); if (!it) return;
+    const role = (typeof pieceRole === "function") ? pieceRole(it) : it.type;
+    if (role !== "top") return;
+    seen = true; const lv = itemSleeve(it);
+    if (rank[lv] > rank[best]) best = lv;
+  });
+  return seen ? best : null;
+}
+// Coverage-aware combined warmth: garments COMPOUND (covering more of the body is warmer), so
+// a long-sleeve top + long pants reads warmer than a sleeveless top + the same pants — instead
+// of the old max-only value that treated them identically.
 function outfitWarmth(outfit){
-  const ws = (outfit && outfit.pieces || []).map(pieceWarmth);
-  if (!ws.length) return null;
+  const pieces = (outfit && outfit.pieces) || [];
+  const cov = pieces.map(function(p){
+    const it = itemForPiece(p) || (p && p.stats ? p : null);
+    const role = it ? ((typeof pieceRole === "function") ? pieceRole(it) : it.type) : String(p.role || "").toLowerCase();
+    return { role: String(role).toLowerCase(), w: pieceWarmth(p) };
+  }).filter(function(x){ return /top|outer|bottom|full|dress|jumpsuit/.test(x.role); });
+  if (!cov.length){
+    const ws = pieces.map(pieceWarmth);
+    return ws.length ? Math.round(_wclamp(Math.max.apply(null, ws), 0, 5) * 10) / 10 : null;
+  }
+  const ws = cov.map(function(x){ return x.w; });
   const base = Math.max.apply(null, ws);
-  const layers = ws.filter(function(w){ return w >= 2; }).length;   // warm layers stack a little
-  return Math.round(_wclamp(base + 0.3 * Math.max(0, layers - 1), 0, 5) * 10) / 10;
+  const extra = ws.reduce(function(a, b){ return a + b; }, 0) - base;   // the other covering garments
+  const layers = ws.filter(function(w){ return w >= 2; }).length;
+  return Math.round(_wclamp(base + 0.45 * extra + 0.3 * Math.max(0, layers - 1), 0, 5) * 10) / 10;
 }
 // Temp band → comfortable warmth. Outside hardMin/hardMax = severe mismatch (drop);
 // outside softMin/softMax = soft re-rank nudge; near ideal = a small reward.
@@ -1533,6 +1569,26 @@ const BAND_WARMTH = {
   warm:     { ideal:1,   softMin:0,   softMax:2.2, hardMin:0,   hardMax:3.5 },
   hot:      { ideal:0.6, softMin:0,   softMax:1.8, hardMin:0,   hardMax:2.8 }
 };
+// Representative °F span per band + order (for deriving a comfortable range from a warmth value).
+const _WBAND_TEMP  = { freezing:[15,32], cold:[33,49], cool:[50,62], mild:[63,75], warm:[76,85], hot:[86,100] };
+const _WBAND_ORDER = ["freezing","cold","cool","mild","warm","hot"];
+// Invert the bands: which temperatures accept this warmth? mode "soft"=best, "hard"=tolerable.
+function warmthTempRange(w, mode){
+  if (w == null) return null;
+  const mn = (mode === "hard") ? "hardMin" : "softMin", mx = (mode === "hard") ? "hardMax" : "softMax";
+  const ok = _WBAND_ORDER.filter(function(n){ return w >= BAND_WARMTH[n][mn] && w <= BAND_WARMTH[n][mx]; });
+  if (!ok.length) return null;
+  return [Math.min.apply(null, ok.map(function(n){ return _WBAND_TEMP[n][0]; })),
+          Math.max.apply(null, ok.map(function(n){ return _WBAND_TEMP[n][1]; }))];
+}
+// Human-readable comfort range for the item popup (one-sided at the extremes).
+function warmthRangeLabel(w){
+  const r = warmthTempRange(w, "soft");
+  if (!r) return "";
+  if (r[1] >= 100) return "Best ≥" + r[0] + "°F";
+  if (r[0] <= 15)  return "Best ≤" + r[1] + "°F";
+  return "Best " + r[0] + "–" + r[1] + "°F";
+}
 function weatherFit(warmth, band){
   if (!band || warmth == null || !(band in BAND_WARMTH)) return { drop:false, nudge:0 };
   const b = BAND_WARMTH[band];
@@ -1546,7 +1602,25 @@ function weatherFit(warmth, band){
   }
   return { drop:false, nudge: Math.round(nudge * 100) / 100 };
 }
-function outfitWeatherFit(outfit, band){ return weatherFit(outfitWarmth(outfit), band); }
+// Warm-weather sleeve preference: covered arms are penalized once it's mild+ (~63°F+). A
+// long-sleeve TOP (the base layer you can't shed) is dropped at warm/hot and heavily nudged at
+// mild, so short-sleeve/sleeveless looks are suggested for warm weather instead.
+const _WARM_BANDS = { mild:1, warm:2, hot:3 };
+function outfitWeatherFit(outfit, band){
+  const fit = weatherFit(outfitWarmth(outfit), band);
+  if (fit.drop) return fit;
+  const heat = _WARM_BANDS[band];
+  if (heat){
+    const sleeve = outfitTopSleeve(outfit);
+    if (sleeve === "long"){
+      if (band === "warm" || band === "hot") return { drop:true, nudge:-99 };   // no long sleeves 76°F+
+      fit.nudge = Math.round((fit.nudge - 1.6) * 100) / 100;                     // mild (~63–75°F): shove it down
+    } else if (sleeve === "short"){
+      fit.nudge = Math.round((fit.nudge - 0.15 * heat) * 100) / 100;             // mild lean toward sleeveless
+    }
+  }
+  return fit;
+}
 
 // Assemble up to opts.max full-look suggestions around an anchor.
 function buildPairings(anchor, opts){
@@ -1562,7 +1636,10 @@ function buildPairings(anchor, opts){
   // by layering), and prefer pieces whose warmth suits the band. band = temp band string.
   const bw = (opts.band && typeof BAND_WARMTH !== "undefined" && BAND_WARMTH[opts.band]) ? BAND_WARMTH[opts.band] : null;
   const tooWarm = it => bw ? (itemWarmth(it) > bw.hardMax) : false;
-  const byRole = role => pool.filter(i => i.id !== anchor.id && i.stats && pieceRole(i) === role && !tooWarm(i));
+  // Warm/hot: don't build long-sleeve tops (mirrors the outfit-level drop).
+  const warmBand = opts.band === "warm" || opts.band === "hot";
+  const tooCovered = it => warmBand && pieceRole(it) === "top" && (typeof itemSleeve === "function") && itemSleeve(it) === "long";
+  const byRole = role => pool.filter(i => i.id !== anchor.id && i.stats && pieceRole(i) === role && !tooWarm(i) && !tooCovered(i));
   function score(it){
     const s = it.stats; if (!s || !a) return 0;
     let sc = 0;
