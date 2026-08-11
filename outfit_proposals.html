@@ -75,16 +75,7 @@
   </div>
 
   <div class="filter-bar" id="filter-bar">
-    <span class="filter-label">Session</span>
-    <button class="filter-chip" data-session="all">All</button>
-    <!-- session chips injected by JS -->
-    <div class="filter-divider"></div>
-    <span class="filter-label">Category</span>
-    <button class="filter-chip active" data-cat="all">All</button>
-    <button class="filter-chip" data-cat="Dark / Minimal">Dark</button>
-    <button class="filter-chip" data-cat="Contrast">Contrast</button>
-    <button class="filter-chip" data-cat="Tonal">Tonal</button>
-    <button class="filter-chip" data-cat="Night Out">Night Out</button>
+    <span id="prop-filters-slot"></span>
     <div class="filter-right">
       <span class="outfit-count" id="outfit-count"></span>
       <div class="view-toggle">
@@ -102,6 +93,8 @@
 
 <script src="data.js"></script>
 <script src="modals.js"></script>
+<script src="facet-filter.js"></script>
+<script src="filter-modal.js"></script>
 <script>
 // IMAGES + getImg are provided by shared data.js
 // drawSpider() consolidated into data.js — shared 8-spoke renderer
@@ -207,28 +200,10 @@ let activeSession = "all";
 // "Added" badge = outfit is live on the main board (not a pending proposal). Derived from shared data.
 const WARDROBE_IDS = new Set((typeof OUTFITS_DEFAULT !== "undefined" ? OUTFITS_DEFAULT : []).filter(function(o){ return o.source !== "proposed"; }).map(function(o){ return o.id; }));
 let activeCat = "all";
+let propFacetCtl = null;      // stat sliders (facet-filter.js)
+let propFilterBtn = null;
 
-function buildSessionChips() {
-  const bar = document.getElementById("filter-bar");
-  const divider = bar.querySelector(".filter-divider");
-  SESSIONS.forEach(s => {
-    const btn = document.createElement("button");
-    btn.className = "filter-chip";
-    btn.dataset.session = s.id;
-    btn.textContent = s.label;
-    btn.addEventListener("click", () => setSessionFilter(s.id));
-    bar.insertBefore(btn, divider);
-  });
-  document.querySelectorAll("[data-session]").forEach(btn => {
-    btn.addEventListener("click", () => setSessionFilter(btn.dataset.session));
-    // Apply active state based on initial activeSession
-    if (btn.dataset.session === activeSession) btn.classList.add("active");
-    else btn.classList.remove("active");
-  });
-  document.querySelectorAll("[data-cat]").forEach(btn => {
-    btn.addEventListener("click", () => setCatFilter(btn.dataset.cat));
-  });
-}
+const PROP_CATS = [["all","All"],["Dark / Minimal","Dark"],["Contrast","Contrast"],["Tonal","Tonal"],["Night Out","Night Out"]];
 
 function setSessionFilter(id) {
   activeSession = id;
@@ -241,18 +216,65 @@ function setCatFilter(cat) {
   applyFilters();
 }
 
+function propActiveCount(){
+  let n = 0;
+  if (activeSession !== "all") n++;
+  if (activeCat !== "all") n++;
+  if (propFacetCtl && propFacetCtl.values) FacetFilter.KEYS.forEach(k => { if (propFacetCtl.values[k] > 0) n++; });
+  return n;
+}
+function syncPropCount(){ if (propFilterBtn) propFilterBtn.setCount(propActiveCount()); }
+
 function applyFilters() {
+  const facetOn = propFacetCtl && propFacetCtl.active();
   const cards = document.querySelectorAll(".outfit-card[data-session]");
   let visible = 0;
   cards.forEach(card => {
     const sessionMatch = activeSession==="all" || card.dataset.session===activeSession;
     const catMatch = activeCat==="all" || card.dataset.cat===activeCat;
-    const show = sessionMatch && catMatch;
+    let facetMatch = true;
+    if (facetOn) { const o = PROPOSAL_INDEX[card.dataset.id]; facetMatch = !!(o && propFacetCtl.matches(o.stats)); }
+    const show = sessionMatch && catMatch && facetMatch;
     card.style.display = show ? "" : "none";
     if (show) visible++;
   });
-  document.getElementById("outfit-count").textContent = visible + " outfit" + (visible!==1?"s":"");
-  document.getElementById("header-sub").textContent = activeSession==="all" ? "All sessions · " + visible + " outfits" : (SESSIONS.find(s=>s.id===activeSession)||{label:""}).label;
+  const cnt = document.getElementById("outfit-count"); if (cnt) cnt.textContent = visible + " outfit" + (visible!==1?"s":"");
+  const hs = document.getElementById("header-sub"); if (hs) hs.textContent = activeSession==="all" ? "All sessions · " + visible + " outfits" : (SESSIONS.find(s=>s.id===activeSession)||{label:""}).label;
+  syncPropCount();
+}
+
+// ── Filters modal: Session/date + Category + Stat sliders ──
+function chipRow(items, activeVal, onPick){
+  const wrap = document.createElement("div"); wrap.className = "fm-chips";
+  wrap.innerHTML = items.map(it => "<button class='filter-chip" + (it[0]===activeVal ? " active" : "") + "' data-v='" + it[0] + "'>" + it[1] + "</button>").join("");
+  wrap.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => {
+    wrap.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("active", x === b));
+    onPick(b.dataset.v);
+  }));
+  return wrap;
+}
+function propGroup(label, el){ const g = document.createElement("div"); g.className = "fm-group"; g.innerHTML = "<span class='fm-label'>" + label + "</span>"; g.appendChild(el); return g; }
+
+function setupProposalFilterModal(){
+  if (typeof FilterModal === "undefined") return;
+  const facetWrap = document.createElement("div");
+  const sessionItems = [["all","All"]].concat(SESSIONS.map(s => [s.id, s.label]));
+  const sessionRow = chipRow(sessionItems, activeSession, setSessionFilter);
+  const catRow = chipRow(PROP_CATS, activeCat, setCatFilter);
+  const modal = FilterModal.create({ title:"Filter proposals", onReset:function(){
+    setSessionFilter("all"); setCatFilter("all"); if (propFacetCtl) propFacetCtl.reset();
+    sessionRow.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("active", x.dataset.v === "all"));
+    catRow.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("active", x.dataset.v === "all"));
+    syncPropCount();
+  }});
+  modal.body.appendChild(propGroup("Session / date", sessionRow));
+  modal.body.appendChild(propGroup("Category", catRow));
+  modal.body.appendChild(facetWrap);
+  propFilterBtn = FilterModal.trigger("Filters");
+  document.getElementById("prop-filters-slot").appendChild(propFilterBtn);
+  propFilterBtn.addEventListener("click", modal.open);
+  propFacetCtl = FacetFilter.mount(facetWrap, function(){ applyFilters(); });
+  syncPropCount();
 }
 
 let proposalViewMode = "card"; // "card" | "grid" | "editorial"
@@ -358,10 +380,10 @@ document.getElementById("vtoggle-editorial").addEventListener("click", () => {
 
 // Escape/backdrop close handled by the shared modals.js.
 
-// Pre-select the most recent session before building chips
+// Pre-select the most recent session before building the filter modal
 const lastSession = SESSIONS[SESSIONS.length - 1];
 activeSession = lastSession.id;
-buildSessionChips();
+setupProposalFilterModal();
 renderAll();
 </script>
 </body>
