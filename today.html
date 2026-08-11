@@ -8,7 +8,21 @@
 <style>
   body { background: var(--bg); color: var(--text); font-family: var(--font-ui); margin: 0; }
   /* page width/padding + header come from shared .app-page / .page-header (alter-theme.css) */
-  .t-weather { font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+  /* ── Weather hero: lead with the temp + what garment types to reach for / skip ── */
+  .t-weather-hero { display: flex; align-items: center; gap: 22px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 18px 22px; margin-bottom: 22px; }
+  .t-wh-temp { font-size: 46px; font-weight: 700; color: var(--white); line-height: 1; letter-spacing: -0.02em; white-space: nowrap; display: flex; align-items: baseline; gap: 4px; }
+  .t-wh-temp .t-wh-unit { font-size: 18px; color: var(--muted); font-weight: 500; }
+  .t-wh-temp .t-wh-sun { font-size: 22px; margin-right: 4px; align-self: center; }
+  .t-wh-body { flex: 1; min-width: 0; }
+  .t-wh-cond { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .t-wh-headline { font-size: 16px; color: var(--white); font-weight: 600; margin: 3px 0 11px; }
+  .t-wh-rows { display: flex; flex-direction: column; gap: 7px; }
+  .t-wh-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .t-wh-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); width: 34px; flex-shrink: 0; }
+  .t-wh-chip { font-size: 11px; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }
+  .t-wh-chip.wear { color: var(--accent); border-color: var(--accent2); background: var(--accent-soft, rgba(226,211,180,0.1)); }
+  .t-wh-chip.skip { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--border); opacity: 0.85; }
+  @media (max-width: 560px) { .t-weather-hero { flex-direction: column; align-items: flex-start; gap: 14px; } .t-wh-temp { font-size: 40px; } }
 
   /* ── "Right now" section: today's check-in photo + closet nudges ── */
   .t-now { display: grid; grid-template-columns: 250px 1fr 1fr; gap: 14px; margin-bottom: 26px; align-items: start; }
@@ -75,8 +89,8 @@
       <h1 class="page-title">Today</h1>
       <div class="page-sub" id="t-greeting"></div>
     </div>
-    <div class="page-actions"><span class="t-weather" id="t-weather">Checking the weather&hellip;</span></div>
   </div>
+  <div class="t-weather-hero" id="t-weather-hero">Checking the weather&hellip;</div>
   <div class="t-now" id="t-now"></div>
   <div class="t-contexts" id="t-contexts"></div>
   <div id="t-rec"></div>
@@ -138,14 +152,42 @@ async function loadWeather(){
     const j = await r.json();
     currentTemp = Math.round(j.current.temperature_2m);
   } catch (e) { currentTemp = null; }
-  renderWeather();
+  renderWeatherHero();
   render(); // re-rank with the weather nudge
 }
-function renderWeather(){
-  const el = document.getElementById("t-weather");
-  if (currentTemp == null) { el.textContent = "Weather unavailable — picking on style alone."; return; }
-  const band = tempBand(currentTemp);
-  el.innerHTML = "&#9728; " + currentTemp + "°F in " + NYC.label + " &middot; " + BAND_NOTE[band];
+// What garment types make sense for today's temperature (drives the decision before context).
+const BAND_LABEL = { freezing:"Freezing", cold:"Cold", cool:"Cool", mild:"Mild", warm:"Warm", hot:"Hot" };
+function weatherGuidance(temp){
+  const band = tempBand(temp);
+  const G = {
+    hot:      { headline:"Keep it light",  wear:["Sleeveless","Short sleeves","Light bottoms"],        skip:["Long sleeves","Layers","Outerwear"] },
+    warm:     { headline:"Stay light",      wear:["Short sleeves","Sleeveless","Light bottoms"],        skip:["Long sleeves","Heavy layers","Coats"] },
+    mild:     { headline:"Easy layers",     wear:["Short or long sleeves","One light layer"],           skip:["Heavy coats"] },
+    cool:     { headline:"Add a layer",     wear:["Long sleeves","A jacket or overshirt"],              skip:["Bare arms alone"] },
+    cold:     { headline:"Layer up",        wear:["Coat or jacket","Long sleeves","Knit layers"],       skip:["Sleeveless"] },
+    freezing: { headline:"Bundle up",       wear:["Heavy coat","Warm layers","Cover arms & legs"],      skip:["Exposed skin"] }
+  };
+  return Object.assign({ band: band }, G[band] || G.mild);
+}
+function renderWeatherHero(){
+  const el = document.getElementById("t-weather-hero"); if (!el) return;
+  if (currentTemp == null){
+    el.innerHTML = "<div class='t-wh-body'><div class='t-wh-cond'>" + NYC.label + "</div>" +
+      "<div class='t-wh-headline'>Weather unavailable — picking on style alone.</div></div>";
+    return;
+  }
+  const g = weatherGuidance(currentTemp);
+  const chips = (arr, cls) => (arr || []).map(t => "<span class='t-wh-chip " + cls + "'>" + t + "</span>").join("");
+  el.innerHTML =
+    "<div class='t-wh-temp'><span class='t-wh-sun'>&#9728;</span>" + currentTemp + "<span class='t-wh-unit'>°F</span></div>" +
+    "<div class='t-wh-body'>" +
+      "<div class='t-wh-cond'>" + (BAND_LABEL[g.band] || "") + " &middot; " + NYC.label + "</div>" +
+      "<div class='t-wh-headline'>" + g.headline + " today</div>" +
+      "<div class='t-wh-rows'>" +
+        "<div class='t-wh-row'><span class='t-wh-label'>Wear</span>" + chips(g.wear, "wear") + "</div>" +
+        (g.skip && g.skip.length ? "<div class='t-wh-row'><span class='t-wh-label'>Skip</span>" + chips(g.skip, "skip") + "</div>" : "") +
+      "</div>" +
+    "</div>";
 }
 
 // ── Outfit helpers ───────────────────────────────────────────────────────────
