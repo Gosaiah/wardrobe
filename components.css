@@ -15,6 +15,12 @@
 /* Search input — shared by the wardrobe + builder toolbars (was duplicated inline in both). */
 .mgr-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 12px; padding: 7px 11px; outline: none; border-radius: 8px; flex: 1; min-width: 140px; }
 @media (max-width: 768px) { .mgr-search { font-size: 14px; } } /* larger tap target / limit iOS zoom */
+
+/* View toggle (card / grid / editorial switch) — one component across every page.
+   Structure here; the button theme (border, muted color, accent active, radius) is in
+   alter-theme.css. Pages must not redefine these inline. */
+.view-toggle { display: inline-flex; gap: 4px; align-items: center; }
+.view-toggle-btn { padding: 6px 10px; font-size: 13px; line-height: 1; }
 .mgr-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; cursor:pointer; transition:border-color 0.15s; display:flex; flex-direction:column; }
 .mgr-item:hover { border-color:var(--accent2); }
 .mgr-item.selected { border-color:var(--accent); }
