@@ -77,9 +77,11 @@
 .item-detail-photo { width:100%; height:100%; }
 .item-detail-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
 .item-detail-info-col { flex:1; overflow-y:auto; overscroll-behavior:contain; padding:clamp(16px,3vw,28px); min-width:0; }
-@media(max-width:600px){
+@media(max-width:768px){
+  /* Stacked popup: the whole thing scrolls as one — the inner is the single scroll container,
+     the photo sits in normal flow (scrolls away), and the info column does NOT scroll on its own. */
   .item-detail-panel{ width:100%; max-height:100vh; height:100vh; border-radius:0; }
-  .item-detail-inner{ flex-direction:column; }
-  .item-detail-photo-col{ width:100%; height:280px; border-right:none; border-bottom:1px solid var(--border); }
-  .item-detail-info-col{ padding:20px 18px; }
+  .item-detail-inner{ flex-direction:column; overflow-y:auto; overscroll-behavior:contain; }
+  .item-detail-photo-col{ width:100%; height:auto; aspect-ratio:3/4; max-height:62vh; flex-shrink:0; border-right:none; border-bottom:1px solid var(--border); }
+  .item-detail-info-col{ flex:0 0 auto; overflow:visible; padding:20px 18px; }
 }
