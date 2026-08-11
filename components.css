@@ -36,6 +36,9 @@
 .mgr-item-role { position:absolute; top:8px; left:8px; z-index:2; background:rgba(0,0,0,0.6); color:#fff; font-size:8px; letter-spacing:0.1em; text-transform:uppercase; padding:3px 7px; border-radius:5px; }
 /* Card view: photo tile with overlay */
 .mgr-items.card-view { grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:10px; }
+/* Card view: force exactly 2 per row on mobile (scoped .card-view beats the minmax base) */
+@media (max-width: 768px) { .mgr-items.card-view { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+@media (max-width: 480px) { .mgr-items.card-view { gap: 8px; } }
 .mgr-items.card-view .mgr-item { position:relative; aspect-ratio:3/4; flex-direction:column; overflow:hidden; background:var(--surface2); }
 .mgr-items.card-view .mgr-item-img { height:100%; position:absolute; inset:0; flex-shrink:unset; }
 .mgr-items.card-view .mgr-item-img img { width:100%; height:100%; object-fit:cover; object-position:top center; }
