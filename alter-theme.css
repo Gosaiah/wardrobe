@@ -317,10 +317,21 @@ input:focus, textarea:focus, select:focus,
 .piece-card.pc-row .pc-thumb { width: 38px; height: 48px; border-radius: 6px; }
 .piece-card.pc-row .pc-name { font-size: 12px; }
 @media (max-width: 768px) {
-  .outfit-card.horizontal { flex-direction: column; height: auto; }
-  .outfit-card.horizontal .outfit-photo { width: 100%; min-width: unset; max-width: unset; aspect-ratio: 3/4; border-right: none; border-bottom: 1px solid var(--border); }
-  .outfit-card-horizontal-right { width: 100%; }
-  .outfit-card.horizontal .outfit-card-header { padding: 14px 16px 10px; }
+  /* Editorial outfit card — standardized readable horizontal row (same approach as the
+     wardrobe editorial item): small photo on the LEFT, header + a compact vertical piece
+     list on the RIGHT. Stays a row (does NOT stack) so it reads like a list entry. */
+  .outfit-card.horizontal { flex-direction: row; height: auto; }
+  .outfit-card.horizontal .outfit-photo {
+    width: 116px; min-width: 116px; max-width: 116px; aspect-ratio: auto;
+    align-self: stretch; border-right: 1px solid var(--border); border-bottom: none;
+  }
+  .outfit-card-horizontal-right { width: auto; flex: 1; min-width: 0; }
+  .outfit-card.horizontal .outfit-card-header { padding: 12px 14px 8px; }
+  .outfit-card.horizontal .outfit-name { font-size: 15px; }
+  .outfit-card.horizontal .h-pieces-row { flex-direction: column; overflow-x: visible; gap: 8px; padding: 10px 14px; }
+  .outfit-card.horizontal .h-piece-card { width: 100%; display: flex; align-items: center; }
+  .outfit-card.horizontal .h-piece-img { width: 46px; min-width: 46px; height: 58px; }
+  .outfit-card.horizontal .h-piece-info { padding: 6px 10px; flex: 1; min-width: 0; }
 }
 
 /* View toggle (card / grid / editorial) — shared control */

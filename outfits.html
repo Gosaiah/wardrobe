@@ -388,17 +388,8 @@
     /* OUTFIT GRID — 2 columns on tablet */
     .outfits-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
-    /* OUTFIT CARD VERTICAL */
-    .outfit-card.horizontal { flex-direction: column; height: auto; min-height: unset; }
-    .outfit-card.horizontal .outfit-photo {
-      width: 100% !important; min-width: unset !important; max-width: unset !important;
-      aspect-ratio: 4/5; border-right: none; border-bottom: 1px solid var(--border);
-    }
-    .h-pieces-row { gap: 8px; padding: 12px 14px; }
-    .h-piece-card { width: 120px; }
-    .h-piece-img { width: 120px; height: 148px; }
-    .outfit-card-horizontal-right { width: 100%; }
-    .outfit-card.horizontal .outfit-card-header { padding: 14px 16px 10px; }
+    /* Editorial (horizontal) outfit-card mobile layout is standardized in alter-theme.css
+       (readable horizontal row: small photo left + vertical piece list right). */
 
     /* OUTFIT CARD VERTICAL (grid view) */
     .outfit-photo { aspect-ratio: 3/4; }
@@ -432,11 +423,8 @@
   }
 
   @media (max-width: 480px) {
-    /* OUTFIT GRID — single column on phone */
+    /* OUTFIT GRID — 2 columns on phone (editorial h-piece sizing handled in alter-theme.css) */
     .outfits-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .h-piece-card { width: 100px; }
-    .h-piece-img { width: 100px; height: 124px; }
-    .h-piece-name { font-size: 9px; }
   }
 </style>
 <link rel="stylesheet" href="components.css">
