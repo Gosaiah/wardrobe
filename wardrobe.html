@@ -44,12 +44,12 @@
   @media (max-width: 768px) {
     .mgr-toolbar { padding: 10px 14px; gap: 8px; }
     .mgr-search { font-size: 14px; } /* prevent iOS zoom */
-    .mgr-items { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .mgr-item-img { height: 200px; }
     .mgr-form-panel { position: fixed; inset: 0; width: 100%; z-index: 500; border-radius: 0; }
   }
   @media (max-width: 480px) {
-    .mgr-items { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   }
 </style>
 <link rel="stylesheet" href="components.css">

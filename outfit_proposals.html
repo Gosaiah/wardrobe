@@ -55,6 +55,9 @@
     .filter-bar { overflow-x: auto; flex-wrap: nowrap; gap: 6px; }
     .filter-chip { white-space: nowrap; flex-shrink: 0; }
     .outfit-count { display: none; }
+
+    /* Card view: 2 per row on mobile (grid/editorial keep their own layouts) */
+    .proposals-list.card-view { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   }
 
 </style>

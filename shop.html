@@ -61,6 +61,10 @@
   /* Pairs full-screen view — button uses the shared .action-btn theme; .pair-head/.ph-*/.pair-body are shared (alter-theme.css) */
   #pairs-view { padding-top: 4px; }
   .pairs-back { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; padding: 8px 14px; margin: 0 0 24px; }
+  /* 2 cards per row on mobile */
+  @media (max-width: 768px) {
+    .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  }
 </style>
 <link rel="stylesheet" href="alter-theme.css">
 <script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>

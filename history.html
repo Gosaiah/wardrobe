@@ -53,6 +53,10 @@
 
   .history-toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .history-filters { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  /* 2 cards per row on mobile (card view) */
+  @media (max-width: 768px) {
+    .history-card-view { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  }
 </style>
 <link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="alter-theme.css">
