@@ -10,6 +10,32 @@
   /* page width/padding + header come from shared .app-page / .page-header (alter-theme.css) */
   .t-weather { font-size: 12px; color: var(--accent); display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 
+  /* ── "Right now" section: today's check-in photo + closet nudges ── */
+  .t-now { display: grid; grid-template-columns: 250px 1fr 1fr; gap: 14px; margin-bottom: 26px; align-items: stretch; }
+  .t-now-photo { position: relative; aspect-ratio: 3/4; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; }
+  .t-now-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  .t-now-photo-cap { position: absolute; inset: auto 0 0 0; padding: 12px 12px 11px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
+  .t-now-kicker { font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+  .t-now-photo-title { color: var(--white); font-size: 13px; font-weight: 600; line-height: 1.2; }
+  .t-now-photo-meta { color: rgba(255,255,255,0.7); font-size: 10px; margin-top: 2px; }
+  .t-now-photo.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; border-style: dashed; cursor: default; color: var(--muted); padding: 16px; }
+  .t-now-photo.empty .ph-mark { width: 30px; height: 30px; opacity: 0.5; }
+  .t-now-empty-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .t-now-empty-sub { font-size: 10px; }
+  .t-now-block { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 13px 14px 8px; }
+  .t-now-block-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white); }
+  .t-now-block-sub { font-size: 10px; color: var(--muted); margin: 2px 0 8px; }
+  .t-mini { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: none; border-top: 1px solid var(--border); padding: 6px 0; cursor: pointer; text-align: left; font-family: inherit; }
+  .t-now-block .t-mini:first-of-type { border-top: none; }
+  .t-mini-thumb { width: 28px; height: 36px; border-radius: 5px; overflow: hidden; background: var(--surface2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--border); font-size: 13px; }
+  .t-mini-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .t-mini-body { flex: 1; min-width: 0; }
+  .t-mini-name { font-size: 11px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .t-mini-sub { font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .t-mini-code { font-family: ui-monospace, monospace; font-size: 10px; color: var(--accent); flex-shrink: 0; background: var(--surface2); border-radius: 5px; padding: 1px 6px; }
+  .t-now-more { font-size: 10px; color: var(--muted); padding: 8px 0 2px; }
+  @media (max-width: 680px) { .t-now { grid-template-columns: 1fr; } .t-now-photo { max-width: 280px; } }
+
   .t-contexts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
   /* .t-chip styling is shared (alter-theme.css filter/context chip) */
 
@@ -40,6 +66,7 @@
 <body>
 <script src="nav.js"></script>
 <script src="data.js"></script>
+<script src="store.js"></script>
 <script src="modals.js"></script>
 
 <main class="app-page">
@@ -50,6 +77,7 @@
     </div>
     <div class="page-actions"><span class="t-weather" id="t-weather">Checking the weather&hellip;</span></div>
   </div>
+  <div class="t-now" id="t-now"></div>
   <div class="t-contexts" id="t-contexts"></div>
   <div id="t-rec"></div>
 </main>
@@ -203,6 +231,63 @@ function whyLine(o){
   return base;
 }
 
+// ── "Right now" section: today's check-in + closet nudges ─────────────────────
+let todayWearCache = null;
+function todayISO(){ const d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
+function nowMiniRow(x){
+  const it = x.it;
+  const img = (typeof IMAGES !== "undefined" && IMAGES[it.name]) || it.img || "";
+  const bl = (typeof BRANDS !== "undefined" && BRANDS[bkey(it.brand)] && BRANDS[bkey(it.brand)].label) || it.brand || "";
+  const thumb = img ? "<img src='" + img + "' alt='' loading='lazy'>" : "&#9672;";
+  return "<button class='t-mini piece-name-link' data-name=\"" + it.name + "\" data-brand=\"" + (it.brand||"") + "\">" +
+    "<span class='t-mini-thumb'>" + thumb + "</span>" +
+    "<span class='t-mini-body'><span class='t-mini-name'>" + it.name + "</span><span class='t-mini-sub'>" + bl + (x.n ? " · " + x.n + "× worn" : "") + "</span></span>" +
+    "<span class='t-mini-code'>" + it.id + "</span></button>";
+}
+function nowBlock(label, sub, list, total){
+  const rows = list.length ? list.map(nowMiniRow).join("") : "<div class='t-now-more'>Nothing here — nice rotation.</div>";
+  const more = total > list.length ? "<div class='t-now-more'>+" + (total - list.length) + " more</div>" : "";
+  return "<div class='t-now-block'><div class='t-now-block-label'>" + label + "</div><div class='t-now-block-sub'>" + sub + "</div>" + rows + more + "</div>";
+}
+function renderNow(){
+  const el = document.getElementById("t-now"); if (!el) return;
+  // Today's check-in photo (from a wear logged today)
+  todayWearCache = (typeof _wearHistory === "function" ? _wearHistory() : []).find(w => w.date === todayISO()) || null;
+  let photoCard;
+  if (todayWearCache){
+    const w = todayWearCache;
+    const outfit = (w.outfitId != null) ? savedPool().find(o => o.id === w.outfitId) : null;
+    const photo = w.photo || (outfit ? outfitPhotoSrc(outfit.id, uploadedPhotos) : "");
+    const occ = (typeof wearOccasionList === "function" ? wearOccasionList(w) : []).map(occasionLabel).join(" · ");
+    const meta = [occ, (currentTemp != null ? currentTemp + "°F" : "")].filter(Boolean).join(" · ");
+    const inner = photo ? "<img src='" + photo + "' alt='Today'>"
+      : "<div class='t-now-photo empty'>" + (typeof outfitPlaceholderInner === "function" ? outfitPlaceholderInner("Logged") : "") + "</div>";
+    photoCard = "<div class='t-now-photo' id='t-today-wear'>" + inner +
+      "<div class='t-now-photo-cap'><div class='t-now-kicker'>Today · worn</div>" +
+      "<div class='t-now-photo-title'>" + (outfit ? outfit.name : "Today's look") + "</div>" +
+      (meta ? "<div class='t-now-photo-meta'>" + meta + "</div>" : "") + "</div></div>";
+  } else {
+    photoCard = "<div class='t-now-photo empty'>" +
+      "<svg class='ph-mark' viewBox='0 0 100 100' fill='none' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round'><path d='M50 20 C33 20 29 38 31 56 C33 74 42 84 50 84 C58 84 67 74 69 56 C71 38 67 20 50 20 Z' stroke-width='4'/></svg>" +
+      "<span class='t-now-empty-label'>No look logged today</span>" +
+      "<span class='t-now-empty-sub'>Pick one below</span></div>";
+  }
+  // Closet nudges — garments only (skip accessories / jewelry buffs)
+  const items = (typeof WARDROBE_DATA !== "undefined" ? WARDROBE_DATA : []).filter(it => {
+    const role = (typeof pieceRole === "function") ? pieceRole(it) : it.type;
+    if (role === "accessory") return false;
+    if (typeof isJewelryEnhancement === "function" && isJewelryEnhancement(it)) return false;
+    return true;
+  });
+  const withN = items.map(it => ({ it, n: getWearCount("item", it.id), last: getLastWorn("item", it.id), added: it.added || "" }));
+  const never = withN.filter(x => x.n === 0).sort((a,b) => (b.added||"").localeCompare(a.added||"") || a.it.name.localeCompare(b.it.name));
+  const least = withN.filter(x => x.n >= 1).sort((a,b) => a.n - b.n || (a.last||"").localeCompare(b.last||""));
+  const neverSub = never.some(x => x.added) ? "New arrivals + never worn" : "Haven't worn these yet";
+  el.innerHTML = photoCard +
+    nowBlock("New &amp; never worn", neverSub, never.slice(0,6), never.length) +
+    nowBlock("Worn least", "Rotate these back in", least.slice(0,6), least.length);
+}
+
 // ── Rendering (reuses the shared outfitCardHtml — card/grid/editorial views) ──
 function viewToggleHtml(){
   const b = (v, ic, t) => "<button class='view-toggle-btn" + (todayView === v ? " active" : "") + "' data-view='" + v + "' title='" + t + "'>" + ic + "</button>";
@@ -242,6 +327,7 @@ function render(){
 
   const resultsClass = "t-results" + (todayView === "editorial" ? " editorial" : "");
   document.getElementById("t-rec").innerHTML = toolbar + "<div class='" + resultsClass + "'>" + cards.join("") + "</div>";
+  renderNow();
 }
 
 function renderChips(){
@@ -269,6 +355,8 @@ function openTodayOutfit(outfit, opts){
 document.addEventListener("click", function(e){
   const piece = e.target.closest(".outfit-detail-piece, .piece-name-link");
   if (piece){ e.stopPropagation(); Modals.openItem(piece.dataset.name, piece.dataset.brand); return; }
+  const tw = e.target.closest("#t-today-wear");
+  if (tw && todayWearCache && typeof Modals !== "undefined" && Modals.openWear){ Modals.openWear(todayWearCache, { uploads: uploadedPhotos }); return; }
   const chip = e.target.closest(".t-chip");
   if (chip){ currentContext = chip.dataset.ctx; recOffset = 0; renderChips(); render(); return; }
   const vbtn = e.target.closest(".view-toggle-btn[data-view]");
@@ -282,6 +370,7 @@ document.addEventListener("click", function(e){
 // Escape/backdrop close handled by the shared modals.js.
 
 // ── Init ─────────────────────────────────────────────────────────────────────
+if (typeof Store !== "undefined") { try { Store.load(); } catch(e){} }  // refresh local cache (picks up new committed wears/outfits)
 renderHead();
 renderChips();
 render();

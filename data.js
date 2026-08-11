@@ -184,9 +184,9 @@ const WARDROBE_DATA = [
   {id:"o16",name:"Star Neck Shirt Couture",brand:"ORTTU",color:"Beige",size:"L",cat:"Shirt",type:"top",style:"Tonal",stats:{drama:2,structure:3,skin:2,edge:0,formality:4,presence:0,silhouette:0,movement:0,ornament:2}},
   {id:"o17",name:"Garson Pants",brand:"ORTTU",color:"Ivory",size:"L",cat:"Pants",type:"bottom",style:"Tonal",stats:{drama:0,structure:3,skin:1,edge:0,formality:2.5,presence:0,silhouette:0,movement:0,ornament:0}},
   {id:"o18",name:"Star Neck Cardigan Sleeveless",brand:"ORTTU",color:"Green",size:"XL",cat:"Cardigan",type:"top",style:"Contrast",warmth:1.5,stats:{drama:2,structure:1,skin:3.5,edge:0,formality:2,presence:0,silhouette:0,movement:0,ornament:2}},
-  {id:"o19",name:"Renato Jacket",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Jacket",type:"outer",style:"Contrast",stats:{drama:2.5,structure:3,skin:1,edge:1.5,formality:3.5,presence:2.5,silhouette:1,movement:1,ornament:1}},
-  {id:"o20",name:"Federico Pants",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Pants",type:"bottom",style:"Contrast",stats:{drama:2,structure:3,skin:0,edge:0.5,formality:3.5,presence:1,silhouette:1.5,movement:1.5,ornament:1}},
-  {id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU",color:"Off-white",size:"XL",cat:"Shirt",type:"top",style:"Tonal",warmth:0.5,stats:{drama:2.5,structure:1.5,skin:4,edge:1,formality:2,presence:1,silhouette:1.5,movement:2,ornament:1}},
+  {id:"o19",name:"Renato Jacket",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Jacket",type:"outer",style:"Contrast",added:"2026-08-11",stats:{drama:2.5,structure:3,skin:1,edge:1.5,formality:3.5,presence:2.5,silhouette:1,movement:1,ornament:1}},
+  {id:"o20",name:"Federico Pants",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Pants",type:"bottom",style:"Contrast",added:"2026-08-11",stats:{drama:2,structure:3,skin:0,edge:0.5,formality:3.5,presence:1,silhouette:1.5,movement:1.5,ornament:1}},
+  {id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU",color:"Off-white",size:"XL",cat:"Shirt",type:"top",style:"Tonal",warmth:0.5,added:"2026-08-11",stats:{drama:2.5,structure:1.5,skin:4,edge:1,formality:2,presence:1,silhouette:1.5,movement:2,ornament:1}},
   // ── Minoar ─────────────────────────────────────────────────────────────────
   {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
   {id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR",color:"Natural",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:2,formality:3,presence:0,silhouette:2.5,movement:1.5,ornament:0}},
@@ -379,7 +379,8 @@ const OUTFITS_DEFAULT = [
   {id:69,name:"Sheer Fringe Concert",vibe:"Sheer / Going-out",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"r3",name:"Obscure Cloak Fringe Crop Top",brand:"RYVK"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Shoes",id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA"}]},
   {id:70,name:"Cream Pinstripe Suit",vibe:"Tailored / Contrast",tags:["contrast"],source:"detected",persona:"viceroy",pieces:[{role:"Top",id:"m6",name:"Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"o4",name:"Roberto Jacket",brand:"ORTTU"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
   {id:71,name:"Distressed Burgundy Layers",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"am7",name:"Cable Knit Sweater Vest Burgundy",brand:"AMAZON"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
-  {id:72,name:"Rust Shirt Distressed Coat",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o6",name:"Raphael Shirt",brand:"ORTTU"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]}
+  {id:72,name:"Rust Shirt Distressed Coat",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o6",name:"Raphael Shirt",brand:"ORTTU"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
+  {id:73,name:"Blue Tee & Graphite Cargo",vibe:"Casual / Streetwear",tags:["casual"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON"},{role:"Bottom",id:"m12",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
 ];
 
 
@@ -455,7 +456,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 163;
+const DATA_VERSION = 164;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -1061,6 +1062,7 @@ function outfitCardHtml(outfit, opts){
    mutable `wornHistory` is the writer; the getters below read it when present,
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
+  { date:"2026-08-11", outfitId:73, outfitSource:"detected", occasion:["casual"], itemIds:["am2","m12","dm1"], photo:"wear-photos/wear_2026-08-11.jpg" },
   { date:"2025-05-25", outfitId:70, outfitSource:"detected", occasion:["wedding"], itemIds:["m6","o3","o4","y2"], photo:"wear-photos/wear_2025-05-25.jpg" },
   { date:"2026-05-01", outfitId:72, outfitSource:"detected", occasion:["night-out","concert"], itemIds:["o6","o3","m14","y2"], photo:"wear-photos/wear_2026-05-01.jpg" },
   { date:"2026-05-08", outfitId:71, outfitSource:"detected", occasion:["night-out"], itemIds:["am7","m18","m14","pw1"], photo:"wear-photos/wear_2026-05-08.jpg" },
