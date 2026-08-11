@@ -446,7 +446,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 159;
+const DATA_VERSION = 160;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -1602,22 +1602,41 @@ function weatherFit(warmth, band){
   }
   return { drop:false, nudge: Math.round(nudge * 100) / 100 };
 }
-// Warm-weather sleeve preference: covered arms are penalized once it's mild+ (~63°F+). A
-// long-sleeve TOP (the base layer you can't shed) is dropped at warm/hot and heavily nudged at
-// mild, so short-sleeve/sleeveless looks are suggested for warm weather instead.
+// Body coverage of the BASE layers: arms (top sleeves) + legs (bottom length), 0..2. It's NET
+// — bare legs offset covered arms (shorts + long-sleeve = partial) and vice-versa. Outers are
+// insulation (handled by warmth), not counted here.
 const _WARM_BANDS = { mild:1, warm:2, hot:3 };
+function _topArmCover(it){ const s = itemSleeve(it); return s === "long" ? 1 : s === "short" ? 0.5 : 0; }
+function _bottomLegCover(it){
+  const s = ((it.cat || "") + " " + (it.name || "")).toLowerCase();
+  if (/\bshorts?\b|trunk/.test(s)) return 0;
+  if (/\bmini\b/.test(s)) return 0.3;
+  if (/\bskirt\b/.test(s) && !/(maxi|midi|long|floor)/.test(s)) return 0.6;   // knee-ish skirt
+  return 1;   // pants/trousers/jeans/long or maxi skirt/dress
+}
+function outfitCoverage(outfit){
+  let arm = 0, leg = 0, hasTop = false, hasBottom = false;
+  ((outfit && outfit.pieces) || []).forEach(function(p){
+    const it = itemForPiece(p) || (p && p.stats ? p : null); if (!it) return;
+    const role = (typeof pieceRole === "function") ? pieceRole(it) : it.type;
+    if (role === "top"){ hasTop = true; arm = Math.max(arm, _topArmCover(it)); }
+    else if (role === "bottom"){ hasBottom = true; leg = Math.max(leg, _bottomLegCover(it)); }
+    else if (role === "full"){ hasTop = hasBottom = true; arm = Math.max(arm, _topArmCover(it)); leg = Math.max(leg, _bottomLegCover(it)); }
+  });
+  return (hasTop ? arm : 1) + (hasBottom ? leg : 1);   // unspecified zone assumed covered
+}
+// Warm-weather NET coverage rule: at mild+ (~63°F+) penalize total coverage; DROP when it's too
+// covered for the heat (full coverage at warm, mid at hot). Sleeveless + shorts always passes;
+// long-sleeve + shorts (partial) survives with a nudge; long-sleeve + long pants (full) drops.
+const _COVER_DROP = { mild:99, warm:2, hot:1.5 };
+const _COVER_PER  = { mild:0.7, warm:0.7, hot:1.0 };
 function outfitWeatherFit(outfit, band){
   const fit = weatherFit(outfitWarmth(outfit), band);
   if (fit.drop) return fit;
-  const heat = _WARM_BANDS[band];
-  if (heat){
-    const sleeve = outfitTopSleeve(outfit);
-    if (sleeve === "long"){
-      if (band === "warm" || band === "hot") return { drop:true, nudge:-99 };   // no long sleeves 76°F+
-      fit.nudge = Math.round((fit.nudge - 1.6) * 100) / 100;                     // mild (~63–75°F): shove it down
-    } else if (sleeve === "short"){
-      fit.nudge = Math.round((fit.nudge - 0.15 * heat) * 100) / 100;             // mild lean toward sleeveless
-    }
+  if (band in _COVER_DROP){
+    const cov = outfitCoverage(outfit);
+    if (cov >= _COVER_DROP[band]) return { drop:true, nudge:-99 };
+    fit.nudge = Math.round((fit.nudge - _COVER_PER[band] * cov) * 100) / 100;
   }
   return fit;
 }
@@ -1636,10 +1655,8 @@ function buildPairings(anchor, opts){
   // by layering), and prefer pieces whose warmth suits the band. band = temp band string.
   const bw = (opts.band && typeof BAND_WARMTH !== "undefined" && BAND_WARMTH[opts.band]) ? BAND_WARMTH[opts.band] : null;
   const tooWarm = it => bw ? (itemWarmth(it) > bw.hardMax) : false;
-  // Warm/hot: don't build long-sleeve tops (mirrors the outfit-level drop).
-  const warmBand = opts.band === "warm" || opts.band === "hot";
-  const tooCovered = it => warmBand && pieceRole(it) === "top" && (typeof itemSleeve === "function") && itemSleeve(it) === "long";
-  const byRole = role => pool.filter(i => i.id !== anchor.id && i.stats && pieceRole(i) === role && !tooWarm(i) && !tooCovered(i));
+  const heatB = (typeof _WARM_BANDS !== "undefined" && _WARM_BANDS[opts.band]) || 0;   // 1 mild .. 3 hot (warm-weather coverage bias)
+  const byRole = role => pool.filter(i => i.id !== anchor.id && i.stats && pieceRole(i) === role && !tooWarm(i));
   function score(it){
     const s = it.stats; if (!s || !a) return 0;
     let sc = 0;
@@ -1649,6 +1666,11 @@ function buildPairings(anchor, opts){
     sc += (s.structure||0) >= 2 ? 0.3 : 0;
     if (persona && typeof getItemPersona === "function" && getItemPersona(it) === persona) sc += 1.2;
     if (bw) sc += weatherFit(itemWarmth(it), opts.band).nudge * 0.4;   // gentle warmth preference
+    if (heatB){   // warm weather: bias toward less coverage (bare arms/legs)
+      const r = pieceRole(it);
+      if (r === "top") sc -= _topArmCover(it) * 0.5 * heatB;
+      else if (r === "bottom") sc -= _bottomLegCover(it) * 0.35 * heatB;
+    }
     return sc;
   }
   const best = (arr, k) => arr.slice().sort((x,y) => score(y) - score(x)).slice(0, k == null ? 1 : k);
