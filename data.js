@@ -59,9 +59,9 @@ const IMAGES = {
   "Alejandro Cardigan":"item-photos/alejandro-cardigan.jpg",
   "Christian Shirt":"item-photos/christian-shirt.jpg",
   "Roberto Jacket":"item-photos/roberto-jacket.jpg",
-  "Renato Jacket":"item-photos/renato-jacket.jpg",
-  "Federico Pants":"item-photos/federico-pants.jpg",
-  "Matisse Sleeveless Top":"item-photos/matisse-top.jpg",
+  "Renato Jacket":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/44_d45b6c5e-16f8-4a83-b823-a85a125805f4.jpg?v=1783962800",
+  "Federico Pants":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/41_e39339aa-8e9c-4215-9021-869ddc966405.jpg?v=1783960255",
+  "Matisse Sleeveless Top":"https://cdn.shopify.com/s/files/1/0033/3676/5493/files/1-2_5e4b79ab-6b61-4606-82a6-d3720e6286bf.jpg?v=1765645855",
   "Addams Skirt":"item-photos/addams-skirt.jpg",
   "Porto Long Shirt":"item-photos/porto-long-shirt.jpg",
   "Raphael Shirt":"item-photos/raphael-shirt.jpg",
@@ -184,9 +184,9 @@ const WARDROBE_DATA = [
   {id:"o16",name:"Star Neck Shirt Couture",brand:"ORTTU",color:"Beige",size:"L",cat:"Shirt",type:"top",style:"Tonal",stats:{drama:2,structure:3,skin:2,edge:0,formality:4,presence:0,silhouette:0,movement:0,ornament:2}},
   {id:"o17",name:"Garson Pants",brand:"ORTTU",color:"Ivory",size:"L",cat:"Pants",type:"bottom",style:"Tonal",stats:{drama:0,structure:3,skin:1,edge:0,formality:2.5,presence:0,silhouette:0,movement:0,ornament:0}},
   {id:"o18",name:"Star Neck Cardigan Sleeveless",brand:"ORTTU",color:"Green",size:"XL",cat:"Cardigan",type:"top",style:"Contrast",warmth:1.5,stats:{drama:2,structure:1,skin:3.5,edge:0,formality:2,presence:0,silhouette:0,movement:0,ornament:2}},
-  {id:"o19",name:"Renato Jacket",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Jacket",type:"outer",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:1,formality:3.5,presence:2.5,silhouette:1,movement:1,ornament:1}},
+  {id:"o19",name:"Renato Jacket",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Jacket",type:"outer",style:"Contrast",stats:{drama:2.5,structure:3,skin:1,edge:1.5,formality:3.5,presence:2.5,silhouette:1,movement:1,ornament:1}},
   {id:"o20",name:"Federico Pants",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Pants",type:"bottom",style:"Contrast",stats:{drama:2,structure:3,skin:0,edge:0.5,formality:3.5,presence:1,silhouette:1.5,movement:1.5,ornament:1}},
-  {id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU",color:"Off-white",size:"XL",cat:"Shirt",type:"top",style:"Tonal",stats:{drama:1,structure:2,skin:3,edge:0,formality:2.5,presence:0,silhouette:0,movement:0.5,ornament:0.5}},
+  {id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU",color:"Off-white",size:"XL",cat:"Shirt",type:"top",style:"Tonal",warmth:0.5,stats:{drama:2.5,structure:1.5,skin:4,edge:1,formality:2,presence:1,silhouette:1.5,movement:2,ornament:1}},
   // ── Minoar ─────────────────────────────────────────────────────────────────
   {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
   {id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR",color:"Natural",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:2,formality:3,presence:0,silhouette:2.5,movement:1.5,ornament:0}},
@@ -455,7 +455,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 162;
+const DATA_VERSION = 163;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
