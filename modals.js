@@ -71,8 +71,12 @@ const Modals = (function(){
     });
   }
 
-  function show(id){ inject(); var o = el(id); if (o) o.style.display = "flex"; }
-  function close(id){ var o = el(id); if (o) o.style.display = "none"; }
+  // Lock the page scroll while any popup is open, so the only scroll is the modal's own
+  // content — not the page behind it (which read as a second, competing scroll area).
+  function anyOpen(){ return ["m-item","m-outfit","m-wear","m-photo"].some(isOpen); }
+  function syncScrollLock(){ document.documentElement.style.overflow = anyOpen() ? "hidden" : ""; }
+  function show(id){ inject(); var o = el(id); if (o) o.style.display = "flex"; syncScrollLock(); }
+  function close(id){ var o = el(id); if (o) o.style.display = "none"; syncScrollLock(); }
   function isOpen(id){ var o = el(id); return o && o.style.display !== "none"; }
   function closeTop(){
     // highest z first
