@@ -69,6 +69,8 @@
 <script src="nav.js"></script>
 <script src="data.js"></script>
 <script src="modals.js"></script>
+<script src="facet-filter.js"></script>
+<script src="filter-modal.js"></script>
 
 <main class="app-page">
   <div id="shop-view">
@@ -101,8 +103,12 @@
 const PLAB = { overlord:"Overlord", wanderer:"Wanderer", "night-shift":"Night Shift", civilian:"Civilian", viceroy:"Viceroy" };
 const PRIO = { list:{label:"On List",rank:0}, high:{label:"Priority",rank:1}, medium:{label:"Consider",rank:2}, low:{label:"Maybe",rank:3} };
 const TIERLAB = { owned:"Own Brand", discussed:"Discussed", new:"New" };
-const PFILTERS = ["all","list","overlord","wanderer","night-shift","viceroy","civilian"];
-let currentFilter = "all";
+const PERSONAS = ["all","overlord","wanderer","night-shift","viceroy","civilian"];
+let personaFilter = "all";     // character chip (in the Filters modal)
+let listOnly = false;          // ★ List quick-toggle (in the toolbar)
+let shopFacetCtl = null;       // stat sliders (facet-filter.js)
+let priceLo = 0, priceHi = Infinity;   // price range (in the Filters modal)
+let shopFilterBtn = null;
 
 // ── Shopping list (localStorage) ──
 function getList(){ try { return JSON.parse(localStorage.getItem("shopList") || "[]"); } catch(e){ return []; } }
@@ -174,15 +180,19 @@ document.addEventListener("click", function(e){
 function renderShop() {
   const SRC = ((typeof SHOP !== "undefined") ? SHOP : []).slice()
     .sort((a,b) => (PRIO[a.priority]?.rank ?? 9) - (PRIO[b.priority]?.rank ?? 9));
-  let list;
-  if (currentFilter === "list") list = SRC.filter(s => onList(s.id));
-  else if (currentFilter === "all") list = SRC;
-  else list = SRC.filter(s => s.persona === currentFilter);
+  const list = SRC.filter(s => {
+    if (listOnly && !onList(s.id)) return false;
+    if (personaFilter !== "all" && s.persona !== personaFilter) return false;
+    const p = priceNum(s.price);
+    if (p < priceLo || p > priceHi) return false;
+    if (shopFacetCtl && !shopFacetCtl.matches(s.stats)) return false;
+    return true;
+  });
   const root = document.getElementById("shop-root");
-  const empty = currentFilter === "list" ? "Your shopping list is empty. Tap ☆ on any piece to add it." : "No candidates for this character yet.";
+  const empty = listOnly ? "Your shopping list is empty. Tap ☆ on any piece to add it." : "No pieces match these filters.";
   root.innerHTML = list.length ? list.map(cardHtml).join("") : '<div class="shop-empty">' + empty + '</div>';
   root.querySelectorAll(".list-btn").forEach(btn => {
-    btn.addEventListener("click", () => { toggleList(btn.dataset.id); renderShop(); buildFilters(); });
+    btn.addEventListener("click", () => { toggleList(btn.dataset.id); renderShop(); syncListBtn(); });
   });
   root.querySelectorAll(".pair-btn").forEach(btn => {
     btn.addEventListener("click", () => openPairs(btn.dataset.pair));
@@ -190,20 +200,85 @@ function renderShop() {
   updateSummary();
 }
 
-function buildFilters() {
+// ── Price bounds (rounded to $10) for the range control ──
+const _shopPrices = ((typeof SHOP !== "undefined") ? SHOP : []).map(s => priceNum(s.price)).filter(p => p > 0);
+const PRICE_MIN = _shopPrices.length ? Math.floor(Math.min(..._shopPrices) / 10) * 10 : 0;
+const PRICE_MAX = _shopPrices.length ? Math.ceil(Math.max(..._shopPrices) / 10) * 10 : 500;
+priceLo = PRICE_MIN; priceHi = PRICE_MAX;
+
+// ── Toolbar: ★ List quick-toggle + Filters trigger slot ──
+function syncListBtn(){
+  const b = document.getElementById("shop-list-toggle");
+  const n = ((typeof SHOP !== "undefined") ? SHOP : []).filter(s => onList(s.id)).length;
+  if (b){ b.textContent = "★ List (" + n + ")"; b.classList.toggle("active", listOnly); }
+}
+function buildToolbar(){
   const bar = document.getElementById("shop-filters");
-  const listCount = ((typeof SHOP !== "undefined") ? SHOP : []).filter(s => onList(s.id)).length;
-  bar.innerHTML = PFILTERS.map(f => {
-    const label = (f === "all") ? "All" : (f === "list") ? ("★ List (" + listCount + ")") : PLAB[f];
-    return '<button class="filter-btn' + (f === currentFilter ? ' active' : '') + '" data-f="' + f + '">' + label + '</button>';
+  bar.innerHTML = '<button class="filter-btn" id="shop-list-toggle" type="button"></button><span id="shop-filters-slot"></span>';
+  document.getElementById("shop-list-toggle").addEventListener("click", () => { listOnly = !listOnly; renderShop(); syncListBtn(); });
+  syncListBtn();
+}
+
+// ── Filters modal: Character chips + Price range + Stat sliders ──
+function shopActiveCount(){
+  let n = 0;
+  if (personaFilter !== "all") n++;
+  if (priceLo > PRICE_MIN || priceHi < PRICE_MAX) n++;
+  if (shopFacetCtl && shopFacetCtl.values) FacetFilter.KEYS.forEach(k => { if (shopFacetCtl.values[k] > 0) n++; });
+  return n;
+}
+function syncShopCount(){ if (shopFilterBtn) shopFilterBtn.setCount(shopActiveCount()); }
+
+function personaChipsGroup(){
+  const g = document.createElement("div"); g.className = "fm-group";
+  g.innerHTML = "<span class='fm-label'>Character</span>";
+  const chips = document.createElement("div"); chips.className = "fm-chips";
+  chips.innerHTML = PERSONAS.map(p => {
+    const label = p === "all" ? "All" : (PLAB[p] || p);
+    return "<button class='filter-btn" + (p === personaFilter ? " active" : "") + "' data-persona='" + p + "' type='button'>" + label + "</button>";
   }).join("");
-  bar.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      currentFilter = btn.dataset.f;
-      bar.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.f === currentFilter));
-      renderShop();
-    });
-  });
+  chips.querySelectorAll("[data-persona]").forEach(b => b.addEventListener("click", () => {
+    personaFilter = b.dataset.persona;
+    chips.querySelectorAll("[data-persona]").forEach(x => x.classList.toggle("active", x.dataset.persona === personaFilter));
+    renderShop(); syncShopCount();
+  }));
+  g.appendChild(chips); return g;
+}
+
+function priceControl(){
+  const wrap = document.createElement("div"); wrap.className = "fm-group";
+  wrap.innerHTML =
+    "<span class='fm-label' style='display:flex;justify-content:space-between'>Price <b data-price-lbl style='color:var(--accent);font-weight:600'></b></span>" +
+    "<input type='range' data-price='lo' min='" + PRICE_MIN + "' max='" + PRICE_MAX + "' step='5' value='" + priceLo + "' style='width:100%;accent-color:var(--accent)'>" +
+    "<input type='range' data-price='hi' min='" + PRICE_MIN + "' max='" + PRICE_MAX + "' step='5' value='" + priceHi + "' style='width:100%;accent-color:var(--accent);margin-top:6px'>";
+  const lo = wrap.querySelector("[data-price='lo']"), hi = wrap.querySelector("[data-price='hi']"), lbl = wrap.querySelector("[data-price-lbl]");
+  const paint = () => { lbl.textContent = "$" + priceLo + " – $" + priceHi + (priceHi >= PRICE_MAX ? "+" : ""); };
+  const onIn = () => {
+    let a = parseFloat(lo.value), b = parseFloat(hi.value);
+    if (a > b) { const t = a; a = b; b = t; }
+    priceLo = a; priceHi = b; paint(); renderShop(); syncShopCount();
+  };
+  lo.addEventListener("input", onIn); hi.addEventListener("input", onIn); paint();
+  return { el: wrap, reset: () => { priceLo = PRICE_MIN; priceHi = PRICE_MAX; lo.value = PRICE_MIN; hi.value = PRICE_MAX; paint(); } };
+}
+
+function setupShopFilterModal(){
+  if (typeof FilterModal === "undefined") return;
+  const pc = priceControl();
+  const facetWrap = document.createElement("div");
+  const modal = FilterModal.create({ title:"Filter pieces", onReset:function(){
+    personaFilter = "all"; pc.reset(); if (shopFacetCtl) shopFacetCtl.reset();
+    modal.body.querySelectorAll("[data-persona]").forEach(x => x.classList.toggle("active", x.dataset.persona === "all"));
+    renderShop(); syncShopCount();
+  }});
+  modal.body.appendChild(personaChipsGroup());
+  modal.body.appendChild(pc.el);
+  modal.body.appendChild(facetWrap);
+  shopFilterBtn = FilterModal.trigger("Filters");
+  document.getElementById("shop-filters-slot").appendChild(shopFilterBtn);
+  shopFilterBtn.addEventListener("click", modal.open);
+  shopFacetCtl = FacetFilter.mount(facetWrap, function(){ renderShop(); syncShopCount(); });
+  syncShopCount();
 }
 
 // Seed any data-flagged (priority:"list") items onto the localStorage list ONCE each,
@@ -218,7 +293,8 @@ function buildFilters() {
   if (seedChanged) localStorage.setItem(SEED_KEY, JSON.stringify(seeded));
 })();
 
-buildFilters();
+buildToolbar();
+setupShopFilterModal();
 renderShop();
 </script>
 </body>
