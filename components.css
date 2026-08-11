@@ -8,6 +8,10 @@
 
 /* Clothing item card — same mgr-item component as the clothing page. */
 .mgr-items { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:14px; }
+/* Card view: 2 per row on mobile (loads after the wardrobe inline style, so this is the
+   authoritative mobile grid; editorial-view keeps its own single-column layout). */
+@media (max-width: 768px) { .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+@media (max-width: 480px) { .mgr-items { grid-template-columns: repeat(2, 1fr); gap: 8px; } }
 .mgr-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden; cursor:pointer; transition:border-color 0.15s; display:flex; flex-direction:column; }
 .mgr-item:hover { border-color:var(--accent2); }
 .mgr-item.selected { border-color:var(--accent); }
