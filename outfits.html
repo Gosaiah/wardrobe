@@ -447,14 +447,15 @@
 <!-- ══ TAB: OUTFIT BOARD ══ -->
 <div class="tab-panel active" id="tab-board">
   <header class="board-header">
-    <div class="filter-row" style="display:flex;gap:6px;flex-wrap:wrap">
+    <span id="board-filters-slot"></span>
+    <div class="filter-row" id="board-cat-row" style="display:flex;gap:6px;flex-wrap:wrap">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="dark">Dark / Minimal</button>
       <button class="filter-btn" data-filter="tonal">Tonal</button>
       <button class="filter-btn" data-filter="contrast">Contrast</button>
       <button class="filter-btn" data-filter="night">Night Out</button>
     </div>
-    <div class="filter-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+    <div class="filter-row" id="board-persona-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
       <button class="filter-btn pf-btn active" data-pfilter="all">All Characters</button>
       <button class="filter-btn pf-btn" data-pfilter="overlord">Overlord</button>
       <button class="filter-btn pf-btn" data-pfilter="wanderer">Wanderer</button>
@@ -519,6 +520,7 @@
 <script src="store.js"></script>
 <script src="modals.js"></script>
 <script src="facet-filter.js"></script>
+<script src="filter-modal.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
 // DATA
@@ -805,6 +807,7 @@ function renderGrid() {
   filtered = [...filtered].sort((a, b) => a.id - b.id);
 
   document.getElementById("outfit-count-label").textContent = filtered.length + " Outfit" + (filtered.length !== 1 ? "s" : "");
+  if (typeof syncBoardFilterCount === "function") syncBoardFilterCount();
 
   if (filtered.length === 0) {
     grid.innerHTML = "<div class='empty-card'>No outfits match this filter.</div>";
@@ -925,6 +928,38 @@ function outfitStatPillsHtml(stats) {
 
 // ── FACET FILTER (shared FacetFilter component) — filter the board by outfit effective stats ──
 const boardFacetCtl = (typeof FacetFilter !== "undefined") ? FacetFilter.mount("board-facet-bar", renderGrid) : null;
+
+// ── Filters modal (shared) — move Category / Character / Stat-filters into a responsive popup ──
+let boardFilterBtn = null;
+function syncBoardFilterCount(){
+  if (!boardFilterBtn) return;
+  let n = 0;
+  if (currentFilter !== "all") n++;
+  if (currentPersonaFilter !== "all") n++;
+  if (boardFacetCtl && boardFacetCtl.active()) n++;
+  boardFilterBtn.setCount(n);
+}
+(function setupBoardFilterModal(){
+  if (typeof FilterModal === "undefined") return;
+  const modal = FilterModal.create({ title:"Filter outfits", onReset:function(){
+    currentFilter = "all"; currentPersonaFilter = "all";
+    document.querySelectorAll("[data-filter]").forEach(b => b.classList.toggle("active", b.dataset.filter === "all"));
+    document.querySelectorAll("[data-pfilter]").forEach(b => b.classList.toggle("active", b.dataset.pfilter === "all"));
+    if (boardFacetCtl) boardFacetCtl.reset();
+    renderGrid();
+  }});
+  const cat = document.getElementById("board-cat-row"); cat.style.marginTop = "0";
+  const per = document.getElementById("board-persona-row"); per.style.marginTop = "0";
+  const facetBar = document.getElementById("board-facet-bar"); facetBar.removeAttribute("style");
+  const grp = (label, el) => { const g = document.createElement("div"); g.className = "fm-group"; g.innerHTML = "<span class='fm-label'>" + label + "</span>"; g.appendChild(el); return g; };
+  modal.body.appendChild(grp("Category", cat));
+  modal.body.appendChild(grp("Character", per));
+  modal.body.appendChild(facetBar);
+  boardFilterBtn = FilterModal.trigger("Filters");
+  document.getElementById("board-filters-slot").appendChild(boardFilterBtn);
+  boardFilterBtn.addEventListener("click", modal.open);
+  syncBoardFilterCount();
+})();
 
 // ── VIEW TOGGLE ──
 let outfitViewMode = "card"; // "card" | "grid" | "horizontal"

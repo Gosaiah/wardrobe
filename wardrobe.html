@@ -62,6 +62,7 @@
 <script src="store.js"></script>
 <script src="modals.js"></script>
 <script src="facet-filter.js"></script>
+<script src="filter-modal.js"></script>
 
 <main class="app-page">
   <div class="page-header">
@@ -82,6 +83,7 @@
       <option value="accessory">Accessory</option>
     </select>
     <select class="mgr-select" id="mgr-filter-brand"></select>
+    <span id="mgr-filters-slot"></span>
     <button class="btn-add" id="mgr-add-btn">+ Add Piece</button>
     <div class="view-toggle">
       <button class="view-toggle-btn active" id="itoggle-card" title="Card view">&#9646;</button>
@@ -250,6 +252,7 @@ function renderMgr() {
       if (it) openItemDetail(it.name, it.brand);
     });
   });
+  if (typeof syncMgrFilterCount === "function") syncMgrFilterCount();
 }
 
 // ── Edit form: open (existing) / new / preview ──
@@ -298,6 +301,35 @@ document.getElementById("mgr-search").addEventListener("input", renderMgr);
 document.getElementById("mgr-filter-type").addEventListener("change", renderMgr);
 document.getElementById("mgr-filter-brand").addEventListener("change", renderMgr);
 facetCtl = (typeof FacetFilter !== "undefined") ? FacetFilter.mount("mgr-facet-bar", renderMgr) : null;
+
+// ── Filters modal (shared) — move Type / Brand / Stat-filters into a responsive popup ──
+let mgrFilterBtn = null;
+function syncMgrFilterCount(){
+  if (!mgrFilterBtn) return;
+  let n = 0;
+  if (document.getElementById("mgr-filter-type").value) n++;
+  if (document.getElementById("mgr-filter-brand").value) n++;
+  if (facetCtl && facetCtl.active()) n++;
+  mgrFilterBtn.setCount(n);
+}
+(function setupMgrFilterModal(){
+  if (typeof FilterModal === "undefined") return;
+  const modal = FilterModal.create({ title:"Filter pieces", onReset:function(){
+    document.getElementById("mgr-filter-type").value = "";
+    document.getElementById("mgr-filter-brand").value = "";
+    if (facetCtl) facetCtl.reset();
+    renderMgr();
+  }});
+  const facetBar = document.getElementById("mgr-facet-bar");
+  facetBar.removeAttribute("style");   // shed the standalone dark-bar chrome inside the modal
+  modal.body.appendChild(FilterModal.row("Type",  document.getElementById("mgr-filter-type")));
+  modal.body.appendChild(FilterModal.row("Brand", document.getElementById("mgr-filter-brand")));
+  modal.body.appendChild(facetBar);
+  mgrFilterBtn = FilterModal.trigger("Filters");
+  document.getElementById("mgr-filters-slot").appendChild(mgrFilterBtn);
+  mgrFilterBtn.addEventListener("click", modal.open);
+  syncMgrFilterCount();
+})();
 
 // ── Item view toggle: Card / Grid / Editorial ──
 function setItemView(mode) {
