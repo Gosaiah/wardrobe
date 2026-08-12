@@ -188,9 +188,9 @@ const WARDROBE_DATA = [
   {id:"o20",name:"Federico Pants",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Pants",type:"bottom",style:"Contrast",added:"2026-08-11",stats:{drama:2,structure:3,skin:0,edge:0.5,formality:3.5,presence:1,silhouette:1.5,movement:1.5,ornament:1}},
   {id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU",color:"Off-white",size:"XL",cat:"Shirt",type:"top",style:"Tonal",warmth:0.5,added:"2026-08-11",stats:{drama:2.5,structure:1.5,skin:4,edge:1,formality:2,presence:1,silhouette:1.5,movement:2,ornament:1}},
   // ── Minoar ─────────────────────────────────────────────────────────────────
-  {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
+  {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",warmth:3.2,stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
   {id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR",color:"Natural",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:2,formality:3,presence:0,silhouette:2.5,movement:1.5,ornament:0}},
-  {id:"m3",name:"Aspect Ripstop Alternated Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Trousers",type:"bottom",style:"Dark / Minimal",stats:{drama:2.5,structure:3,skin:0,edge:3,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
+  {id:"m3",name:"Aspect Ripstop Alternated Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Trousers",type:"bottom",style:"Dark / Minimal",warmth:3.2,stats:{drama:2.5,structure:3,skin:0,edge:3,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
   {id:"m4",name:"Layered Sleeveless Collar Shirt",brand:"MINOAR",color:"Black",size:"L",cat:"Shirt",type:"top",style:"Dark / Minimal",stats:{drama:2.5,structure:3,skin:2,edge:2,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
   {id:"m5",name:"Layered Sleeveless White Collar Shirt",brand:"MINOAR",color:"White",size:"L",cat:"Shirt",type:"top",style:"Dark / Minimal",stats:{drama:2,structure:3,skin:2,edge:2,formality:3,presence:2,silhouette:0,movement:0,ornament:0}},
   {id:"m6",name:"Sleeveless Collar Shirt",brand:"MINOAR",color:"Black",size:"L",cat:"Shirt",type:"top",style:"Tonal",stats:{drama:2.5,structure:3,skin:2,edge:2,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
@@ -199,10 +199,10 @@ const WARDROBE_DATA = [
   {id:"m9",name:"Trigon Black Layers Volume Pants",brand:"MINOAR",color:"Black",size:"L",cat:"Pants",type:"bottom",style:"Dark / Minimal",stats:{drama:3.5,structure:3,skin:0,edge:2,formality:4,presence:2.5,silhouette:3.5,movement:2,ornament:0},styling:["high-waist"]},
   {id:"m10",name:"Trigon Layered Linen Trousers",brand:"MINOAR",color:"Grey",size:"L",cat:"Trousers",type:"bottom",style:"Tonal",stats:{drama:3.5,structure:2,skin:0,edge:1,formality:4,presence:0,silhouette:3.5,movement:2,ornament:0},styling:["high-waist"]},
   {id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR",color:"Black",size:"L",cat:"Pants",type:"bottom",style:"Contrast",stats:{drama:3.5,structure:2,skin:0,edge:2,formality:2.5,presence:1.5,silhouette:3.5,movement:0,ornament:0},styling:["high-waist"]},
-  {id:"m12",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR",color:"Graphite",size:"L",cat:"Trousers",type:"bottom",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:3,formality:2,presence:2.5,silhouette:0,movement:0,ornament:0}},
+  {id:"m12",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR",color:"Graphite",size:"L",cat:"Trousers",type:"bottom",style:"Contrast",warmth:3.2,stats:{drama:2.5,structure:3,skin:0,edge:3,formality:2,presence:2.5,silhouette:0,movement:0,ornament:0}},
   {id:"m13",name:"Division Cut Linear Collar Shirt",brand:"MINOAR",color:"White",size:"L",cat:"Shirt",type:"top",style:"Contrast",url:"https://www.minoar.com/product/division-cut-linear-collar-shirt-2/",stats:{drama:2,structure:3,skin:1,edge:2,formality:3,presence:2,silhouette:0,movement:0,ornament:0}},
   {id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR",color:"Black",size:"L",cat:"Cardigan",type:"outer",style:"Dark / Minimal",stats:{drama:3,structure:3,skin:0,edge:3,formality:2.5,presence:3,silhouette:0,movement:3,ornament:0}},
-  {id:"m15",name:"Reverse Edge Construct Jogger",brand:"MINOAR",color:"Black",size:"L",cat:"Pants",type:"bottom",style:"Dark / Minimal",stats:{drama:1.5,structure:2,skin:0,edge:3,formality:1.5,presence:1.5,silhouette:0,movement:0,ornament:0}},
+  {id:"m15",name:"Reverse Edge Construct Jogger",brand:"MINOAR",color:"Black",size:"L",cat:"Pants",type:"bottom",style:"Dark / Minimal",warmth:3.2,stats:{drama:1.5,structure:2,skin:0,edge:3,formality:1.5,presence:1.5,silhouette:0,movement:0,ornament:0}},
   {id:"m16",name:"Hexa Long Layers Sleeveless Coat",brand:"MINOAR",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",warmth:3.5,stats:{drama:3.5,structure:4,skin:2,edge:2,formality:3.5,presence:3.5,silhouette:3,movement:3,ornament:0},styling:["flowy"]},
   {id:"m17",name:"External Cropped Loose Grey Trousers",brand:"MINOAR",color:"Grey",size:"L",cat:"Trousers",type:"bottom",style:"Tonal",warmth:2.8,stats:{drama:1.5,structure:2,skin:0,edge:1,formality:3,presence:0,silhouette:1.5,movement:0,ornament:0},styling:["high-waist"]},
   {id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt",type:"bottom",style:"Dark / Minimal",stats:{drama:4,structure:3,skin:1,edge:2,formality:2,presence:3,silhouette:4,movement:2,ornament:0},styling:["high-waist"]},
@@ -456,7 +456,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 166;
+const DATA_VERSION = 167;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
