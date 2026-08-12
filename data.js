@@ -188,7 +188,7 @@ const WARDROBE_DATA = [
   {id:"o20",name:"Federico Pants",brand:"ORTTU",color:"Burgundy",size:"XL",cat:"Pants",type:"bottom",style:"Contrast",added:"2026-08-11",stats:{drama:2,structure:3,skin:0,edge:0.5,formality:3.5,presence:1,silhouette:1.5,movement:1.5,ornament:1}},
   {id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU",color:"Off-white",size:"XL",cat:"Shirt",type:"top",style:"Tonal",warmth:0.5,added:"2026-08-11",stats:{drama:2.5,structure:1.5,skin:4,edge:1,formality:2,presence:1,silhouette:1.5,movement:2,ornament:1}},
   // ── Minoar ─────────────────────────────────────────────────────────────────
-  {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
+  {id:"m1",name:"Aspect Layered Construct Skirt Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Tonal",warmth:3.2,stats:{drama:3,structure:4,skin:0,edge:2,formality:3.5,presence:3,silhouette:2.5,movement:0,ornament:0}},
   {id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR",color:"Natural",size:"L",cat:"Skirt-Trouser",type:"bottom",style:"Contrast",stats:{drama:2.5,structure:3,skin:0,edge:2,formality:3,presence:0,silhouette:2.5,movement:1.5,ornament:0}},
   {id:"m3",name:"Aspect Ripstop Alternated Trousers",brand:"MINOAR",color:"Black",size:"L",cat:"Trousers",type:"bottom",style:"Dark / Minimal",stats:{drama:2.5,structure:3,skin:0,edge:3,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
   {id:"m4",name:"Layered Sleeveless Collar Shirt",brand:"MINOAR",color:"Black",size:"L",cat:"Shirt",type:"top",style:"Dark / Minimal",stats:{drama:2.5,structure:3,skin:2,edge:2,formality:3,presence:2.5,silhouette:0,movement:0,ornament:0}},
@@ -456,7 +456,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 164;
+const DATA_VERSION = 165;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
