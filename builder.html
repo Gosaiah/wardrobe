@@ -41,7 +41,6 @@
   .closet-spider-wrap { display:flex; justify-content:center; margin-bottom:20px; }
   .closet-stat-list { display:flex; flex-direction:column; gap:10px; flex:1; }
   .closet-stat { display:flex; align-items:center; gap:8px; }
-  .closet-stat-name { font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); min-width:68px; }
   .closet-stat-track { flex:1; height:2px; background:var(--surface2); border-radius:6px; overflow:hidden; }
   .closet-stat-fill { height:100%; background:var(--accent); border-radius:6px; transition:width 0.35s; }
   .closet-stat-val { font-size:10px; color:var(--accent); font-weight:600; min-width:20px; text-align:right; }
@@ -62,7 +61,6 @@
   .closet-card.support.optional { opacity:0.5; }
   .closet-card.support.optional.on { opacity:1; }
   .closet-card-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 12px; border-bottom:1px solid var(--border); }
-  .closet-card-role { font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:var(--accent); }
   .closet-card-photo { position:relative; flex:1; min-height:110px; background:var(--surface2); }
   .closet-card-photo img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
   .cc-arrow { position:absolute; top:0; bottom:0; width:38px; display:flex; align-items:center; justify-content:center; border:none; color:#fff; font-size:22px; cursor:pointer; background:rgba(0,0,0,0.28); transition:background 0.15s; z-index:2; }
@@ -72,7 +70,7 @@
   .closet-card-info { padding:10px 12px 12px; }
   .cc-name { color:var(--white); font-weight:500; font-size:13px; line-height:1.25; margin-bottom:3px; }
   .closet-card.support .cc-name { font-size:11px; }
-  .cc-brand { font-size:8px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+  .cc-brand { margin-bottom:5px; }   /* type from .eyebrow-sm */
   .cc-counter { font-size:9px; color:var(--muted); letter-spacing:0.06em; }
   .closet-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--border); font-size:24px; }
   .closet-toggle { width:28px; height:16px; border-radius:8px; background:var(--surface2); border:1px solid var(--border); cursor:pointer; position:relative; transition:background 0.2s; flex-shrink:0; }
@@ -84,7 +82,7 @@
   /* height comes from the flex shell above (was a hard-coded calc in the monolith). */
   .builder-layout { display:flex; overflow:hidden; flex:1; min-height:0; }
   .builder-left { width:260px; flex-shrink:0; border-right:1px solid var(--border); display:flex; flex-direction:column; padding:12px; overflow:hidden; background:var(--surface); gap:8px; height:100%; }
-  .builder-section-title { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .builder-section-title { margin-bottom:10px; }   /* type from shared .eyebrow */
   .builder-piece-list { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px; min-height:0; }
   .builder-piece-row { display:flex; align-items:center; gap:10px; padding:6px 8px; border-radius:8px; cursor:pointer; border:1px solid transparent; transition:all 0.15s; }
   .builder-piece-row:hover { background:var(--surface2); border-color:var(--border); }
@@ -96,9 +94,9 @@
   .builder-piece-brand { font-size:9px; color:var(--muted); margin-top:1px; }
   .builder-right { flex:1; overflow-y:auto; padding:24px; height:100%; min-width:0; }
   .builder-empty { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--muted); text-align:center; font-size:13px; }
-  .builder-results-title { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+  .builder-results-title { margin-bottom:20px; padding-bottom:12px; border-bottom:1px solid var(--border); }   /* type from .eyebrow-lg */
   .builder-outfit-group { margin-bottom:28px; }
-  .builder-group-label { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+  .builder-group-label { margin-bottom:12px; }   /* type from .eyebrow.on-accent */
   .builder-outfit-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; margin-bottom:14px; cursor:pointer; transition:border-color 0.15s; overflow:hidden; }
   .builder-outfit-card:hover { border-color:var(--accent2); }
   .builder-outfit-name { font-size:16px; font-weight:600; color:var(--white); margin-bottom:6px; }
@@ -107,7 +105,6 @@
   .builder-outfit-piece-img { width:32px; height:42px; flex-shrink:0; overflow:hidden; border-radius:6px; background:var(--surface); }
   .builder-outfit-piece-img img { width:100%; height:100%; object-fit:cover; object-position:top; }
   .builder-new-section { margin-top:28px; padding-top:20px; border-top:1px solid var(--border); }
-  .builder-new-title { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
 
   @media (max-width: 768px) {
     /* On small screens the page scrolls; panes stack top-to-bottom. */
@@ -161,7 +158,7 @@
   <div id="builder-suggest-view" style="display:flex;flex:1;overflow:hidden;">
     <div class="builder-layout" style="width:100%;">
       <div class="builder-left">
-        <div class="builder-section-title">Choose a piece to build around</div>
+        <div class="eyebrow builder-section-title">Choose a piece to build around</div>
         <input class="mgr-search" id="builder-search" placeholder="Search pieces&#8230;" type="text" style="flex:0;flex-shrink:0;width:100%;box-sizing:border-box;">
         <div class="builder-piece-list" id="builder-piece-list"></div>
       </div>
@@ -282,11 +279,11 @@ function renderBuilderOutfits() {
   const bk = bkey(item.brand);
   const bl = (BRANDS[bk] && BRANDS[bk].label) || item.brand;
 
-  let html = "<div class='builder-results-title'>" + bl + " — " + item.name + "</div>";
+  let html = "<div class='eyebrow-lg builder-results-title'>" + bl + " — " + item.name + "</div>";
 
   // Existing outfits
   if (existingOutfits.length) {
-    html += "<div class='builder-outfit-group'><div class='builder-group-label'>In " + existingOutfits.length + " existing outfit" + (existingOutfits.length !== 1 ? "s" : "") + "</div>";
+    html += "<div class='builder-outfit-group'><div class='eyebrow on-accent builder-group-label'>In " + existingOutfits.length + " existing outfit" + (existingOutfits.length !== 1 ? "s" : "") + "</div>";
     html += existingOutfits.map(o => {
       const photoSrc = OUTFIT_PHOTOS[o.id] || PROPOSAL_PHOTO_PATHS[o.id] || "";
       const stats = getOutfitStats(o);
@@ -378,7 +375,7 @@ function closetCardHtml(row) {
   const brandLabel = item ? ((BRANDS[bkey(item.brand)] && BRANDS[bkey(item.brand)].label) || item.brand) : "";
   return `<div class="closet-card ${cls}" data-key="${row.key}">
     <div class="closet-card-head">
-      <span class="closet-card-role">${row.label}</span>
+      <span class="eyebrow-sm on-accent">${row.label}</span>
       ${row.optional ? `<button class="closet-toggle" onclick="toggleClosetRow('${row.key}')" title="Include in look"></button>` : ""}
     </div>
     <div class="closet-card-photo">
@@ -388,7 +385,7 @@ function closetCardHtml(row) {
     </div>
     <div class="closet-card-info">
       <div class="cc-name">${item ? item.name : "—"}</div>
-      <div class="cc-brand">${brandLabel}</div>
+      <div class="eyebrow-sm cc-brand">${brandLabel}</div>
       <div class="cc-counter">${pool.length ? (idx + 1) + " / " + pool.length : "No items"}</div>
     </div>
   </div>`;

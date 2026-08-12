@@ -17,6 +17,8 @@
   --font-display: 'Avenir Next','Avenir','Nunito Sans','Helvetica Neue',sans-serif;
   --tracking:     0.14em;
   --fs-eyebrow:   9px;         /* small uppercase label size (the .eyebrow utility) */
+  --fs-eyebrow-sm: 8px;        /* micro label (.eyebrow-sm) */
+  --fs-eyebrow-lg: 11px;       /* section-title label (.eyebrow-lg) */
 
   --r-sm:  6px;  --r-md: 10px; --r-lg: 14px; --r-xl: 16px; --r-pill: 999px;
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
@@ -320,9 +322,12 @@ input:focus, textarea:focus, select:focus,
 /* Eyebrow — the small uppercase, letter-spaced, muted label used all over the app (section
    headers, kickers, field labels). Base is muted; add .on-accent or .strong to shift color.
    Pages should use this instead of re-declaring the same recipe inline. */
-.eyebrow { font-size: var(--fs-eyebrow); letter-spacing: var(--tracking); text-transform: uppercase; color: var(--muted); line-height: 1.1; }
-.eyebrow.on-accent { color: var(--accent); }
-.eyebrow.strong { color: var(--white); }
+.eyebrow, .eyebrow-sm, .eyebrow-lg { letter-spacing: var(--tracking); text-transform: uppercase; color: var(--muted); line-height: 1.1; }
+.eyebrow { font-size: var(--fs-eyebrow); }
+.eyebrow-sm { font-size: var(--fs-eyebrow-sm); }
+.eyebrow-lg { font-size: var(--fs-eyebrow-lg); }
+.eyebrow.on-accent, .eyebrow-sm.on-accent, .eyebrow-lg.on-accent { color: var(--accent); }
+.eyebrow.strong, .eyebrow-sm.strong, .eyebrow-lg.strong { color: var(--white); }
 
 /* Shared outfit card — EDITORIAL (horizontal) view + global h-piece item cards */
 .outfits-grid.horizontal { display: flex; flex-direction: column; gap: 16px; }

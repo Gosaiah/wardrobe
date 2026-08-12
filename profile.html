@@ -24,7 +24,7 @@
 
 
   /* ── SECTION LABEL ── */
-  .section-label { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 28px; }
+  .section-label { margin-bottom: 28px; }   /* type from shared .eyebrow */
   .section { margin-bottom: 80px; }
 
   /* ── HERO ── */
@@ -41,7 +41,6 @@
   .signature-text p + p { margin-top: 12px; }
   .stat-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
   .stat-pill { display: flex; align-items: center; gap: 6px; }
-  .stat-pill-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .stat-pill-bar { width: 60px; height: 2px; background: var(--surface2); border-radius:6px; overflow: hidden; }
   .stat-pill-fill { height: 100%; background: var(--accent); border-radius:6px; }
   .stat-pill-val { font-size: 10px; color: var(--accent); font-weight: 600; min-width: 20px; }
@@ -50,11 +49,10 @@
   .numbers-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 48px; }
   .numbers-cell { background: var(--surface); padding: 24px; }
   .numbers-value { font-size: 36px; font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px; }
-  .numbers-label { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
 
   .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
   .chart-block { background: var(--surface); border: 1px solid var(--border); padding: 24px; }
-  .chart-title { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+  .chart-title { margin-bottom: 20px; }   /* type from shared .eyebrow */
 
   .brand-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .brand-name { font-size: 10px; letter-spacing: 0.1em; color: var(--text); min-width: 72px; text-transform: uppercase; }
@@ -73,7 +71,7 @@
   .persona-header { display: grid; grid-template-columns: auto 1fr; gap: 40px; padding: 40px; align-items: start; border-bottom: 1px solid var(--border); }
   .persona-spider { flex-shrink: 0; }
   .persona-meta {}
-  .persona-number { font-size: 9px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 12px; }
+  .persona-number { margin-bottom: 12px; }   /* type from shared .eyebrow */
   .persona-name { font-size: 32px; font-weight: 700; color: var(--white); letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px; }
   .persona-alias { font-size: 12px; color: var(--muted); font-style: italic; margin-bottom: 10px; letter-spacing: 0.04em; }
   .persona-tagline { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
@@ -112,7 +110,7 @@
 
 <!-- STYLE SIGNATURE -->
 <section class="section">
-  <div class="section-label">Style Signature</div>
+  <div class="eyebrow section-label">Style Signature</div>
   <div class="signature-grid">
     <div class="signature-spider">
       <div id="spider-main"></div>
@@ -130,19 +128,19 @@
 
 <!-- BY THE NUMBERS -->
 <section class="section">
-  <div class="section-label">By The Numbers</div>
+  <div class="eyebrow section-label">By The Numbers</div>
   <div class="numbers-row">
-    <div class="numbers-cell"><div class="numbers-value" id="num-pieces">&ndash;</div><div class="numbers-label">Total Pieces</div></div>
-    <div class="numbers-cell"><div class="numbers-value" id="num-outfits">&ndash;</div><div class="numbers-label">Outfits</div></div>
-    <div class="numbers-cell"><div class="numbers-value" id="num-brands">&ndash;</div><div class="numbers-label">Brands</div></div>
+    <div class="numbers-cell"><div class="numbers-value" id="num-pieces">&ndash;</div><div class="eyebrow">Total Pieces</div></div>
+    <div class="numbers-cell"><div class="numbers-value" id="num-outfits">&ndash;</div><div class="eyebrow">Outfits</div></div>
+    <div class="numbers-cell"><div class="numbers-value" id="num-brands">&ndash;</div><div class="eyebrow">Brands</div></div>
   </div>
   <div class="charts-grid">
     <div class="chart-block">
-      <div class="chart-title">Brand Breakdown</div>
+      <div class="eyebrow chart-title">Brand Breakdown</div>
       <div id="brand-chart"></div>
     </div>
     <div class="chart-block">
-      <div class="chart-title">Outfit Vibes</div>
+      <div class="eyebrow chart-title">Outfit Vibes</div>
       <div id="vibe-chart"></div>
     </div>
   </div>
@@ -150,14 +148,14 @@
 
 <!-- PERSONAS -->
 <section class="section">
-  <div class="section-label">The Characters</div>
+  <div class="eyebrow section-label">The Characters</div>
 
   <!-- 1: Overlord -->
   <div class="persona">
     <div class="persona-header">
       <div class="persona-spider" id="spider-p1"></div>
       <div class="persona-meta">
-        <div class="persona-number">Character 01</div>
+        <div class="eyebrow persona-number">Character 01</div>
         <div class="persona-name">Overlord</div>
         <div class="persona-alias">aka Zayder</div>
         <div class="persona-tagline">Ancient. Already decided.</div>
@@ -177,7 +175,7 @@
     <div class="persona-header">
       <div class="persona-spider" id="spider-p2"></div>
       <div class="persona-meta">
-        <div class="persona-number">Character 02</div>
+        <div class="eyebrow persona-number">Character 02</div>
         <div class="persona-name">The Wanderer</div>
         <div class="persona-alias">aka Caius</div>
         <div class="persona-tagline">Ancient. Still moving.</div>
@@ -197,7 +195,7 @@
     <div class="persona-header">
       <div class="persona-spider" id="spider-p3"></div>
       <div class="persona-meta">
-        <div class="persona-number">Character 03</div>
+        <div class="eyebrow persona-number">Character 03</div>
         <div class="persona-name">Night Shift</div>
         <div class="persona-alias">aka Zay</div>
         <div class="persona-tagline">Rules don't apply after dark.</div>
@@ -217,7 +215,7 @@
     <div class="persona-header">
       <div class="persona-spider" id="spider-p4"></div>
       <div class="persona-meta">
-        <div class="persona-number">Character 04</div>
+        <div class="eyebrow persona-number">Character 04</div>
         <div class="persona-name">Civilian</div>
         <div class="persona-tagline">No audience. No armor.</div>
         <p class="persona-desc">No agenda. No audience. This is the version that shows up when there's nothing to prove — weekend, day off, close friends only. The clothes are still intentional, just quietly. The one most people never see.</p>
@@ -236,7 +234,7 @@
     <div class="persona-header">
       <div class="persona-spider" id="spider-p5"></div>
       <div class="persona-meta">
-        <div class="persona-number">Character 05</div>
+        <div class="eyebrow persona-number">Character 05</div>
         <div class="persona-name">Viceroy</div>
         <div class="persona-alias">aka Gunray</div>
         <div class="persona-tagline">Authority inside the system.</div>
@@ -400,7 +398,7 @@ const pillsEl = document.getElementById("stat-pills-main");
 const STAT_LABELS = {formality:"Formality",structure:"Structure",presence:"Presence",edge:"Edge",skin:"Skin",ornament:"Ornament",movement:"Movement",silhouette:"Silhouette",drama:"Drama"};
 Object.entries(STYLE_SIGNATURE).forEach(([k,v]) => {
   pillsEl.innerHTML += `<div class="stat-pill">
-    <span class="stat-pill-label">${STAT_LABELS[k]}</span>
+    <span class="eyebrow">${STAT_LABELS[k]}</span>
     <div class="stat-pill-bar"><div class="stat-pill-fill" style="width:${(v/5)*100}%"></div></div>
     <span class="stat-pill-val">${v.toFixed(1)}</span>
   </div>`;

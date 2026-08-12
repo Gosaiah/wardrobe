@@ -37,7 +37,6 @@
   .prio-low { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
   .shop-body { padding: 12px 14px 4px; flex: 1; }
-  .shop-brand { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
   .shop-name { font-size: 13px; color: var(--white); margin: 3px 0 2px; line-height: 1.3; }
   .shop-price { font-size: 11px; color: var(--accent); margin-bottom: 6px; }
   .shop-spider { display: flex; justify-content: center; margin: 4px 0 8px; }
@@ -126,7 +125,7 @@ function cardHtml(it) {
     '<div class="shop-photo"><span class="shop-tier tier-' + it.tier + '">' + (TIERLAB[it.tier] || it.tier) + '</span>' +
       '<span class="shop-prio prio-' + it.priority + '"><span class="dot ' + it.priority + '"></span>' + pr.label + '</span>' + img + '</div>' +
     '<div class="shop-body">' +
-      '<div class="shop-brand">' + it.brand + '</div>' +
+      '<div class="eyebrow">' + it.brand + '</div>' +
       '<div class="shop-name">' + it.name + '</div>' +
       '<div class="shop-price">' + it.price + '</div>' +
       '<div class="shop-spider">' + drawSpider(it.stats, 84) + '</div>' +

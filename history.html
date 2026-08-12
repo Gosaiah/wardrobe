@@ -15,7 +15,7 @@
   /* ── WORN HISTORY ── */
   .history-empty { color: var(--muted); font-size: 12px; padding: 40px 0; text-align: center; }
   .h-supportive-row { margin-top: 12px; }
-  .h-supportive-label { font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .h-supportive-label { margin-bottom: 6px; }   /* type from shared .eyebrow-sm */
   .h-supportive-thumbs { display: flex; gap: 6px; flex-wrap: wrap; }
   .h-supportive-thumb {
     width: 40px; height: 53px; border-radius:8px; overflow: hidden;
@@ -37,7 +37,7 @@
   .cal-nav-btn { background: none; border: 1px solid var(--border); color: var(--muted); cursor: pointer; padding: 9px 20px; border-radius:8px; font-family: inherit; font-size: 14px; letter-spacing: 0.06em; }
   .cal-nav-btn:hover { color: var(--accent); border-color: var(--accent2); }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .cal-weekday { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; padding-bottom: 6px; }
+  .cal-weekday { text-align: center; padding-bottom: 6px; }   /* type from shared .eyebrow */
   .cal-day {
     aspect-ratio: 1; border: 1px solid var(--border); border-radius:8px;
     background: var(--surface); position: relative; overflow: hidden;
@@ -210,7 +210,7 @@ function renderHistory() {
 
     const supportiveHtml = supportive.length
       ? "<div class='h-supportive-row'>" +
-          "<div class='h-supportive-label'>" + (outfit && OUTFIT_PHOTOS[outfit.id] ? "Your photos" : "Also worn") + "</div>" +
+          "<div class='eyebrow-sm h-supportive-label'>" + (outfit && OUTFIT_PHOTOS[outfit.id] ? "Your photos" : "Also worn") + "</div>" +
           "<div class='h-supportive-thumbs'>" + supportive.map(function(s) {
             return "<div class='h-supportive-thumb' data-src='" + s.src + "' data-caption='" + fmtDate(s.date) + " &middot; submitted photo' title='" + fmtDate(s.date) + "'><img src='" + s.src + "' alt=''></div>";
           }).join("") + "</div>" +
@@ -285,7 +285,7 @@ function renderCalendar() {
   const calFiltered = wornHistory.filter(wearMatchesFilters);
   calFiltered.forEach((w, i) => { (byDate[w.date] = byDate[w.date] || []).push({...w, _idx: wornHistory.indexOf(w)}); });
 
-  const weekdayLabels = ["S","M","T","W","T","F","S"].map(d => "<div class='cal-weekday'>"+d+"</div>").join("");
+  const weekdayLabels = ["S","M","T","W","T","F","S"].map(d => "<div class='eyebrow cal-weekday'>"+d+"</div>").join("");
 
   let cells = "";
   for (let i = 0; i < firstWeekday; i++) cells += "<div class='cal-day empty'></div>";
