@@ -18,7 +18,7 @@
   .t-wh-headline { font-size: 16px; color: var(--white); font-weight: 600; margin: 3px 0 11px; }
   .t-wh-rows { display: flex; flex-direction: column; gap: 7px; }
   .t-wh-row { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-  .t-wh-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); width: 34px; flex-shrink: 0; }
+  .t-wh-label { width: 34px; flex-shrink: 0; }   /* type from shared .eyebrow */
   .t-wh-chip { font-size: 11px; padding: 3px 11px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }
   .t-wh-chip.wear { color: var(--accent); border-color: var(--accent2); background: var(--accent-soft, rgba(226,211,180,0.1)); }
   .t-wh-chip.skip { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--border); opacity: 0.85; }
@@ -29,7 +29,7 @@
   .t-now-photo { position: relative; aspect-ratio: 3/4; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface2); cursor: pointer; }
   .t-now-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
   .t-now-photo-cap { position: absolute; inset: auto 0 0 0; padding: 12px 12px 11px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
-  .t-now-kicker { font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
+  .t-now-kicker { margin-bottom: 3px; }   /* type from shared .eyebrow.on-accent */
   .t-now-photo-title { color: var(--white); font-size: 13px; font-weight: 600; line-height: 1.2; }
   .t-now-photo-meta { color: rgba(255,255,255,0.7); font-size: 10px; margin-top: 2px; }
   .t-now-photo.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; border-style: dashed; cursor: default; color: var(--muted); padding: 16px; }
@@ -37,7 +37,7 @@
   .t-now-empty-label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
   .t-now-empty-sub { font-size: 10px; }
   .t-now-block { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); padding: 13px 14px 8px; }
-  .t-now-block-label { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white); }
+  /* .t-now-block-label → shared .eyebrow.strong */
   .t-now-block-sub { font-size: 10px; color: var(--muted); margin: 2px 0 8px; }
   .t-mini { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: none; border-top: 1px solid var(--border); padding: 6px 0; cursor: pointer; text-align: left; font-family: inherit; }
   .t-now-block .t-mini:first-of-type { border-top: none; }
@@ -53,7 +53,7 @@
   .t-contexts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
   /* .t-chip styling is shared (alter-theme.css filter/context chip) */
 
-  .t-section-label { font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+  /* .t-section-label removed — was unused; use shared .eyebrow if a section header is needed */
 
   /* Toolbar (why + actions + view toggle) above the 3 recommended outfits.
      The toggle restyles all 3 together via the shared outfitCardHtml view modes. */
@@ -184,8 +184,8 @@ function renderWeatherHero(){
       "<div class='t-wh-cond'>" + (BAND_LABEL[g.band] || "") + " &middot; " + NYC.label + "</div>" +
       "<div class='t-wh-headline'>" + g.headline + " today</div>" +
       "<div class='t-wh-rows'>" +
-        "<div class='t-wh-row'><span class='t-wh-label'>Wear</span>" + chips(g.wear, "wear") + "</div>" +
-        (g.skip && g.skip.length ? "<div class='t-wh-row'><span class='t-wh-label'>Skip</span>" + chips(g.skip, "skip") + "</div>" : "") +
+        "<div class='t-wh-row'><span class='eyebrow t-wh-label'>Wear</span>" + chips(g.wear, "wear") + "</div>" +
+        (g.skip && g.skip.length ? "<div class='t-wh-row'><span class='eyebrow t-wh-label'>Skip</span>" + chips(g.skip, "skip") + "</div>" : "") +
       "</div>" +
     "</div>";
 }
@@ -289,7 +289,7 @@ function nowMiniRow(x){
 function nowBlock(label, sub, list, total){
   const rows = list.length ? list.map(nowMiniRow).join("") : "<div class='t-now-more'>Nothing here — nice rotation.</div>";
   const more = total > list.length ? "<div class='t-now-more'>+" + (total - list.length) + " more</div>" : "";
-  return "<div class='t-now-block'><div class='t-now-block-label'>" + label + "</div><div class='t-now-block-sub'>" + sub + "</div>" + rows + more + "</div>";
+  return "<div class='t-now-block'><div class='eyebrow strong'>" + label + "</div><div class='t-now-block-sub'>" + sub + "</div>" + rows + more + "</div>";
 }
 function renderNow(){
   const el = document.getElementById("t-now"); if (!el) return;
@@ -305,7 +305,7 @@ function renderNow(){
     const inner = photo ? "<img src='" + photo + "' alt='Today'>"
       : "<div class='t-now-photo empty'>" + (typeof outfitPlaceholderInner === "function" ? outfitPlaceholderInner("Logged") : "") + "</div>";
     photoCard = "<div class='t-now-photo' id='t-today-wear'>" + inner +
-      "<div class='t-now-photo-cap'><div class='t-now-kicker'>Today · worn</div>" +
+      "<div class='t-now-photo-cap'><div class='eyebrow on-accent t-now-kicker'>Today · worn</div>" +
       "<div class='t-now-photo-title'>" + (outfit ? outfit.name : "Today's look") + "</div>" +
       (meta ? "<div class='t-now-photo-meta'>" + meta + "</div>" : "") + "</div></div>";
   } else {
