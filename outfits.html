@@ -187,18 +187,8 @@
   /* Item/outfit-detail popup, pair-card, stats-overlay and outfit-photo styling are
      single-sourced in components.css + alter-theme.css (same as every other page). */
 
-  /* ── STATS ── */
-  .spider-wrap { display:flex; align-items:center; justify-content:center; padding:12px 0 8px; }
-  .outfit-spider-wrap { display:flex; align-items:center; justify-content:center; gap:12px; padding:10px 16px 12px; border-top:1px solid var(--border); }
-  .spider-legend { display:flex; flex-direction:column; gap:4px; }
-  .spider-legend-item { display:flex; align-items:center; gap:5px; font-size:8px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
-  .spider-legend-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-  /* stat filters */
-  .stat-filter-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:10px 24px; border-bottom:1px solid var(--border); background:#111; }
-  .stat-filter-label { font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); }
-  .stat-filter-group { display:flex; align-items:center; gap:5px; }
-  .stat-filter-name { font-size:9px; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; }
-  .stat-range { accent-color:var(--accent); width:70px; cursor:pointer; }
+  /* (dead spider-legend + stat-filter clusters removed — legend/filters replaced by the
+     shared FacetFilter + spider renderer long ago) */
 
 
   /* horizontal/editorial + h-piece + view-toggle + card-view CSS now shared in alter-theme.css */
@@ -217,8 +207,6 @@
     .filter-row::-webkit-scrollbar { display: none; }
 
     /* STAT FILTER ROW */
-    .stat-filter-row { padding: 8px 16px; gap: 6px; overflow-x: auto; flex-wrap: nowrap; }
-    .stat-range { width: 50px; }
 
     /* SIDEBAR — hide on mobile */
     .sidebar { display: none !important; }
@@ -246,7 +234,6 @@
     .modal { width: 95vw; padding: 20px 16px; }
 
     /* SPIDER CHART — scale down on small screens */
-    .outfit-spider-wrap svg { width: 70px !important; height: 70px !important; }
   }
 
   /* (480px outfit-grid + editorial sizing handled in alter-theme.css) */
