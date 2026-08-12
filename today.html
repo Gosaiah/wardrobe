@@ -318,7 +318,9 @@ function renderNow(){
   // actually make sense for today's temperature (no heavy coats at 89°, no tanks at 30°).
   const band = (typeof tempBand === "function") ? tempBand(currentTemp) : null;
   const bw = (band && typeof BAND_WARMTH !== "undefined" && BAND_WARMTH[band]) ? BAND_WARMTH[band] : null;
-  const fitsToday = it => { if (!bw || typeof itemWarmth !== "function") return true; const w = itemWarmth(it); return w >= bw.hardMin && w <= bw.hardMax; };
+  // Use the SOFT (comfortable) range, not the hard tolerance — a nudge should only suggest pieces
+  // genuinely good for today, matching the hero's Wear/Skip guidance (e.g. no coats at 79°).
+  const fitsToday = it => { if (!bw || typeof itemWarmth !== "function") return true; const w = itemWarmth(it); return w >= bw.softMin && w <= bw.softMax; };
   const items = (typeof WARDROBE_DATA !== "undefined" ? WARDROBE_DATA : []).filter(it => {
     const role = (typeof pieceRole === "function") ? pieceRole(it) : it.type;
     if (role === "accessory") return false;
