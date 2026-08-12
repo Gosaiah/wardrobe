@@ -63,6 +63,8 @@
 <script src="data.js"></script>
 <script src="store.js"></script>
 <script src="modals.js"></script>
+<script src="facet-filter.js"></script>
+<script src="filter-modal.js"></script>
 
 <main class="app-page">
   <div class="page-header">
@@ -70,20 +72,13 @@
       <h1 class="page-title">History</h1>
     </div>
     <div class="page-actions history-toolbar">
-      <div class="history-filters">
-        <button class="filter-btn active" data-hfilter="all">All</button>
-        <button class="filter-btn" data-hfilter="dark">Dark / Minimal</button>
-        <button class="filter-btn" data-hfilter="tonal">Tonal</button>
-        <button class="filter-btn" data-hfilter="contrast">Contrast</button>
-        <button class="filter-btn" data-hfilter="night">Night Out</button>
-      </div>
+      <span id="hist-filters-slot"></span>
       <div class="view-toggle" style="margin-left:auto">
         <button class="view-toggle-btn active" id="htoggle-card" title="Card view">&#9646;</button>
         <button class="view-toggle-btn" id="htoggle-feed" title="Feed view">&#9776;</button>
         <button class="view-toggle-btn" id="htoggle-cal" title="Calendar view">&#9783;</button>
       </div>
     </div>
-    <div class="history-filters" id="hoccasions" style="margin-top:8px"></div>
   </div>
   <div class="history-list history-card-view" id="history-list" style="width:100%"></div>
   <div class="cal-wrap" id="history-calendar" style="display:none;width:100%"></div>
@@ -343,42 +338,66 @@ function renderCalendar() {
 // Two independent axes ANDed together: style tag (dark/tonal/…) and occasion (work/night-out/…).
 let historyFilter = "all";
 let occasionFilter = "all";
+let histFacetCtl = null;
+let histFilterBtn = null;
 function wearMatchesFilters(w){
+  const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
   if (historyFilter !== "all"){
-    const outfit = w.outfitId != null ? outfits.find(o => o.id === w.outfitId) : null;
     if (!outfit || !outfitFilterTags(outfit).has(historyFilter)) return false;
   }
   if (occasionFilter !== "all" && !wearOccasionList(w).includes(occasionFilter)) return false;
+  if (histFacetCtl && histFacetCtl.active()){
+    const st = outfit ? ((typeof effectiveOutfitStats === "function" && effectiveOutfitStats(outfit)) || outfit.stats) : null;
+    if (!st || !histFacetCtl.matches(st)) return false;
+  }
   return true;
 }
-document.querySelectorAll("[data-hfilter]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    historyFilter = btn.dataset.hfilter;
-    document.querySelectorAll("[data-hfilter]").forEach(b => b.classList.toggle("active", b.dataset.hfilter === historyFilter));
-    renderHistory();
-    if (document.getElementById("history-calendar").style.display !== "none") renderCalendar();
-  });
-});
+function histRerender(){
+  renderHistory();
+  if (document.getElementById("history-calendar").style.display !== "none") renderCalendar();
+}
 
-// Occasion chips — built from the occasions actually present in the wear log (canonical order).
-(function buildOccasionFilters(){
-  const bar = document.getElementById("hoccasions");
-  if (!bar) return;
-  const present = (typeof OCCASION_ORDER !== "undefined" ? OCCASION_ORDER : [])
-    .filter(k => wornHistory.some(w => wearOccasionList(w).includes(k)));
-  if (!present.length) { bar.style.display = "none"; return; }
-  const chip = (val, label, active) => "<button class='filter-btn" + (active ? " active" : "") + "' data-ofilter='" + val + "'>" + label + "</button>";
-  bar.innerHTML = chip("all", "All occasions", true) +
-    present.map(k => chip(k, (typeof occasionLabel === "function" ? occasionLabel(k) : k))).join("");
-  bar.querySelectorAll("[data-ofilter]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      occasionFilter = btn.dataset.ofilter;
-      bar.querySelectorAll("[data-ofilter]").forEach(b => b.classList.toggle("active", b.dataset.ofilter === occasionFilter));
-      renderHistory();
-      if (document.getElementById("history-calendar").style.display !== "none") renderCalendar();
-    });
-  });
-})();
+// ── Shared FilterModal: Category + Occasion + Stat sliders ──
+function setupHistoryFilterModal(){
+  if (typeof FilterModal === "undefined") return;
+  const HCATS = [["all","All"],["dark","Dark / Minimal"],["tonal","Tonal"],["contrast","Contrast"],["night","Night Out"]];
+  const present = (typeof OCCASION_ORDER !== "undefined" ? OCCASION_ORDER : []).filter(k => wornHistory.some(w => wearOccasionList(w).includes(k)));
+  const occItems = [["all","All occasions"]].concat(present.map(k => [k, (typeof occasionLabel === "function" ? occasionLabel(k) : k)]));
+  function histCount(){
+    let n = (historyFilter !== "all" ? 1 : 0) + (occasionFilter !== "all" ? 1 : 0);
+    if (histFacetCtl && histFacetCtl.values) FacetFilter.KEYS.forEach(k => { if (histFacetCtl.values[k] > 0) n++; });
+    return n;
+  }
+  function syncCount(){ if (histFilterBtn) histFilterBtn.setCount(histCount()); }
+  function chipRow(items, getActive, onPick){
+    const wrap = document.createElement("div"); wrap.className = "fm-chips";
+    wrap.innerHTML = items.map(it => "<button class='filter-btn" + (it[0]===getActive() ? " active" : "") + "' data-v='" + it[0] + "'>" + it[1] + "</button>").join("");
+    wrap.querySelectorAll("[data-v]").forEach(b => b.addEventListener("click", () => {
+      wrap.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("active", x === b));
+      onPick(b.dataset.v); histRerender(); syncCount();
+    }));
+    return wrap;
+  }
+  const grp = (label, el) => { const g = document.createElement("div"); g.className = "fm-group"; g.innerHTML = "<span class='fm-label'>" + label + "</span>"; g.appendChild(el); return g; };
+  const catRow = chipRow(HCATS, () => historyFilter, v => { historyFilter = v; });
+  const occRow = occItems.length > 1 ? chipRow(occItems, () => occasionFilter, v => { occasionFilter = v; }) : null;
+  const facetWrap = document.createElement("div");
+  const modal = FilterModal.create({ title:"Filter history", onReset:function(){
+    historyFilter = "all"; occasionFilter = "all"; if (histFacetCtl) histFacetCtl.reset();
+    catRow.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("active", x.dataset.v === "all"));
+    if (occRow) occRow.querySelectorAll("[data-v]").forEach(x => x.classList.toggle("active", x.dataset.v === "all"));
+    histRerender(); syncCount();
+  }});
+  modal.body.appendChild(grp("Category", catRow));
+  if (occRow) modal.body.appendChild(grp("Occasion", occRow));
+  modal.body.appendChild(facetWrap);
+  histFilterBtn = FilterModal.trigger("Filters");
+  document.getElementById("hist-filters-slot").appendChild(histFilterBtn);
+  histFilterBtn.addEventListener("click", modal.open);
+  histFacetCtl = FacetFilter.mount(facetWrap, function(){ histRerender(); syncCount(); });
+  syncCount();
+}
+setupHistoryFilterModal();
 
 // ── Piece clicks → item detail (feed-view piece cards / wear-detail pieces) ──
 document.addEventListener("click", function(e) {
