@@ -314,20 +314,25 @@ function renderNow(){
       "<span class='t-now-empty-label'>No look logged today</span>" +
       "<span class='t-now-empty-sub'>Pick one below</span></div>";
   }
-  // Closet nudges — garments only (skip accessories / jewelry buffs)
+  // Closet nudges — garments only (skip accessories / jewelry buffs), and only pieces that
+  // actually make sense for today's temperature (no heavy coats at 89°, no tanks at 30°).
+  const band = (typeof tempBand === "function") ? tempBand(currentTemp) : null;
+  const bw = (band && typeof BAND_WARMTH !== "undefined" && BAND_WARMTH[band]) ? BAND_WARMTH[band] : null;
+  const fitsToday = it => { if (!bw || typeof itemWarmth !== "function") return true; const w = itemWarmth(it); return w >= bw.hardMin && w <= bw.hardMax; };
   const items = (typeof WARDROBE_DATA !== "undefined" ? WARDROBE_DATA : []).filter(it => {
     const role = (typeof pieceRole === "function") ? pieceRole(it) : it.type;
     if (role === "accessory") return false;
     if (typeof isJewelryEnhancement === "function" && isJewelryEnhancement(it)) return false;
-    return true;
+    return fitsToday(it);
   });
   const withN = items.map(it => ({ it, n: getWearCount("item", it.id), last: getLastWorn("item", it.id), added: it.added || "" }));
   const never = withN.filter(x => x.n === 0).sort((a,b) => (b.added||"").localeCompare(a.added||"") || a.it.name.localeCompare(b.it.name));
   const least = withN.filter(x => x.n >= 1).sort((a,b) => a.n - b.n || (a.last||"").localeCompare(b.last||""));
-  const neverSub = never.some(x => x.added) ? "New arrivals + never worn" : "Haven't worn these yet";
+  const forToday = bw ? " · good for today" : "";
+  const neverSub = (never.some(x => x.added) ? "New arrivals + never worn" : "Haven't worn these yet") + forToday;
   el.innerHTML = photoCard +
     nowBlock("New &amp; never worn", neverSub, never.slice(0,6), never.length) +
-    nowBlock("Worn least", "Rotate these back in", least.slice(0,6), least.length);
+    nowBlock("Worn least", "Rotate these back in" + forToday, least.slice(0,6), least.length);
 }
 
 // ── Rendering (reuses the shared outfitCardHtml — card/grid/editorial views) ──
