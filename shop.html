@@ -42,7 +42,6 @@
   .shop-spider { display: flex; justify-content: center; margin: 4px 0 8px; }
   .shop-fill { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
   .persona-chip { font-size: 8px; letter-spacing: .1em; text-transform: uppercase; background: var(--accent); color: var(--on-accent); font-weight: 700; padding: 2px 7px; border-radius: var(--r-sm); }
-  .fills-chip { font-size: 8px; letter-spacing: .08em; text-transform: uppercase; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); padding: 2px 7px; border-radius: var(--r-sm); }
   .shop-why { font-size: 11px; color: var(--muted); line-height: 1.5; margin: 0 0 12px; }
   .shop-view { display: block; text-align: center; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); border-top: 1px solid var(--border); padding: 10px; text-decoration: none; transition: color var(--tr); }
   .shop-view:hover { color: var(--accent); }
@@ -129,7 +128,7 @@ function cardHtml(it) {
       '<div class="shop-name">' + it.name + '</div>' +
       '<div class="shop-price">' + it.price + '</div>' +
       '<div class="shop-spider">' + drawSpider(it.stats, 84) + '</div>' +
-      '<div class="shop-fill"><span class="persona-chip">' + (PLAB[it.persona]||it.persona) + '</span><span class="fills-chip">' + it.fills + '</span></div>' +
+      '<div class="shop-fill"><span class="persona-chip">' + (PLAB[it.persona]||it.persona) + '</span><span class="chip">' + it.fills + '</span></div>' +
       '<p class="shop-why">' + it.why + '</p>' +
     '</div>' +
     '<div class="shop-foot">' +

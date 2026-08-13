@@ -231,10 +231,10 @@ function renderMgr() {
         "<div class='mgr-item-name'>" + item.name + "</div>" +
         "<div style='display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;align-items:center'>" +
           "<span class='item-code'>" + item.id + "</span>" +
-          "<span class='mgr-tag'>" + (item.type||item.cat||"—") + "</span>" +
-          (item.color&&item.color!=="—"?"<span class='mgr-tag'>"+item.color+"</span>":"") +
-          (item.size&&item.size!=="—"?"<span class='mgr-tag'>"+item.size+"</span>":"") +
-          (isCustom?"<span class='mgr-tag' style='color:var(--accent)'>custom</span>":"") +
+          "<span class='chip'>" + (item.type||item.cat||"—") + "</span>" +
+          (item.color&&item.color!=="—"?"<span class='chip'>"+item.color+"</span>":"") +
+          (item.size&&item.size!=="—"?"<span class='chip'>"+item.size+"</span>":"") +
+          (isCustom?"<span class='chip' style='color:var(--accent)'>custom</span>":"") +
         "</div>" +
         "<div style='font-size:10px;letter-spacing:0.06em'>" +
           (outfitCount > 0

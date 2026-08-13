@@ -29,7 +29,7 @@
 .mgr-item-info { padding:12px 14px 14px; }
 .mgr-item-brand { font-size:9px; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px; }
 .mgr-item-name { font-size:13px; color:var(--text); line-height:1.3; margin-bottom:8px; font-weight:500; }
-.mgr-tag { font-size:8px; padding:2px 6px; border:1px solid var(--border); color:var(--muted); border-radius:6px; text-transform:uppercase; letter-spacing:0.06em; margin-right:4px; }
+/* .mgr-tag → shared .chip */
 .mgr-item-cv { display:none; position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to bottom, transparent, rgba(0,0,0,0.82)); padding:30px 10px 10px; }
 .mgr-item-cv-brand { font-size:8px; letter-spacing:0.14em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:2px; }
 .mgr-item-cv-name { font-size:12px; font-weight:600; color:var(--white); line-height:1.2; }
