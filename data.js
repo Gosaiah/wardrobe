@@ -370,7 +370,7 @@ const OUTFITS_DEFAULT = [
   {id:58,name:"Linen Cargo Easy",vibe:"Tonal",tags:["tonal"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"am3",name:"Oversized Drop Shoulder Tee Green",brand:"AMAZON"},{role:"Bottom",id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:59,name:"Grey Print Jogger",vibe:"Dark / Minimal",tags:["dark"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz2",name:"Kanye West Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"m15",name:"Reverse Edge Construct Jogger",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:60,name:"Print & Linen",vibe:"Earthy",tags:["earthy","print"],source:"proposed",proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"m2",name:"Quark Linen Cargo Layered Skirt Trousers",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
-  {id:61,name:"Sequin & Tulle",vibe:"Night Out",tags:["dark","night"],source:"proposed",proposal:"night-out",persona:"wanderer",pieces:[{role:"Top",id:"r2",name:"Fever Arc Sequin Embroidery Vest",brand:"RYVK"},{role:"Bottom",id:"r4",name:"Prism Flow Tulle Wide Leg Pants",brand:"RYVK"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
+  {id:61,name:"Sequin Statement",vibe:"Night Out",tags:["dark","night"],source:"proposed",proposal:"night-out",persona:"wanderer",pieces:[{role:"Top",id:"r2",name:"Fever Arc Sequin Embroidery Vest",brand:"RYVK"},{role:"Bottom",id:"o2",name:"Brunello Pants",brand:"ORTTU"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
   {id:62,name:"Raye Print Lounge",vibe:"Tonal",tags:["tonal"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"mz1",name:"Raye Print Round Neck T-shirt",brand:"MUAZOE"},{role:"Bottom",id:"al1",name:"Double Take Short Black",brand:"ALO"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
   {id:63,name:"Photo Tee Espresso",vibe:"Dark / Minimal",tags:["dark"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"hd1",name:"Mature Photo Tee",brand:"HILARYDUFF"},{role:"Bottom",id:"al2",name:"Double Take Short Espresso",brand:"ALO"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:64,name:"Olive Tee + Pinstripe Tailoring",vibe:"Tonal",tags:["tonal"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"z2",name:"Relaxed Fit Interlock T-Shirt",brand:"ZARA",styling:["tucked"]},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"pw2",name:"Pai-Weite High-Top Sneakers Black",brand:"JAKCUZ"}]},
@@ -459,7 +459,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 173;
+const DATA_VERSION = 174;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
