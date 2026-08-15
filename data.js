@@ -1064,7 +1064,7 @@ function outfitCardHtml(outfit, opts){
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
   { date:"2026-08-14", outfitId:74, outfitSource:"detected", occasion:["work","night-out","concert"], itemIds:["z1","m11","dm1"], photo:"wear-photos/wear_2026-08-14.jpg" },
-  { date:"2026-08-11", outfitId:73, outfitSource:"detected", occasion:["casual"], itemIds:["am2","m12","dm1"], photo:"wear-photos/wear_2026-08-11.jpg" },
+  { date:"2026-08-11", outfitId:73, outfitSource:"detected", occasion:["work"], itemIds:["am2","m12","dm1"], photo:"wear-photos/wear_2026-08-11.jpg" },
   { date:"2025-05-25", outfitId:70, outfitSource:"detected", occasion:["wedding"], itemIds:["m6","o3","o4","y2"], photo:"wear-photos/wear_2025-05-25.jpg" },
   { date:"2026-05-01", outfitId:72, outfitSource:"detected", occasion:["night-out","concert"], itemIds:["o6","o3","m14","y2"], photo:"wear-photos/wear_2026-05-01.jpg" },
   { date:"2026-05-08", outfitId:71, outfitSource:"detected", occasion:["night-out"], itemIds:["am7","m18","m14","pw1"], photo:"wear-photos/wear_2026-05-08.jpg" },
