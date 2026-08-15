@@ -380,7 +380,8 @@ const OUTFITS_DEFAULT = [
   {id:70,name:"Cream Pinstripe Suit",vibe:"Tailored / Contrast",tags:["contrast"],source:"detected",persona:"viceroy",pieces:[{role:"Top",id:"m6",name:"Sleeveless Collar Shirt",brand:"MINOAR"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"o4",name:"Roberto Jacket",brand:"ORTTU"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
   {id:71,name:"Distressed Burgundy Layers",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"am7",name:"Cable Knit Sweater Vest Burgundy",brand:"AMAZON"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:72,name:"Rust Shirt Distressed Coat",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o6",name:"Raphael Shirt",brand:"ORTTU"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
-  {id:73,name:"Blue Tee & Graphite Cargo",vibe:"Casual / Streetwear",tags:["casual"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON"},{role:"Bottom",id:"m12",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
+  {id:73,name:"Blue Tee & Graphite Cargo",vibe:"Casual / Streetwear",tags:["casual"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON"},{role:"Bottom",id:"m12",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
+  {id:74,name:"Open Collar All Black",vibe:"Dark / Minimal",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
 ];
 
 
@@ -456,7 +457,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 167;
+const DATA_VERSION = 168;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -1062,6 +1063,7 @@ function outfitCardHtml(outfit, opts){
    mutable `wornHistory` is the writer; the getters below read it when present,
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
+  { date:"2026-08-14", outfitId:74, outfitSource:"detected", occasion:["night-out"], itemIds:["z1","m11","dm1"], photo:"wear-photos/wear_2026-08-14.jpg" },
   { date:"2026-08-11", outfitId:73, outfitSource:"detected", occasion:["casual"], itemIds:["am2","m12","dm1"], photo:"wear-photos/wear_2026-08-11.jpg" },
   { date:"2025-05-25", outfitId:70, outfitSource:"detected", occasion:["wedding"], itemIds:["m6","o3","o4","y2"], photo:"wear-photos/wear_2025-05-25.jpg" },
   { date:"2026-05-01", outfitId:72, outfitSource:"detected", occasion:["night-out","concert"], itemIds:["o6","o3","m14","y2"], photo:"wear-photos/wear_2026-05-01.jpg" },
