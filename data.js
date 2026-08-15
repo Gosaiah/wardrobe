@@ -31,6 +31,7 @@ const BRANDS = {
   UNBRANDED:{label:"Unbranded",dot:"dot-frkm",tag:"tag-frkm"},
   YEEZYGAP:{label:"Yeezy Gap",dot:"dot-frkm",tag:"tag-frkm"},
   DEMONIA:{label:"Demonia",dot:"dot-yasar",tag:"tag-yasar"},
+  FIELDTRIP:{label:"3.3 Field Trip",dot:"dot-yasar",tag:"tag-yasar"},
 };
 
 const BRAND_URLS = {
@@ -292,6 +293,7 @@ const WARDROBE_DATA = [
   {id:"md2",name:"Hogo Coat",brand:"MDNT45",color:"Black",size:"L",cat:"Coat",type:"outer",style:"Dark / Minimal",url:"https://www.mdnt45.com/products/hogo-coat",img:"item-photos/md2.jpg",stats:{drama:4,structure:4,skin:0,edge:3,formality:3,presence:4,silhouette:3,movement:1.5,ornament:0.5}},
   {id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA",color:"Black",size:"EU 44",cat:"Boots",type:"shoes",style:"Dark / Minimal",url:"https://demoniacult.com/products/neptune-210bvl",stats:{drama:4.5,structure:5,skin:0,edge:4.5,formality:1,presence:4.5,silhouette:0,movement:0,ornament:0}},
   {id:"yg1",name:"Yeezy Gap Dove Hoodie",brand:"YEEZYGAP",color:"Dark Grey",size:"—",cat:"Hoodie",type:"outer",style:"Dark / Minimal",url:"https://www.goat.com/apparel/yeezy-gap-dove-hoodie-dark-grey-4605510320000",img:"item-photos/yg1.jpg",stats:{drama:2.5,structure:1.5,skin:0,edge:1,formality:1.5,presence:2,silhouette:2.5,movement:1.5,ornament:0}},
+  {id:"ft1",name:"Crinkle Short-Sleeve Shirt",brand:"FIELDTRIP",color:"Black",size:"One Size",cat:"Shirt",type:"top",style:"Dark / Minimal",added:"2026-08-15",warmth:0.5,img:"item-photos/ft1.jpg",stats:{drama:1.5,structure:1.5,skin:1,edge:1,formality:2,presence:1,silhouette:2,movement:2,ornament:0.5}},
 ];
 
 // ── DRAMA FACETS ────────────────────────────────────────────────────────────
@@ -457,7 +459,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 169;
+const DATA_VERSION = 170;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
