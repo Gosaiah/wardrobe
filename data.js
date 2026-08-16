@@ -1027,11 +1027,7 @@ function outfitCardHtml(outfit, opts){
       : (photoSrc ? "<div class='outfit-photo'>" + badges + "<img src='" + photoSrc + "' alt='" + outfit.name + "'></div>"
                   : "<div class='outfit-photo outfit-photo-empty'>" + badges + outfitPlaceholderInner() + "</div>");
     const hPieces = (outfit.pieces || []).map(function(p){
-      var im = pieceImg(p);
-      return "<div class='h-piece-card piece-name-link' data-name=\"" + p.name + "\" data-brand=\"" + (p.brand||"") + "\">" +
-        "<div class='h-piece-img'>" + (im ? "<img src='" + im + "' alt='" + p.name + "' loading='lazy'>" : "<div class='h-piece-img-empty'>&#x25C8;</div>") + "</div>" +
-        "<div class='h-piece-info'><div class='h-piece-role'>" + (p.role||"") + "</div><div class='h-piece-name'>" + p.name + "</div></div>" +
-      "</div>";
+      return pieceCardHtml(p, { view: "row" });   // reuse the shared compact piece card (no bespoke markup)
     }).join("");
     return "<div class='outfit-card horizontal" + extraCls + "'" + dataId + extraAttrs + ">" +
       ePhoto +

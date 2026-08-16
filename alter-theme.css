@@ -344,16 +344,9 @@ input:focus, textarea:focus, select:focus,
 .outfit-card.horizontal .outfit-number { font-size: 10px; letter-spacing: 0.14em; color: var(--muted); margin-bottom: 3px; }
 .outfit-card.horizontal .outfit-name { font-size: 18px; font-weight: 600; color: var(--white); }
 .outfit-card.horizontal .outfit-vibe { font-size: 11px; color: var(--accent); font-style: italic; margin-top: 3px; }
-.h-pieces-row { display: flex; gap: 12px; padding: 16px 20px; flex: 1; overflow-x: auto; align-items: flex-start; }
-/* h-piece — a compact clothing-item card (global; used in editorial outfit cards + history) */
-.h-piece-card { flex-shrink: 0; width: 180px; cursor: pointer; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface2); transition: border-color 0.15s; }
-.h-piece-card:hover { border-color: var(--accent2); }
-.h-piece-img { width: 180px; height: 220px; overflow: hidden; background: var(--surface2); }
-.h-piece-img img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
-.h-piece-img-empty { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: var(--border); font-size: 24px; }
-.h-piece-info { padding: 8px 10px 10px; }
-.h-piece-role { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-.h-piece-name { font-size: 11px; color: var(--text); line-height: 1.3; }
+/* Editorial piece strip — a responsive grid of the shared compact .piece-card (pc-row).
+   Fills the container at any width instead of a scrolling row of oversized cards. */
+.h-pieces-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; padding: 14px 20px; flex: 1; align-content: start; }
 
 /* Shared clickable clothing-item piece card (pairing suggestions, wear-detail rows, …).
    Whole card is a .piece-name-link; gold hover matches .mgr-item / .outfit-card.
@@ -383,10 +376,7 @@ input:focus, textarea:focus, select:focus,
   .outfit-card-horizontal-right { width: auto; flex: 1; min-width: 0; }
   .outfit-card.horizontal .outfit-card-header { padding: 12px 14px 8px; }
   .outfit-card.horizontal .outfit-name { font-size: 15px; }
-  .outfit-card.horizontal .h-pieces-row { flex-direction: column; overflow-x: visible; gap: 8px; padding: 10px 14px; }
-  .outfit-card.horizontal .h-piece-card { width: 100%; display: flex; align-items: center; }
-  .outfit-card.horizontal .h-piece-img { width: 46px; min-width: 46px; height: 58px; }
-  .outfit-card.horizontal .h-piece-info { padding: 6px 10px; flex: 1; min-width: 0; }
+  .outfit-card.horizontal .h-pieces-row { grid-template-columns: 1fr; gap: 8px; padding: 10px 14px; }
 }
 
 /* View toggle (card / grid / editorial) — shared control */
