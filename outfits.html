@@ -621,7 +621,7 @@ function renderGrid() {
     return;
   }
 
-  grid.classList.remove("horizontal", "card-view");
+  grid.classList.remove("horizontal", "card-view", "grid-view");
   if (outfitViewMode === "horizontal") {
     grid.classList.add("horizontal");
     grid.innerHTML = filtered.map(renderHorizontalCard).join("");
@@ -647,6 +647,7 @@ function renderGrid() {
     return;
   }
   // Shared grid card builder (data.js). One source across Outfits + Today.
+  grid.classList.add("grid-view");
   grid.innerHTML = filtered.map(outfit =>
     outfitCardHtml(outfit, { view: "grid", photo: OUTFIT_PHOTOS[outfit.id] || PROPOSAL_PHOTO_PATHS[outfit.id] || "" })
   ).join("");

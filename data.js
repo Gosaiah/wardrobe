@@ -459,7 +459,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 175;
+const DATA_VERSION = 176;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -763,7 +763,7 @@ function drawSpider(stats, size, fillColor, uid, hideCaption){
   const fill = fillColor || "var(--accent)";
   const keys = SPIDER_KEYS, labels = SPIDER_LABELS, n = keys.length;
   const fullMode = size >= 120;
-  const pad = fullMode ? size * 0.30 : size * 0.26;      // card mode needs room for 2 peak labels
+  const pad = fullMode ? size * 0.30 : size * 0.17;      // card mode: just enough for the 2 peak labels (tighter box = less wasted space)
   const W = size + pad * 2, cx = W / 2, cy = W / 2;
   const top2 = fullMode ? [] : spiderTop2(stats);
   const capText = top2.map(t => SPIDER_LABELS[keys.indexOf(t[0])]).join("  ·  ");
@@ -956,7 +956,7 @@ function outfitCardHtml(outfit, opts){
   // effective stats when the pieces resolve; else the outfit's own precomputed stats
   // (proposals/aspirational looks whose pieces aren't in the wardrobe).
   const stats = ((typeof effectiveOutfitStats === "function") ? effectiveOutfitStats(outfit) : null) || outfit.stats || null;
-  const spiderHtml = stats ? "<div class='cv-spider'>" + drawSpider(stats, 64, "rgba(226,211,180,0.9)", "cv", true) + "</div>" : "";
+  const spiderHtml = stats ? "<div class='cv-spider'>" + drawSpider(stats, 52, "rgba(226,211,180,0.9)", "cv", true) + "</div>" : "";
   const photoSrc = opts.photo || "";
   // Global fallback: an outfit with no generated photo shows a collage of its piece
   // images (like Today's built combos). Explicit opts.collage still wins.

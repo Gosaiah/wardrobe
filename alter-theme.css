@@ -242,6 +242,7 @@ input:focus, textarea:focus, select:focus,
 .card-grid,
 .t-results,
 .outfits-grid.card-view,
+.outfits-grid.grid-view,
 .mgr-items.card-view,
 .proposals-list.card-view,
 .shop-grid,
@@ -254,6 +255,7 @@ input:focus, textarea:focus, select:focus,
   .card-grid,
   .t-results,
   .outfits-grid.card-view,
+  .outfits-grid.grid-view,
   .mgr-items.card-view,
   .proposals-list.card-view,
   .shop-grid,
@@ -262,6 +264,7 @@ input:focus, textarea:focus, select:focus,
 /* Per-container density (only the token differs; the behavior above is shared) */
 .t-results                { --card-min: 260px; --card-gap: 16px; }
 .outfits-grid.card-view   { --card-min: 220px; --card-gap: 12px; }
+.outfits-grid.grid-view   { --card-min: 200px; --card-gap: 12px; }
 .mgr-items.card-view      { --card-min: 180px; --card-gap: 10px; }
 .proposals-list.card-view { --card-min: 220px; --card-gap: 10px; }
 .shop-grid                { --card-min: 240px; --card-gap: 16px; }
