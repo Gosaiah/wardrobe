@@ -361,7 +361,7 @@ const OUTFITS_DEFAULT = [
   // ── Proposal-only outfits (never promoted to board) ──
   {id:44,name:"Burgundy Prep",vibe:"Contrast",tags:["contrast"],source:"proposed",persona:"civilian",pieces:[{role:"Vest",id:"am7",name:"Cable Knit Sweater Vest Burgundy",brand:"AMAZON"},{role:"Under",id:"o9",name:"Emanuel Shirt",brand:"ORTTU"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Shoes",id:"s1",name:"Roman Fabric Boots",brand:"SASAIA"}]},
   {id:48,name:"Jesse Dark Night",vibe:"Night Out",tags:["night"],source:"proposed",persona:"overlord",pieces:[{role:"Top",id:"o12",name:"Jesse Top with Scarf",brand:"ORTTU"},{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Boots",id:"y1",name:"Zipped Tall Boots",brand:"YASAR"}]},
-  {id:51,name:"Renato Burgundy Set",vibe:"Tonal",tags:["tonal","burgundy"],source:"proposed",persona:"viceroy",pieces:[{role:"Top",id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU"},{role:"Bottom",id:"o20",name:"Federico Pants",brand:"ORTTU"},{role:"Outer",id:"o19",name:"Renato Jacket",brand:"ORTTU"},{role:"Shoes",id:"tv1",name:"AJ1131 Chelsea Boots",brand:"TOGAVIRILIS"}]},
+  {id:51,name:"Renato Burgundy Set",vibe:"Tonal",tags:["tonal","burgundy"],persona:"viceroy",pieces:[{role:"Top",id:"o21",name:"Matisse Sleeveless Top",brand:"ORTTU"},{role:"Bottom",id:"o20",name:"Federico Pants",brand:"ORTTU"},{role:"Outer",id:"o19",name:"Renato Jacket",brand:"ORTTU"},{role:"Shoes",id:"tv1",name:"AJ1131 Chelsea Boots",brand:"TOGAVIRILIS"}]},
   {id:53,name:"Brown Tonal Ease",vibe:"Tonal",tags:["tonal"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"am1",name:"Oversized Drop Shoulder Tee Brown",brand:"AMAZON"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Boots",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
   {id:54,name:"Linen Off Day",vibe:"Tonal",tags:["tonal"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"am3",name:"Oversized Drop Shoulder Tee Green",brand:"AMAZON"},{role:"Bottom",id:"m10",name:"Trigon Layered Linen Trousers",brand:"MINOAR"},{role:"Boots",id:"tv1",name:"AJ1131 Chelsea Boots",brand:"TOGAVIRILIS"}]},
   {id:55,name:"Summer Shorts",vibe:"Contrast",tags:["contrast"],proposal:"off-duty",persona:"civilian",pieces:[{role:"Top",id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON"},{role:"Bottom",id:"am11",name:"PU Leather Shorts",brand:"AMAZON"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
@@ -459,7 +459,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 177;
+const DATA_VERSION = 178;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
