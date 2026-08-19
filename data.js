@@ -294,6 +294,7 @@ const WARDROBE_DATA = [
   {id:"dc1",name:"Neptune-210 Platform Boots",brand:"DEMONIA",color:"Black",size:"EU 44",cat:"Boots",type:"shoes",style:"Dark / Minimal",url:"https://demoniacult.com/products/neptune-210bvl",stats:{drama:4.5,structure:5,skin:0,edge:4.5,formality:1,presence:4.5,silhouette:0,movement:0,ornament:0}},
   {id:"yg1",name:"Yeezy Gap Dove Hoodie",brand:"YEEZYGAP",color:"Dark Grey",size:"—",cat:"Hoodie",type:"outer",style:"Dark / Minimal",url:"https://www.goat.com/apparel/yeezy-gap-dove-hoodie-dark-grey-4605510320000",img:"item-photos/yg1.jpg",stats:{drama:2.5,structure:1.5,skin:0,edge:1,formality:1.5,presence:2,silhouette:2.5,movement:1.5,ornament:0}},
   {id:"ft1",name:"Crinkle Short-Sleeve Shirt",brand:"FIELDTRIP",color:"Black",size:"One Size",cat:"Shirt",type:"top",style:"Dark / Minimal",added:"2026-08-15",warmth:0.5,img:"item-photos/ft1.jpg",stats:{drama:1.5,structure:1.5,skin:1,edge:1,formality:2,presence:1,silhouette:2,movement:2,ornament:0.5}},
+  {id:"tr1",name:"Team Rocket Sleeveless Tee",brand:"UNBRANDED",color:"Cream",size:"—",cat:"Tank",type:"top",style:"Contrast",added:"2026-08-18",warmth:0.5,img:"item-photos/tr1.jpg",stats:{drama:2.5,structure:1,skin:2.5,edge:2,formality:0.5,presence:2.5,silhouette:1.5,movement:2,ornament:3}},
 ];
 
 // ── DRAMA FACETS ────────────────────────────────────────────────────────────
@@ -383,7 +384,8 @@ const OUTFITS_DEFAULT = [
   {id:71,name:"Distressed Burgundy Layers",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"am7",name:"Cable Knit Sweater Vest Burgundy",brand:"AMAZON"},{role:"Bottom",id:"m18",name:"Cargo Volume Transform Denim Skirt",brand:"MINOAR"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"pw1",name:"Pai-Weite High-Top Sneakers White",brand:"JAKCUZ"}]},
   {id:72,name:"Rust Shirt Distressed Coat",vibe:"Dark / Layered",tags:["dark"],source:"detected",persona:"wanderer",pieces:[{role:"Top",id:"o6",name:"Raphael Shirt",brand:"ORTTU"},{role:"Bottom",id:"o3",name:"Roberto Pants",brand:"ORTTU"},{role:"Outer",id:"m14",name:"Fiber Bond Magma Tech Hood Cardigan",brand:"MINOAR"},{role:"Shoes",id:"y2",name:"Side-Zip Goat Leather Boots",brand:"YASAR"}]},
   {id:73,name:"Blue Tee & Graphite Cargo",vibe:"Casual / Streetwear",tags:["casual"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"am2",name:"Oversized Drop Shoulder Tee Blue",brand:"AMAZON"},{role:"Bottom",id:"m12",name:"Graphite External Bias Cargo Trousers",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
-  {id:74,name:"Open Collar All Black",vibe:"Dark / Minimal",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
+  {id:74,name:"Open Collar All Black",vibe:"Dark / Minimal",tags:["dark"],source:"detected",persona:"night-shift",pieces:[{role:"Top",id:"z1",name:"Tunic Button-Up Collared Sleeveless",brand:"ZARA"},{role:"Bottom",id:"m11",name:"Wide Layered Crushed Cropped Pants",brand:"MINOAR"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]},
+  {id:75,name:"Team Rocket Off-Duty",vibe:"Contrast",tags:["contrast"],source:"detected",persona:"civilian",pieces:[{role:"Top",id:"tr1",name:"Team Rocket Sleeveless Tee",brand:"UNBRANDED"},{role:"Bottom",id:"r5",name:"Tone Wave Wide Leg Pants",brand:"RYVK"},{role:"Shoes",id:"dm1",name:"DMXL Zip Leather Chelsea Boots",brand:"DRMARTENS"}]}
 ];
 
 
@@ -459,7 +461,7 @@ const SHOP = [
     why:"Floor-skimming 100cm cotton/linen kimono gown with 50cm kimono sleeves and 6 functional back buttons (closed = a stern long jacket, open = a wind-catching slit). The archetypal Wanderer drape \u2014 sheer, flowing, worn open over anything. Unisex, in stock, ships worldwide from Japan." },
 ];
 
-const DATA_VERSION = 178;
+const DATA_VERSION = 179;
 
 // Item resolution — prefer stable id, fall back to name+brand (rename-safe).
 // Uses the page's live `items` list when present (main app includes custom items),
@@ -837,7 +839,7 @@ const BCOLS = { ORTTU:"#c8b89a", MINOAR:"#8a9aaa", RYVK:"#9a8ac8", FRKM:"#aa8a8a
 function outfitPhotoPath(id){ return "outfits/outfit_" + String(id).padStart(2, "0") + ".jpg"; }
 // Outfit ids that have a curated board photo at outfits/outfit_XX.jpg — SINGLE source
 // (the Outfits board + Today both read this so they agree on which outfits have a photo).
-const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,62,63,64,65,66,68,69,70,71,72,73,74];
+const OUTFIT_PHOTO_IDS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,62,63,64,65,66,68,69,70,71,72,73,74,75];
 function outfitHasPhoto(id){ return OUTFIT_PHOTO_IDS.indexOf(id) >= 0; }
 // Best photo src for an outfit: an uploaded board photo (from the shared IndexedDB store,
 // passed in via `uploads`) wins, else the curated default path, else "" (renders "No photo").
@@ -1061,6 +1063,7 @@ function outfitCardHtml(outfit, opts){
    mutable `wornHistory` is the writer; the getters below read it when present,
    else fall back to localStorage (with the seed) so any page can show wear info. */
 const WORN_HISTORY_DEFAULT = [
+  { date:"2026-08-18", outfitId:75, outfitSource:"detected", occasion:["work","date"], itemIds:["tr1","r5","dm1"], photo:"wear-photos/wear_2026-08-18.jpg" },
   { date:"2026-08-14", outfitId:74, outfitSource:"detected", occasion:["work","night-out","concert"], itemIds:["z1","m11","dm1"], photo:"wear-photos/wear_2026-08-14.jpg" },
   { date:"2026-08-11", outfitId:73, outfitSource:"detected", occasion:["work"], itemIds:["am2","m12","dm1"], photo:"wear-photos/wear_2026-08-11.jpg" },
   { date:"2025-05-25", outfitId:70, outfitSource:"detected", occasion:["wedding"], itemIds:["m6","o3","o4","y2"], photo:"wear-photos/wear_2025-05-25.jpg" },
