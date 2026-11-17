@@ -20,12 +20,15 @@
           padding: 6px 12px; font-size: 12px; cursor: pointer; transition: var(--tr); }
   .chip:hover { border-color: var(--muted); }
   .chip.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--r-pill); overflow: hidden; }
+  .seg button { border: 0; background: var(--surface); color: var(--muted); padding: 6px 12px; font-size: 12px; cursor: pointer; }
+  .seg button.on { background: var(--surface2); color: var(--text); }
   .stage { position: relative; width: 100%; aspect-ratio: 2 / 3; background: var(--surface); border: 1px solid var(--border);
            border-radius: var(--r-lg); overflow: hidden; touch-action: none; }
   .stage svg.figure { position: absolute; inset: 0; width: 100%; height: 100%; }
   .stage.hide-fig svg.figure { opacity: 0; }
   .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none;
-           transform-origin: 50% 50%; user-select: none; -webkit-user-drag: none; }
+           user-select: none; -webkit-user-drag: none; }
   .fallback { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center;
               border: 1px dashed var(--border); border-radius: var(--r-md); background: color-mix(in srgb, var(--bg) 55%, transparent);
               pointer-events: none; transform-origin: 50% 50%; }
@@ -36,6 +39,17 @@
   .stage.aligning { cursor: grab; }
   .stage-tools { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
 
+  /* ── Flat lay ── */
+  .flat { display: none; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+          padding: clamp(12px, 3%, 24px); flex-direction: column; align-items: center; gap: clamp(8px, 2%, 16px); }
+  .flat.on { display: flex; }
+  .flat-row { display: flex; justify-content: center; align-items: flex-start; gap: clamp(8px, 3%, 20px); width: 100%; }
+  .crop { position: relative; overflow: hidden; flex: none; }
+  .crop img { position: absolute; max-width: none; }
+  .crop .lbl { position: absolute; left: 0; right: 0; bottom: -2px; text-align: center; font-size: 8px; letter-spacing: var(--tracking);
+               text-transform: uppercase; color: var(--muted); }
+  .flat-empty { color: var(--muted); font-size: 12px; padding: 40px 0; }
+
   /* ── Align panel ── */
   .align { display: none; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--border);
            border-radius: var(--r-md); background: var(--surface); }
@@ -45,6 +59,7 @@
   .btn { border: 1px solid var(--border); background: var(--surface2); color: var(--text); border-radius: var(--r-sm);
          padding: 5px 10px; font-size: 12px; cursor: pointer; }
   .btn:hover { border-color: var(--muted); }
+  .btn.on { border-color: var(--accent); }
 
   /* ── Tray ── */
   .tray { flex: 1 1 300px; display: flex; flex-direction: column; gap: var(--sp-4); }
@@ -75,22 +90,31 @@
 
   <div class="stage-col">
     <div class="chips" id="outfitChips"></div>
+    <div class="seg" id="viewSeg"><button data-v="stack" class="on">Stacked</button><button data-v="flat">Flat lay</button></div>
+
     <div class="stage" id="stage">
-      <!-- Base figure: landmarks match doll_prompts.md (viewBox = 1024×1536 render canvas) -->
+      <!-- Base figure: landmarks match doll_prompts.md (viewBox = 1024×1536 render canvas).
+           Lower body is widened ×1.12 to match how the renders are cut through the hips and legs. -->
       <svg class="figure" viewBox="0 0 1024 1536" aria-hidden="true">
         <g fill="var(--surface2)" stroke="var(--border)" stroke-width="3">
           <ellipse cx="512" cy="132" rx="60" ry="72"/>
           <path d="M486 196 L486 250 Q512 262 538 250 L538 196 Z"/>
-          <!-- torso: shoulders 19% (292) → waist 41% (630) → hips 49% (753) → crotch 52% (799) -->
-          <path d="M340 300 Q512 262 684 300 Q700 380 668 470 Q640 560 636 630 Q656 700 664 753 L560 799 L464 799 L360 753 Q368 700 388 630 Q384 560 356 470 Q324 380 340 300 Z"/>
-          <!-- arms -->
           <path d="M340 300 Q306 320 300 400 Q292 520 284 640 Q280 720 290 780 L322 784 Q326 700 336 620 Q352 520 362 420 Z"/>
           <path d="M684 300 Q718 320 724 400 Q732 520 740 640 Q744 720 734 780 L702 784 Q698 700 688 620 Q672 520 662 420 Z"/>
-          <!-- legs: knees 72% (1106), ankles 93% (1428), soles 97% (1490) -->
-          <path d="M364 753 L508 799 L500 1000 Q494 1106 486 1200 Q478 1330 474 1428 L462 1490 L398 1490 L416 1428 Q406 1300 400 1200 Q388 1106 378 1000 Q364 880 364 753 Z"/>
-          <path d="M660 753 L516 799 L524 1000 Q530 1106 538 1200 Q546 1330 550 1428 L562 1490 L626 1490 L608 1428 Q618 1300 624 1200 Q636 1106 646 1000 Q660 880 660 753 Z"/>
+          <g transform="translate(512 0) scale(1.12 1) translate(-512 0)">
+            <path d="M364 753 L508 799 L500 1000 Q494 1106 486 1200 Q478 1330 474 1428 L462 1490 L398 1490 L416 1428 Q406 1300 400 1200 Q388 1106 378 1000 Q364 880 364 753 Z"/>
+            <path d="M660 753 L516 799 L524 1000 Q530 1106 538 1200 Q546 1330 550 1428 L562 1490 L626 1490 L608 1428 Q618 1300 624 1200 Q636 1106 646 1000 Q660 880 660 753 Z"/>
+          </g>
+          <path d="M340 300 Q512 262 684 300 Q700 380 668 470 Q640 560 636 630 Q666 700 680 753 L560 799 L464 799 L344 753 Q358 700 388 630 Q384 560 356 470 Q324 380 340 300 Z"/>
         </g>
       </svg>
+    </div>
+    <div class="flat" id="flat"></div>
+
+    <div class="stage-tools">
+      <button class="btn" id="tuckTop">Top: untucked</button>
+      <button class="btn" id="tuckBoot">Pants: into boots</button>
+      <button class="btn" id="fitBtn">Auto-fit: on</button>
     </div>
     <div class="stage-tools">
       <button class="btn" id="alignBtn">Align mode</button>
@@ -107,7 +131,7 @@
         <button class="btn" id="resetSel">Reset item</button>
         <button class="btn" id="copyJson">Copy offsets JSON</button>
       </div>
-      <div class="note">Offsets save automatically in this browser. To make them permanent, paste the JSON into
+      <div class="note">Manual tweaks sit on top of auto-fit and save in this browser. To make them permanent, paste the JSON into
         <code>dolls/offsets.json</code>.</div>
     </div>
   </div>
@@ -116,21 +140,20 @@
 </div>
 
 <script src="data.js"></script>
+<script src="dolls/meta.js"></script>
 <script>
 (function () {
   var DOLL_OUTFITS = [1, 2, 4];
-  var SLOTS = ["outer", "top", "bottom", "shoes"];              // tray order
+  var SLOTS = ["outer", "top", "bottom", "shoes"];
   var SLOT_LABEL = { outer: "Outer", top: "Top", bottom: "Bottom", shoes: "Shoes" };
-  var BASE_Z = { shoes: 10, bottom: 20, top: 30, outer: 40 };
-  // Where a missing render's placeholder sits (% of stage) — mirrors the prompt landmarks
+  var CANVAS_W = 1024, CANVAS_H = 1536;
+  var BODY_SHOULDER_W = 344;              // figure shoulder width in canvas px
   var SLOT_BOX = { outer: [20, 17, 60, 64], top: [28, 18, 44, 34], bottom: [31, 40, 38, 54], shoes: [36, 78, 28, 20] };
-  var LS_KEY = "alter-doll-offsets";
+  var LS_KEY = "alter-doll-offsets-v2";
 
   var byId = {};
   WARDROBE_DATA.forEach(function (it) { byId[it.id] = it; });
   var outfits = OUTFITS_DEFAULT.filter(function (o) { return DOLL_OUTFITS.indexOf(o.id) > -1; });
-
-  // Prototype item set = every piece in those outfits
   var items = [];
   outfits.forEach(function (o) {
     o.pieces.forEach(function (p) {
@@ -139,21 +162,41 @@
     });
   });
 
-  var state = { outfitId: null, worn: {}, offsets: {}, align: false, sel: null, rendered: {} };
+  var state = { outfitId: null, worn: {}, manual: {}, meta: {}, align: false, sel: null, rendered: {},
+                view: "stack", tuckTop: false, intoBoots: true, autoFit: true };
 
   function photo(it) {
     try { if (typeof getImg === "function") { var s = getImg(it.name); if (s) return s; } } catch (e) {}
     return (typeof IMAGES !== "undefined" && IMAGES[it.name]) || "";
   }
   function dollSrc(id) { return "dolls/" + id + ".png"; }
-  function off(id) {
-    var it = byId[id];
-    if (!state.offsets[id]) state.offsets[id] = { x: 0, y: 0, s: 1, z: BASE_Z[it.type] };
-    return state.offsets[id];
-  }
-  function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(state.offsets)); } catch (e) {} }
+  function man(id) { if (!state.manual[id]) state.manual[id] = { x: 0, y: 0, s: 1, z: 0 }; return state.manual[id]; }
+  function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(state.manual)); } catch (e) {} }
 
-  // ── Probe which renders exist ──
+  // ── Layer order (tuck toggles decide it) ──
+  function zFor(slot) {
+    var z = { shoes: 10, bottom: 20, top: 30, outer: 40 };
+    if (state.tuckTop) z.top = 15;                    // top hem goes under the waistband
+    if (state.intoBoots) z.shoes = 25;                 // boot shafts over the pant legs
+    return z[slot];
+  }
+
+  // ── Auto-fit: normalise each render, then size the outer layer over the top ──
+  function fit(id) {
+    var m = state.meta[id], f = { dx: 0, dy: 0, sx: 1, sy: 1, ox: 50, oy: 50 };
+    if (!m || !state.autoFit) return f;
+    f.dx = m.auto.dx; f.dy = m.auto.dy;
+    f.ox = (m.cx + m.auto.dx) / CANVAS_W * 100;        // scale around the garment's own top-centre
+    f.oy = (m.bbox[1] + m.auto.dy) / CANVAS_H * 100;
+    if (m.type === "outer" && state.worn.top && state.meta[state.worn.top]) {
+      var inner = Math.min(state.meta[state.worn.top].shoulderW, BODY_SHOULDER_W + 10);
+      var need = inner * 1.06;                         // outer must clear the top by a few %
+      f.sx = Math.max(1, Math.min(1.3, need / Math.max(1, m.shoulderW)));
+      f.sy = 1 + (f.sx - 1) * 0.25;                    // widen mostly sideways so lengths stay honest
+    }
+    return f;
+  }
+
   function probe(cb) {
     var left = items.length;
     items.forEach(function (it) {
@@ -164,32 +207,65 @@
     });
   }
 
-  // ── Stage ──
+  // ── Stacked view ──
   var stage = document.getElementById("stage");
   function renderStage() {
     Array.prototype.slice.call(stage.querySelectorAll(".layer,.fallback")).forEach(function (n) { n.remove(); });
     SLOTS.forEach(function (slot) {
       var id = state.worn[slot]; if (!id) return;
-      var it = byId[id], o = off(id), el;
+      var it = byId[id], u = man(id), el;
       if (state.rendered[id]) {
+        var f = fit(id);
         el = document.createElement("img");
         el.className = "layer"; el.src = dollSrc(id); el.alt = it.name;
+        el.style.transformOrigin = f.ox + "% " + f.oy + "%";
+        el.style.transform = "translate(" + (u.x + f.dx / CANVAS_W * 100) + "%," + (u.y + f.dy / CANVAS_H * 100) + "%) " +
+                             "scale(" + (f.sx * u.s) + "," + (f.sy * u.s) + ")";
       } else {
         var b = SLOT_BOX[slot];
         el = document.createElement("div");
         el.className = "fallback";
         el.style.left = b[0] + "%"; el.style.top = b[1] + "%"; el.style.width = b[2] + "%"; el.style.height = b[3] + "%";
+        el.style.transform = "translate(" + u.x + "%," + u.y + "%) scale(" + u.s + ")";
         el.innerHTML = "<img src='" + photo(it) + "' alt=''><span>needs render</span>";
       }
       el.dataset.id = id;
-      el.style.zIndex = o.z;
-      el.style.transform = "translate(" + o.x + "%," + o.y + "%) scale(" + o.s + ")";
+      el.style.zIndex = zFor(slot) + u.z;
       if (state.align && state.sel === id) el.classList.add("sel");
       stage.appendChild(el);
     });
   }
 
-  // ── Outfit chips ──
+  // ── Flat-lay view: each render cropped to its garment, all at ONE shared scale, nothing overlapping ──
+  var flat = document.getElementById("flat");
+  function crop(id, k) {
+    var m = state.meta[id], it = byId[id];
+    var b = m ? m.bbox : [0, 0, CANVAS_W - 1, CANVAS_H - 1], pad = 6;
+    var x0 = b[0] - pad, y0 = b[1] - pad, w = b[2] - b[0] + pad * 2, h = b[3] - b[1] + pad * 2;
+    return "<div class='crop' title='" + it.name + "' style='width:" + (w * k) + "px;height:" + (h * k + 12) + "px'>" +
+      "<img src='" + dollSrc(id) + "' alt='" + it.name + "' style='width:" + (CANVAS_W * k) + "px;left:" + (-x0 * k) + "px;top:" + (-y0 * k) + "px'>" +
+      "<div class='lbl'>" + it.name + "</div></div>";
+  }
+  function renderFlat() {
+    if (state.view !== "flat") return;
+    var ids = SLOTS.map(function (s) { return state.worn[s]; }).filter(function (id) { return id && state.rendered[id]; });
+    if (!ids.length) { flat.innerHTML = "<div class='flat-empty'>Nothing rendered is being worn yet.</div>"; return; }
+    var bw = function (id) { var b = (state.meta[id] || {}).bbox; return b ? b[2] - b[0] + 12 : 400; };
+    var row1 = ["outer", "top"].map(function (s) { return state.worn[s]; }).filter(function (id) { return id && state.rendered[id]; });
+    var widest = Math.max.apply(null, [row1.reduce(function (a, id) { return a + bw(id); }, 0)]
+      .concat(["bottom", "shoes"].map(function (s) { var id = state.worn[s]; return id && state.rendered[id] ? bw(id) : 0; })));
+    var avail = flat.clientWidth - 48 - (row1.length > 1 ? 20 : 0);
+    var k = Math.min(0.42, avail / Math.max(1, widest));
+    var html = "";
+    if (row1.length) html += "<div class='flat-row'>" + row1.map(function (id) { return crop(id, k); }).join("") + "</div>";
+    ["bottom", "shoes"].forEach(function (s) {
+      var id = state.worn[s];
+      if (id && state.rendered[id]) html += "<div class='flat-row'>" + crop(id, k) + "</div>";
+    });
+    flat.innerHTML = html;
+  }
+
+  // ── Chips / tray ──
   function renderChips() {
     var host = document.getElementById("outfitChips");
     host.innerHTML = "";
@@ -211,16 +287,13 @@
     o.pieces.forEach(function (p) { var it = byId[p.id]; if (it && SLOTS.indexOf(it.type) > -1) state.worn[it.type] = it.id; });
     renderAll();
   }
-
-  // ── Tray ──
   function renderTray() {
     var host = document.getElementById("tray");
     host.innerHTML = "";
     var done = items.filter(function (it) { return state.rendered[it.id]; }).length;
     var hd = document.createElement("div");
     hd.className = "note";
-    hd.innerHTML = done + " / " + items.length + " items rendered. Missing renders show the product photo as a placeholder. " +
-      "Tap a piece to put it on or take it off.";
+    hd.textContent = done + " / " + items.length + " items rendered. Tap a piece to put it on or take it off.";
     host.appendChild(hd);
     SLOTS.forEach(function (slot) {
       var group = items.filter(function (it) { return it.type === slot; });
@@ -231,12 +304,11 @@
       group.forEach(function (it) {
         var c = document.createElement("div");
         c.className = "card" + (state.worn[slot] === it.id ? " worn" : "");
-        c.innerHTML = "<span class='dot" + (state.rendered[it.id] ? " ok" : "") + "' title='" +
-          (state.rendered[it.id] ? "rendered" : "needs render") + "'></span>" +
+        c.innerHTML = "<span class='dot" + (state.rendered[it.id] ? " ok" : "") + "'></span>" +
           "<div class='thumb'><img src='" + (state.rendered[it.id] ? dollSrc(it.id) : photo(it)) + "' alt='' loading='lazy'></div>" +
           "<div class='nm'>" + it.name + "</div><div class='br'>" + ((BRANDS[it.brand] || {}).label || it.brand) + " · " + it.id + "</div>";
         c.onclick = function () {
-          if (state.align) { state.sel = it.id; if (state.worn[slot] !== it.id) state.worn[slot] = it.id; }
+          if (state.align) { state.sel = it.id; state.worn[slot] = it.id; }
           else { state.worn[slot] = state.worn[slot] === it.id ? null : it.id; state.outfitId = "mix"; }
           renderAll();
         };
@@ -246,27 +318,40 @@
     });
   }
 
-  // ── Align mode ──
+  // ── Controls ──
   var scaleEl = document.getElementById("scale"), scaleVal = document.getElementById("scaleVal");
-  function renderAlign() {
-    document.getElementById("alignPanel").classList.toggle("on", state.align);
+  function renderControls() {
+    var flatOn = state.view === "flat";
+    stage.style.display = flatOn ? "none" : "";
+    flat.classList.toggle("on", flatOn);
+    Array.prototype.forEach.call(document.querySelectorAll("#viewSeg button"), function (b) { b.classList.toggle("on", b.dataset.v === state.view); });
+    document.getElementById("tuckTop").textContent = "Top: " + (state.tuckTop ? "tucked" : "untucked");
+    document.getElementById("tuckBoot").textContent = "Pants: " + (state.intoBoots ? "into boots" : "over boots");
+    document.getElementById("fitBtn").textContent = "Auto-fit: " + (state.autoFit ? "on" : "off");
+    document.getElementById("alignPanel").classList.toggle("on", state.align && !flatOn);
     stage.classList.toggle("aligning", state.align);
     document.getElementById("alignBtn").textContent = state.align ? "Done aligning" : "Align mode";
     var it = state.sel && byId[state.sel];
     document.getElementById("selName").textContent = it ? "Aligning: " + it.name : "Tap an item in the tray to select it";
-    if (it) { scaleEl.value = off(it.id).s; scaleVal.textContent = (+off(it.id).s).toFixed(2); }
+    if (it) { scaleEl.value = man(it.id).s; scaleVal.textContent = (+man(it.id).s).toFixed(2); }
   }
+  Array.prototype.forEach.call(document.querySelectorAll("#viewSeg button"), function (b) {
+    b.onclick = function () { state.view = b.dataset.v; renderAll(); };
+  });
+  document.getElementById("tuckTop").onclick = function () { state.tuckTop = !state.tuckTop; renderAll(); };
+  document.getElementById("tuckBoot").onclick = function () { state.intoBoots = !state.intoBoots; renderAll(); };
+  document.getElementById("fitBtn").onclick = function () { state.autoFit = !state.autoFit; renderAll(); };
   document.getElementById("alignBtn").onclick = function () { state.align = !state.align; renderAll(); };
   document.getElementById("figBtn").onclick = function () {
     var h = stage.classList.toggle("hide-fig"); this.textContent = h ? "Show figure" : "Hide figure";
   };
   document.getElementById("clearBtn").onclick = function () { state.worn = {}; state.outfitId = "mix"; renderAll(); };
-  scaleEl.oninput = function () { if (!state.sel) return; off(state.sel).s = +scaleEl.value; scaleVal.textContent = (+scaleEl.value).toFixed(2); save(); renderStage(); };
-  document.getElementById("zUp").onclick = function () { if (state.sel) { off(state.sel).z += 5; save(); renderStage(); } };
-  document.getElementById("zDown").onclick = function () { if (state.sel) { off(state.sel).z -= 5; save(); renderStage(); } };
-  document.getElementById("resetSel").onclick = function () { if (state.sel) { delete state.offsets[state.sel]; save(); renderAll(); } };
+  scaleEl.oninput = function () { if (!state.sel) return; man(state.sel).s = +scaleEl.value; scaleVal.textContent = (+scaleEl.value).toFixed(2); save(); renderStage(); };
+  document.getElementById("zUp").onclick = function () { if (state.sel) { man(state.sel).z += 6; save(); renderStage(); } };
+  document.getElementById("zDown").onclick = function () { if (state.sel) { man(state.sel).z -= 6; save(); renderStage(); } };
+  document.getElementById("resetSel").onclick = function () { if (state.sel) { delete state.manual[state.sel]; save(); renderAll(); } };
   document.getElementById("copyJson").onclick = function () {
-    var txt = JSON.stringify(state.offsets, null, 2), btn = this;
+    var txt = JSON.stringify(state.manual, null, 2), btn = this;
     (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(
       function () { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy offsets JSON"; }, 1200); },
       function () { window.prompt("Copy offsets JSON:", txt); });
@@ -275,30 +360,31 @@
   var drag = null;
   stage.addEventListener("pointerdown", function (e) {
     if (!state.align || !state.sel || !state.worn[byId[state.sel].type]) return;
-    var o = off(state.sel);
-    drag = { x: e.clientX, y: e.clientY, ox: o.x, oy: o.y };
+    var u = man(state.sel);
+    drag = { x: e.clientX, y: e.clientY, ox: u.x, oy: u.y };
     stage.setPointerCapture(e.pointerId);
   });
   stage.addEventListener("pointermove", function (e) {
     if (!drag) return;
-    var r = stage.getBoundingClientRect(), o = off(state.sel);
-    o.x = +(drag.ox + (e.clientX - drag.x) / r.width * 100).toFixed(2);
-    o.y = +(drag.oy + (e.clientY - drag.y) / r.height * 100).toFixed(2);
+    var r = stage.getBoundingClientRect(), u = man(state.sel);
+    u.x = +(drag.ox + (e.clientX - drag.x) / r.width * 100).toFixed(2);
+    u.y = +(drag.oy + (e.clientY - drag.y) / r.height * 100).toFixed(2);
     renderStage();
   });
   stage.addEventListener("pointerup", function () { if (drag) { drag = null; save(); } });
+  window.addEventListener("resize", function () { renderFlat(); });
 
-  function renderAll() { renderChips(); renderStage(); renderTray(); renderAlign(); }
+  function renderAll() { renderChips(); renderControls(); renderStage(); renderFlat(); renderTray(); }
 
-  // ── Boot: committed offsets file, then this browser's local tweaks on top ──
-  function boot(fileOffsets) {
+  // ── Boot: measurements + committed manual offsets, then this browser's tweaks on top ──
+  function getJSON(p) { return fetch(p, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; }); }
+  Promise.all([getJSON("dolls/meta.json"), getJSON("dolls/offsets.json")]).then(function (res) {
+    state.meta = (res[0] && Object.keys(res[0]).length) ? res[0] : (window.DOLL_META || {});
     var local = {};
     try { local = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch (e) {}
-    state.offsets = Object.assign({}, fileOffsets || {}, local);
+    state.manual = Object.assign({}, res[1] || {}, local);
     probe(function () { wearOutfit(outfits[0]); });
-  }
-  fetch("dolls/offsets.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; })
-    .then(boot, function () { boot({}); });
+  });
 })();
 </script>
 </body>
