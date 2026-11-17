@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALTER — Doll Prototype</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 20C33 20 29 38 31 56C33 74 42 84 50 84C58 84 67 74 69 56C71 38 67 20 50 20Z' fill='%23e2d3b4'/></svg>">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-ui); }
+  .wrap { display: flex; flex-wrap: wrap; gap: var(--sp-5); padding: clamp(12px, 3vw, 32px); align-items: flex-start; }
+  header.top { width: 100%; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--sp-3); }
+  header.top h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(18px, 2.4vw, 24px); letter-spacing: .04em; margin: 0; }
+  .eyebrow { font-size: var(--fs-eyebrow); letter-spacing: var(--tracking); text-transform: uppercase; color: var(--muted); }
+
+  /* ── Stage ── */
+  .stage-col { flex: 1 1 320px; max-width: 560px; display: flex; flex-direction: column; gap: var(--sp-3); }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .chip { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: var(--r-pill);
+          padding: 6px 12px; font-size: 12px; cursor: pointer; transition: var(--tr); }
+  .chip:hover { border-color: var(--muted); }
+  .chip.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+  .stage { position: relative; width: 100%; aspect-ratio: 2 / 3; background: var(--surface); border: 1px solid var(--border);
+           border-radius: var(--r-lg); overflow: hidden; touch-action: none; }
+  .stage svg.figure { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .stage.hide-fig svg.figure { opacity: 0; }
+  .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none;
+           transform-origin: 50% 50%; user-select: none; -webkit-user-drag: none; }
+  .fallback { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center;
+              border: 1px dashed var(--border); border-radius: var(--r-md); background: color-mix(in srgb, var(--bg) 55%, transparent);
+              pointer-events: none; transform-origin: 50% 50%; }
+  .fallback img { width: 100%; height: 100%; object-fit: contain; opacity: .55; filter: grayscale(.3); }
+  .fallback span { position: absolute; bottom: 4px; font-size: 8px; letter-spacing: var(--tracking); text-transform: uppercase;
+                   color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: var(--r-pill); }
+  .stage.aligning .sel { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .stage.aligning { cursor: grab; }
+  .stage-tools { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+
+  /* ── Align panel ── */
+  .align { display: none; flex-direction: column; gap: var(--sp-2); padding: var(--sp-3); border: 1px solid var(--border);
+           border-radius: var(--r-md); background: var(--surface); }
+  .align.on { display: flex; }
+  .align-row { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; font-size: 12px; }
+  .align-row input[type=range] { flex: 1 1 140px; }
+  .btn { border: 1px solid var(--border); background: var(--surface2); color: var(--text); border-radius: var(--r-sm);
+         padding: 5px 10px; font-size: 12px; cursor: pointer; }
+  .btn:hover { border-color: var(--muted); }
+
+  /* ── Tray ── */
+  .tray { flex: 1 1 300px; display: flex; flex-direction: column; gap: var(--sp-4); }
+  .group h3 { margin: 0 0 var(--sp-2); }
+  .items { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(96px, 22vw, 124px), 1fr)); gap: var(--sp-2); }
+  .card { position: relative; border: 1px solid var(--border); background: var(--surface); border-radius: var(--r-md);
+          padding: 6px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; transition: var(--tr); }
+  .card:hover { border-color: var(--muted); }
+  .card.worn { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .card .thumb { width: 100%; aspect-ratio: 3 / 4; border-radius: var(--r-sm); background: var(--surface2); overflow: hidden; }
+  .card .thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .card .nm { font-size: 11px; line-height: 1.25; }
+  .card .br { font-size: 9px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+  .card .dot { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .card .dot.ok { background: var(--success, #6c9); }
+  .note { font-size: 11px; color: var(--muted); line-height: 1.5; }
+</style>
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="alter-theme.css">
+<script>(function(){try{var t=localStorage.getItem('alter-theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Doll Prototype</h1>
+    <span class="eyebrow">Ghost-mannequin layers · items from outfits #1 · #2 · #4</span>
+  </header>
+
+  <div class="stage-col">
+    <div class="chips" id="outfitChips"></div>
+    <div class="stage" id="stage">
+      <!-- Base figure: landmarks match doll_prompts.md (viewBox = 1024×1536 render canvas) -->
+      <svg class="figure" viewBox="0 0 1024 1536" aria-hidden="true">
+        <g fill="var(--surface2)" stroke="var(--border)" stroke-width="3">
+          <ellipse cx="512" cy="132" rx="60" ry="72"/>
+          <path d="M486 196 L486 250 Q512 262 538 250 L538 196 Z"/>
+          <!-- torso: shoulders 19% (292) → waist 41% (630) → hips 49% (753) → crotch 52% (799) -->
+          <path d="M340 300 Q512 262 684 300 Q700 380 668 470 Q640 560 636 630 Q656 700 664 753 L560 799 L464 799 L360 753 Q368 700 388 630 Q384 560 356 470 Q324 380 340 300 Z"/>
+          <!-- arms -->
+          <path d="M340 300 Q306 320 300 400 Q292 520 284 640 Q280 720 290 780 L322 784 Q326 700 336 620 Q352 520 362 420 Z"/>
+          <path d="M684 300 Q718 320 724 400 Q732 520 740 640 Q744 720 734 780 L702 784 Q698 700 688 620 Q672 520 662 420 Z"/>
+          <!-- legs: knees 72% (1106), ankles 93% (1428), soles 97% (1490) -->
+          <path d="M364 753 L508 799 L500 1000 Q494 1106 486 1200 Q478 1330 474 1428 L462 1490 L398 1490 L416 1428 Q406 1300 400 1200 Q388 1106 378 1000 Q364 880 364 753 Z"/>
+          <path d="M660 753 L516 799 L524 1000 Q530 1106 538 1200 Q546 1330 550 1428 L562 1490 L626 1490 L608 1428 Q618 1300 624 1200 Q636 1106 646 1000 Q660 880 660 753 Z"/>
+        </g>
+      </svg>
+    </div>
+    <div class="stage-tools">
+      <button class="btn" id="alignBtn">Align mode</button>
+      <button class="btn" id="figBtn">Hide figure</button>
+      <button class="btn" id="clearBtn">Clear</button>
+    </div>
+    <div class="align" id="alignPanel">
+      <div class="align-row"><strong id="selName">Tap an item in the tray to select it</strong></div>
+      <div class="align-row">Drag on the figure to move · Scale
+        <input type="range" id="scale" min="0.6" max="1.4" step="0.01" value="1"><span id="scaleVal">1.00</span></div>
+      <div class="align-row">
+        <button class="btn" id="zDown">Send back</button>
+        <button class="btn" id="zUp">Bring forward</button>
+        <button class="btn" id="resetSel">Reset item</button>
+        <button class="btn" id="copyJson">Copy offsets JSON</button>
+      </div>
+      <div class="note">Offsets save automatically in this browser. To make them permanent, paste the JSON into
+        <code>dolls/offsets.json</code>.</div>
+    </div>
+  </div>
+
+  <div class="tray" id="tray"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  var DOLL_OUTFITS = [1, 2, 4];
+  var SLOTS = ["outer", "top", "bottom", "shoes"];              // tray order
+  var SLOT_LABEL = { outer: "Outer", top: "Top", bottom: "Bottom", shoes: "Shoes" };
+  var BASE_Z = { shoes: 10, bottom: 20, top: 30, outer: 40 };
+  // Where a missing render's placeholder sits (% of stage) — mirrors the prompt landmarks
+  var SLOT_BOX = { outer: [20, 17, 60, 64], top: [28, 18, 44, 34], bottom: [31, 40, 38, 54], shoes: [36, 78, 28, 20] };
+  var LS_KEY = "alter-doll-offsets";
+
+  var byId = {};
+  WARDROBE_DATA.forEach(function (it) { byId[it.id] = it; });
+  var outfits = OUTFITS_DEFAULT.filter(function (o) { return DOLL_OUTFITS.indexOf(o.id) > -1; });
+
+  // Prototype item set = every piece in those outfits
+  var items = [];
+  outfits.forEach(function (o) {
+    o.pieces.forEach(function (p) {
+      var it = byId[p.id];
+      if (it && items.indexOf(it) < 0 && SLOTS.indexOf(it.type) > -1) items.push(it);
+    });
+  });
+
+  var state = { outfitId: null, worn: {}, offsets: {}, align: false, sel: null, rendered: {} };
+
+  function photo(it) {
+    try { if (typeof getImg === "function") { var s = getImg(it.name); if (s) return s; } } catch (e) {}
+    return (typeof IMAGES !== "undefined" && IMAGES[it.name]) || "";
+  }
+  function dollSrc(id) { return "dolls/" + id + ".png"; }
+  function off(id) {
+    var it = byId[id];
+    if (!state.offsets[id]) state.offsets[id] = { x: 0, y: 0, s: 1, z: BASE_Z[it.type] };
+    return state.offsets[id];
+  }
+  function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(state.offsets)); } catch (e) {} }
+
+  // ── Probe which renders exist ──
+  function probe(cb) {
+    var left = items.length;
+    items.forEach(function (it) {
+      var im = new Image();
+      im.onload = function () { state.rendered[it.id] = true; if (--left === 0) cb(); };
+      im.onerror = function () { state.rendered[it.id] = false; if (--left === 0) cb(); };
+      im.src = dollSrc(it.id) + "?v=" + Date.now();
+    });
+  }
+
+  // ── Stage ──
+  var stage = document.getElementById("stage");
+  function renderStage() {
+    Array.prototype.slice.call(stage.querySelectorAll(".layer,.fallback")).forEach(function (n) { n.remove(); });
+    SLOTS.forEach(function (slot) {
+      var id = state.worn[slot]; if (!id) return;
+      var it = byId[id], o = off(id), el;
+      if (state.rendered[id]) {
+        el = document.createElement("img");
+        el.className = "layer"; el.src = dollSrc(id); el.alt = it.name;
+      } else {
+        var b = SLOT_BOX[slot];
+        el = document.createElement("div");
+        el.className = "fallback";
+        el.style.left = b[0] + "%"; el.style.top = b[1] + "%"; el.style.width = b[2] + "%"; el.style.height = b[3] + "%";
+        el.innerHTML = "<img src='" + photo(it) + "' alt=''><span>needs render</span>";
+      }
+      el.dataset.id = id;
+      el.style.zIndex = o.z;
+      el.style.transform = "translate(" + o.x + "%," + o.y + "%) scale(" + o.s + ")";
+      if (state.align && state.sel === id) el.classList.add("sel");
+      stage.appendChild(el);
+    });
+  }
+
+  // ── Outfit chips ──
+  function renderChips() {
+    var host = document.getElementById("outfitChips");
+    host.innerHTML = "";
+    outfits.forEach(function (o) {
+      var c = document.createElement("button");
+      c.className = "chip" + (state.outfitId === o.id ? " on" : "");
+      c.textContent = "#" + o.id + " " + o.name;
+      c.onclick = function () { wearOutfit(o); };
+      host.appendChild(c);
+    });
+    var mix = document.createElement("button");
+    mix.className = "chip" + (state.outfitId === "mix" ? " on" : "");
+    mix.textContent = "Mix & match";
+    mix.onclick = function () { state.outfitId = "mix"; renderAll(); };
+    host.appendChild(mix);
+  }
+  function wearOutfit(o) {
+    state.outfitId = o.id; state.worn = {};
+    o.pieces.forEach(function (p) { var it = byId[p.id]; if (it && SLOTS.indexOf(it.type) > -1) state.worn[it.type] = it.id; });
+    renderAll();
+  }
+
+  // ── Tray ──
+  function renderTray() {
+    var host = document.getElementById("tray");
+    host.innerHTML = "";
+    var done = items.filter(function (it) { return state.rendered[it.id]; }).length;
+    var hd = document.createElement("div");
+    hd.className = "note";
+    hd.innerHTML = done + " / " + items.length + " items rendered. Missing renders show the product photo as a placeholder. " +
+      "Tap a piece to put it on or take it off.";
+    host.appendChild(hd);
+    SLOTS.forEach(function (slot) {
+      var group = items.filter(function (it) { return it.type === slot; });
+      if (!group.length) return;
+      var g = document.createElement("div"); g.className = "group";
+      g.innerHTML = "<h3 class='eyebrow'>" + SLOT_LABEL[slot] + "</h3>";
+      var grid = document.createElement("div"); grid.className = "items";
+      group.forEach(function (it) {
+        var c = document.createElement("div");
+        c.className = "card" + (state.worn[slot] === it.id ? " worn" : "");
+        c.innerHTML = "<span class='dot" + (state.rendered[it.id] ? " ok" : "") + "' title='" +
+          (state.rendered[it.id] ? "rendered" : "needs render") + "'></span>" +
+          "<div class='thumb'><img src='" + (state.rendered[it.id] ? dollSrc(it.id) : photo(it)) + "' alt='' loading='lazy'></div>" +
+          "<div class='nm'>" + it.name + "</div><div class='br'>" + ((BRANDS[it.brand] || {}).label || it.brand) + " · " + it.id + "</div>";
+        c.onclick = function () {
+          if (state.align) { state.sel = it.id; if (state.worn[slot] !== it.id) state.worn[slot] = it.id; }
+          else { state.worn[slot] = state.worn[slot] === it.id ? null : it.id; state.outfitId = "mix"; }
+          renderAll();
+        };
+        grid.appendChild(c);
+      });
+      g.appendChild(grid); host.appendChild(g);
+    });
+  }
+
+  // ── Align mode ──
+  var scaleEl = document.getElementById("scale"), scaleVal = document.getElementById("scaleVal");
+  function renderAlign() {
+    document.getElementById("alignPanel").classList.toggle("on", state.align);
+    stage.classList.toggle("aligning", state.align);
+    document.getElementById("alignBtn").textContent = state.align ? "Done aligning" : "Align mode";
+    var it = state.sel && byId[state.sel];
+    document.getElementById("selName").textContent = it ? "Aligning: " + it.name : "Tap an item in the tray to select it";
+    if (it) { scaleEl.value = off(it.id).s; scaleVal.textContent = (+off(it.id).s).toFixed(2); }
+  }
+  document.getElementById("alignBtn").onclick = function () { state.align = !state.align; renderAll(); };
+  document.getElementById("figBtn").onclick = function () {
+    var h = stage.classList.toggle("hide-fig"); this.textContent = h ? "Show figure" : "Hide figure";
+  };
+  document.getElementById("clearBtn").onclick = function () { state.worn = {}; state.outfitId = "mix"; renderAll(); };
+  scaleEl.oninput = function () { if (!state.sel) return; off(state.sel).s = +scaleEl.value; scaleVal.textContent = (+scaleEl.value).toFixed(2); save(); renderStage(); };
+  document.getElementById("zUp").onclick = function () { if (state.sel) { off(state.sel).z += 5; save(); renderStage(); } };
+  document.getElementById("zDown").onclick = function () { if (state.sel) { off(state.sel).z -= 5; save(); renderStage(); } };
+  document.getElementById("resetSel").onclick = function () { if (state.sel) { delete state.offsets[state.sel]; save(); renderAll(); } };
+  document.getElementById("copyJson").onclick = function () {
+    var txt = JSON.stringify(state.offsets, null, 2), btn = this;
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(
+      function () { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy offsets JSON"; }, 1200); },
+      function () { window.prompt("Copy offsets JSON:", txt); });
+  };
+
+  var drag = null;
+  stage.addEventListener("pointerdown", function (e) {
+    if (!state.align || !state.sel || !state.worn[byId[state.sel].type]) return;
+    var o = off(state.sel);
+    drag = { x: e.clientX, y: e.clientY, ox: o.x, oy: o.y };
+    stage.setPointerCapture(e.pointerId);
+  });
+  stage.addEventListener("pointermove", function (e) {
+    if (!drag) return;
+    var r = stage.getBoundingClientRect(), o = off(state.sel);
+    o.x = +(drag.ox + (e.clientX - drag.x) / r.width * 100).toFixed(2);
+    o.y = +(drag.oy + (e.clientY - drag.y) / r.height * 100).toFixed(2);
+    renderStage();
+  });
+  stage.addEventListener("pointerup", function () { if (drag) { drag = null; save(); } });
+
+  function renderAll() { renderChips(); renderStage(); renderTray(); renderAlign(); }
+
+  // ── Boot: committed offsets file, then this browser's local tweaks on top ──
+  function boot(fileOffsets) {
+    var local = {};
+    try { local = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch (e) {}
+    state.offsets = Object.assign({}, fileOffsets || {}, local);
+    probe(function () { wearOutfit(outfits[0]); });
+  }
+  fetch("dolls/offsets.json", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : {}; })
+    .then(boot, function () { boot({}); });
+})();
+</script>
+</body>
+</html>
